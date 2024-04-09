@@ -1,0 +1,20 @@
+March 26:
+- finish ui design
+
+March 27:
+- finish gameplay functionality
+- to implement:
+  - blank tiles
+  - identify which vector (row or column) is being played on
+  - disallow plays that involve cross-vector tile placements
+  - display current play score somewhere
+  - disallow plays that involve non-valid words
+
+March 28:
+- add other language dictionaries
+
+March 29:
+- 
+
+March 30:
+- 

@@ -1,0 +1,25 @@
+:root {
+	--font1: "Noto Sans";
+	--font2: "Noto Serif";
+
+	--ui-color1: #a1bdac;
+	--ui-color2: black;
+	--ui-color3: white;
+
+	--cell-color: white;
+	--start-color: #85de77;
+	--dl-color: #4cb0ff;
+	--dw-color: #005599;
+	--tl-color: #f8b290;
+	--tw-color: #f26522;
+	--tile-color: wheat;
+
+	--aspect-ratio: calc(4 / 3);
+	--screen-width: 720px;
+
+	--input-border-width: 1px;
+
+	--small-tile-dimension: calc(1rem + 2 * var(--input-border-width));
+	--big-tile-dimension: 1.4rem;
+	--tile-dimension: var(--big-tile-dimension);
+}

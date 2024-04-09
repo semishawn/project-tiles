@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Plugins -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+	<!-- Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tibetan:wght@100..900&display=swap" rel="stylesheet">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="frontend/css/variables.css">
+	<link rel="stylesheet" href="frontend/css/main.css">
+	<link rel="stylesheet" href="frontend/css/title.css">
+	<link rel="stylesheet" href="frontend/css/options.css">
+	<link rel="stylesheet" href="frontend/css/play.css">
+</head>
+
+<body>
+	<main>
+		<div class="screen title-screen">
+			<div class="logo-container">
+				<div class="logo-text1">Project</div>
+				<div class="logo-text2">
+					<div class="tile">T</div>
+					<div class="tile">I</div>
+					<div class="tile">L</div>
+					<div class="tile">E</div>
+					<div class="tile">S</div>
+				</div>
+			</div>
+
+			<div class="title-btn-container">
+				<div class="btn important-btn title-play-btn">Play</div>
+				<div class="btn important-btn title-download-btn">Download</div>
+			</div>
+		</div>
+
+		<div class="screen lang-screen">
+			<div class="header-container">
+				<div class="btn important-btn back-btn">Back</div>
+				<div class="header">Select a Language</div>
+				<div class="btn important-btn continue-btn" disabled>Continue</div>
+			</div>
+
+			<div class="lang-container"></div>
+		</div>
+	
+		<div class="screen edition-screen">
+			<div class="header-container">
+				<div class="btn important-btn back-btn">Back</div>
+				<div class="header">Select an Edition</div>
+				<div class="btn important-btn continue-btn" disabled>Continue</div>
+			</div>
+	
+			<div class="edition-info-bar">
+				<div class="edition-lang-container">
+					<div class="edition-lang-exonym"></div>
+					<div class="edition-lang-endonym"></div>
+				</div>
+
+				<div class="edition-icon-info-container">
+					<div class="edition-icon-info-row">
+						<div class="edition-icon-info-text">Sold in stores</div>
+					</div>
+
+					<div class="edition-icon-info-row">
+						<div class="edition-icon-info-text">Official Scrabble product</div>
+					</div>
+
+					<div class="edition-icon-info-row">
+						<div class="edition-icon-info-text">Sourced online</div>
+					</div>
+				</div>
+			</div>
+	
+			<div class="edition-options-container">
+				<input type="radio" id="" name="edition-option" autocomplete="off">
+				<label class="edition-option btn" for="" data-sold="false">
+					<div class="edition-verified-icon"></div>
+	
+					<div class="edition-box">
+						<div class="edition-title-isometric">
+							<div class="edition-title-rotate">
+								<div class="edition-title"></div>
+							</div>
+						</div>
+					</div>
+	
+					<div class="edition-globe">
+						<div class="edition-title-border">
+							<div class="edition-title"></div>
+						</div>
+					</div>
+	
+					<div class="edition-lang">
+						<div class="edition-exonym"></div>
+						<div class="edition-endonym"></div>
+					</div>
+	
+					<div class="edition-release"></div>
+				</label>
+			</div>
+		</div>
+	
+		<!-- <div class="screen pref-screen">
+			<div class="header-container">
+				<div class="btn important-btn back-btn">Back</div>
+				<div class="header">Game Preferences</div>
+				<div class="btn important-btn continue-btn" disabled>Play</div>
+			</div>
+	
+			<div class="pref-column-container">
+				<div class="pref-column board-pref-column">
+					<div class="pref-instructions">Select a board layout :</div>
+					<div class="board-option-container">
+						<input type="radio" name="board-option" id="board-option1">
+						<label for="board-option1" class="btn icon-option"></label>
+
+						<input type="radio" name="board-option" id="board-option2">
+						<label for="board-option2" class="btn icon-option"></label>
+
+						<input type="radio" name="board-option" id="board-option3">
+						<label for="board-option3" class="btn icon-option"></label>
+
+						<input type="radio" name="board-option" id="board-option4">
+						<label for="board-option4" class="btn icon-option"></label>
+					</div>
+				</div>
+
+				<div class="pref-column player-pref-column">
+					<div class="pref-instructions">Select an opponent icon :</div>
+					<div class="icon-option-container bot-icon-option-container"></div>
+
+					<div class="pref-instructions">Select your icon :</div>
+					<div class="icon-option-container user-icon-option-container"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="screen pre-screen"></div> -->
+	
+		<div class="screen play-screen" data-current-player="user">
+			<div class="play-column1">
+				<div class="score-container">
+					<div class="score-box user-score-box">
+						<div class="player-icon"></div>
+						<div class="player-name"></div>
+						<div class="player-score">0</div>
+					</div>
+
+					<div class="score-box bot-score-box">
+						<div class="player-icon"></div>
+						<div class="player-name"></div>
+						<div class="player-score">0</div>
+					</div>
+
+					<div class="current-player-indicator-bg"></div>
+					<div class="current-player-indicator-border"></div>
+				</div>
+	
+				<div class="play-function-container">
+					<div class="done-btns-container">
+						<div class="btn done-btn quit-btn">Ditch this game</div>
+						<div class="btn done-btn start-over-btn">Start over</div>
+						<div class="btn done-btn resign-btn">Resign</div>
+					</div>
+	
+					<div class="tilebag-container">
+						<div class="tilebag-icon">
+							<div class="tilebag-text">
+								<div class="tilebag-count-text">
+									<div class="tilebag-count">0</div>
+									<div class="tilebag-tile-text">tiles left</div>
+								</div>
+	
+								<div class="tilebag-hover-text">Take a<br>peek!</div>
+							</div>
+						</div>
+	
+						<div class="tilebag-inside-container">
+							<div class="tilebag-scroll-container hide-scrollbar">
+								<div class="tilebag-scroll-text">Scroll</div>
+								<div class="tilebag-tiles-container"></div>
+							</div>
+	
+							<div class="tilebag-timer">
+								<div class="tilebag-timer-bar"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="play-history-container">
+					<div class="play-history-body">
+						<div class="play-history-scroll-container hide-scrollbar">
+							<div class="play-history-title">Play History</div>
+						</div>
+					</div>
+	
+					<div class="play-history-input-container">
+						<input class="play-history-textbox" type="text" placeholder="" autocomplete="off">
+						<div class="btn play-history-send-btn"></div>
+					</div>
+				</div>
+			</div>
+	
+			<div class="play-column2">
+				<div class="cell-sizer"></div>
+				<div class="small-tile-sizer"></div>
+				<div class="big-tile-sizer"></div>
+	
+				<div class="board-letter-container"></div>
+				<div class="board-number-container"></div>
+				
+				<div class="board-column">
+					<div class="board"></div>
+	
+					<div class="player-hand">
+						<div class="btn hand-btn shuffle-btn"></div>
+						<div class="player-hand-tiles"></div>
+						<div class="btn hand-btn recall-btn"></div>
+					</div>
+	
+					<div class="action-btn-container">	
+						<div class="btn action-btn skip-btn">Skip turn</div>
+						<div class="btn action-btn exchange-btn">Exchange tiles</div>
+						<div class="btn action-btn play-btn">Play</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="backend/js/languages.js"></script>
+	<script src="backend/js/boards.js"></script>
+	<script src="backend/js/main.js"></script>
+	<script src="backend/js/bot.js"></script>
+
+	<script src="backend/dictionaries/english.js"></script>
+	<script src="backend/dictionaries/spanish.js"></script>
+
+	<script src="frontend/js/icons.js"></script>
+	<script src="frontend/js/main.js"></script>
+	<script src="frontend/js/ui.js"></script>
+	<script src="frontend/js/play.js"></script>
+	<script src="frontend/js/tile.js"></script>
+</body>
+
+</html>

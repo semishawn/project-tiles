@@ -1,0 +1,31 @@
+.title-screen {
+	justify-content: space-between;
+	align-items: flex-end;
+}
+
+.logo-container {
+	margin: 0 auto;
+}
+
+.logo-text1 {
+	font-family: var(--font2);
+	font-size: 3rem;
+	font-weight: 100;
+	font-style: italic;
+}
+
+.logo-text2 {flex-direction: row;}
+
+.logo-text2 .tile {
+	--tile-dimension: 5rem;
+	font-family: var(--font2);
+	font-size: calc(0.8 * var(--tile-dimension));
+	font-weight: 900;
+}
+.logo-text2 .tile + .tile {margin-left: calc(-1 * var(--input-border-width));}
+
+.title-btn-container .btn {
+	width: 10rem;
+	height: 3rem;
+}
+.title-download-btn {margin-top: calc(-1 * var(--input-border-width));}

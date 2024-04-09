@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+	<script>
+		var letters = ["ཀ", "ཁ", "ག", "ང", "ཅ", "ཆ", "ཇ", "ཉ", "ཏ", "ཐ", "ད", "ན", "པ", "ཕ", "བ", "མ", "ཙ", "ཚ", "ཛ", "ཝ", "ཞ", "ཟ", "འ", "ཡ", "ར", "ལ", "ཤ", "ས", "ཧ", "ཨ"];
+		var tileSetString = "";
+
+		for (let i = 0; i < letters.length; i++) {
+			let letter = letters[i];
+			let freq = Math.floor(Math.random() * 1000000);
+			tileSetString += `{letter: "${letter}", freq: "${freq}"},\n`;
+		}
+
+		console.log(tileSetString);
+	</script>
+</body>
+
+</html>
