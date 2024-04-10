@@ -32,8 +32,6 @@ function drawTilesFrontend() {
 			</div>
 		`);
 	}
-
-	$(".tilebag-count").html(tileBag.length);
 }
 
 function createBoard() {
@@ -97,9 +95,10 @@ function updateBoardTiles() {
 }
 
 function updateTileBagFrontend() {
+	$(".tilebag-count").html(tileBag.length);
+
 	tilesContainer = $(".tilebag-tiles-container");
 	tilesContainer.empty();
-
 	for (let l = 0, ln = tileBag.length; l < ln; l++) {
 		let letter = tileBag[l];
 		let newTileElement = tileElement.clone();
@@ -150,7 +149,7 @@ function writeMessage(player, type, content) {
 			wordsString = scoredWords.join(", ") + ", and " + lastWord;
 		}
 
-		messageString = `${name} scored <b>${content.score}</b> points by playing ${wordsString}.`;
+		messageString = `${name} played ${wordsString} and scored <b>${content.score}</b> points.`;
 	}
 	// Skip, exchange, error message
 	else if (type == "other") {

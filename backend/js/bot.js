@@ -75,7 +75,8 @@ class Bot {
 		let rows = this.tileMap;
 		let cols = this.transpose(rows);
 
-		let findOpenSquares = (vector) => {
+		//
+		let findOpenSquares = vector => {
 			let openSquares = [];
 			for (let i = 0, n = vector.length; i < n; i++) {
 				if (vector[i] == " ") openSquares.push(i);
@@ -95,23 +96,32 @@ class Bot {
 			return wordsAfter[0];
 		}
 
-		// Determine if the new tile is connected to previously played tiles 
-		let isConnected = (vector, tiles) => {
-			let connected = false;
-			let firstIndex = tiles[0].index;
-			let lastIndex = tiles.slice(-1).index;
+		// Determine if the new tiles are connected to previously played tiles 
+		let isConnected = (vector, tilesPlayed) => {
+			let startsWithPrevTiles = false;
+			let endsWithPrevTiles = false;
+			let hasPrevTilesInMiddle = false;
 
-			if (firstIndex > 0) {
-				if (vector[firstIndex - 1] != " ") connected = true;
+			let firstIndex = tilesPlayed[0].squareIndex;
+			let lastIndex = tilesPlayed.slice(-1).squareIndex;
+			let indexBefore = firstIndex - 1;
+			let indexAfter = lastIndex + 1;
+
+			if (indexBefore >= 0) {
+				if (vector[indexBefore] != " ")
+					startsWithPrevTiles = true;
 			}
-
-			if (lastIndex < 0) {
-				if (vector[lastIndex + 1] != " ") connected = true;
+			if (indexAfter <= vector.length - 1) {
+				if (vector[indexAfter] != " ")
+					endsWithPrevTiles = true;
 			}
+			if ((lastIndex - firstIndex + 1) > tilesPlayed.length)
+				hasPrevTilesInMiddle = true;
 
-			return connected;
+			return startsWithPrevTiles || endsWithPrevTiles || hasPrevTilesInMiddle;
 		}
 
+		//
 		let scoredWordObject = (a, b, c, d) => {
 			return {
 				string: a,
@@ -123,60 +133,54 @@ class Bot {
 
 		// Calculate all valid word plays for a single vector (row or column)
 		let generateVectorPlays = (vectorBefore, direction, vectorIndex) => {
+			let vectorLength = vectorBefore.length;
 
+			let paraVectors = rows;
 			let perpDirection = "col";
-			let openSquareIndexes = findOpenSquares(vectorBefore);
-
-			let vectorIndex_adj1 = Math.max(0, vectorIndex - 1);
-			let vectorIndex_adj2 = Math.min(this.tileMap.length - 1, vectorIndex + 1);
-			let openSquareIndexes_adj1 = findOpenSquares(rows[vectorIndex_adj1]);
-			let openSquareIndexes_adj2 = findOpenSquares(rows[vectorIndex_adj2]);
-
+			let perpVectors = cols;
 			if (direction == "col") {
 				perpDirection = "row";
-				openSquareIndexes_adj1 = findOpenSquares(cols[vectorIndex_adj1]);
-				openSquareIndexes_adj2 = findOpenSquares(cols[vectorIndex_adj2]);
+				perpVectors = rows;
 			}
 
-			if (
-				openSquareIndexes.length < 15 ||
-				openSquareIndexes_adj1.length < 15 ||
-				openSquareIndexes_adj2.length < 15
-			) {
+			let openSquareIndexes = findOpenSquares(vectorBefore);
+			let lastVectorIndex = vectorIndex - 1;
+			let nextVectorIndex = vectorIndex + 1;
+			let isLastVectorPlayedOn = false;
+			let isThisVectorPlayedOn = openSquareIndexes.length < vectorLength;
+			let isNextVectorPlayedOn = false;
+			if (lastVectorIndex >= 0)
+				isLastVectorPlayedOn = findOpenSquares(paraVectors[lastVectorIndex]).length < vectorLength;
+			if (nextVectorIndex < vectorLength)
+				isNextVectorPlayedOn = findOpenSquares(paraVectors[nextVectorIndex]).length < vectorLength;
+
+			if (isLastVectorPlayedOn || isThisVectorPlayedOn || isNextVectorPlayedOn) {
 				// Trying each permutation of tiles along vector
 				for (let p = 0, pn = this.tilePerms.length; p < pn; p++) {
 					let tilePerm = this.tilePerms[p];
-
-					let perpsBefore = this.deepCopy(cols);
-					let perpsAfter =  this.deepCopy(cols);
-					if (direction == "col") {
-						perpsBefore = this.deepCopy(rows);
-						perpsAfter =  this.deepCopy(rows);
-					}
 
 					// Iterate through each starting point for tile permutation
 					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length + 1; s < sn; s++) {
 						let tilesPlayed = [];
 						let vectorAfter = this.deepCopy(vectorBefore);
 						let scoredWords = [];
-						let lateralConnect = false;
 						let perpConnect = false;
 
 						// Apply tile permutation to open squares along both vector axes
 						for (let l = 0, ln = tilePerm.length; l < ln; l++) {
-							let squareIndex = openSquareIndexes[s + l];
 							let letter = tilePerm[l];
-							let tileObject = {letter: letter, index: squareIndex};
+							let squareIndex = openSquareIndexes[s + l];
+							let tileObject = {letter: letter, squareIndex: squareIndex};
 
 							// Apply to vector
 							tilesPlayed.push(tileObject);
 							vectorAfter[squareIndex] = letter;
 
 							// Perpendicular business
-							let perpVectorBefore = perpsBefore[squareIndex];
-							let perpVectorAfter = perpsAfter[squareIndex];
+							let perpVectorBefore = perpVectors[squareIndex];
+							let perpVectorAfter = this.deepCopy(perpVectorBefore);
 							perpVectorAfter[vectorIndex] = letter;
-							perpConnect = isConnected(perpVectorBefore, [tileObject]);
+							if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [tileObject]);
 							let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
 							if (perpWord.length > 1) {
 								let perpWordObject = scoredWordObject(perpWord, [tileObject], perpDirection, squareIndex);
@@ -186,18 +190,18 @@ class Bot {
 							this.playsTested++; //? Dev
 						}
 
-						// Lateral
-						perpConnect = isConnected(vectorBefore, tilesPlayed);
-						let lateralWord = findScoredWord(vectorBefore, vectorAfter);
-						if (lateralWord.length > 1) {
-							let lateralWordObject = scoredWordObject(lateralWord, tilesPlayed, direction, vectorIndex);
-							scoredWords.push(lateralWordObject);
+						// Parallel business
+						let paraConnect = isConnected(vectorBefore, tilesPlayed);
+						let paraWord = findScoredWord(vectorBefore, vectorAfter);
+						if (paraWord.length > 1) {
+							let paraWordObject = scoredWordObject(paraWord, tilesPlayed, direction, vectorIndex);
+							scoredWords.push(paraWordObject);
 						}
 
 						//? 1. Is the play logical?
 						if (scoredWords.length > 0) {
-							//? 2. Is the play connected laterally or perpendicularly?
-							if (lateralConnect || perpConnect) {
+							//? 2. Is the play connected parallely or perpendicularly?
+							if (paraConnect || perpConnect) {
 								let isValid = true;
 								scoredWords.forEach(wordObject => {
 									if (!this.dictionarySet.has(wordObject.string)) {
@@ -206,7 +210,7 @@ class Bot {
 									}
 								});
 
-								//? Are all words played valid?
+								//? Are all the words played real words?
 								if (isValid) {
 									let play = {
 										tilesPlayed: tilesPlayed,
@@ -241,19 +245,13 @@ class Bot {
 	//* Choose a play from valid play pool
 	//* Currently works by choosing highest scoring play
 	choosePlay() {
-		let shuffle = arr => {
-			for (let i = arr.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[arr[i], arr[j]] = [arr[j], arr[i]];
-			}
-		}
-
-		shuffle(this.validPlays);
-
 		// let chosenPlay = this.validPlays[Math.floor(Math.random() * this.validPlays.length)];
-		let chosenPlay = this.validPlays.reduce(function(prev, current) {
-			return (prev && prev.score > current.score) ? prev : current;
+		let highestScore = Math.max(...this.validPlays.map(play => play.score));
+		let highestScoringPlays = this.validPlays.filter(play => {
+			return play.score === highestScore;
 		});
+
+		let chosenPlay = highestScoringPlays[Math.floor(Math.random() * highestScoringPlays.length)];
 
 		return chosenPlay;
 	}
@@ -279,23 +277,19 @@ onmessage = e => {
 		e.data.dictionarySet
 	);
 
-	// var totalStartTime = performance.now();
-		botInstance.unscramble();
-		console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length} tile permutations...`);
+	botInstance.unscramble();
+	console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length} tile permutations...`);
 
-		var generationStartTime = performance.now();
-		botInstance.generatePlays();
-		var generationEndTime = performance.now();
-		var generationSeconds = (generationEndTime - generationStartTime) / 1000;
+	var generationStartTime = performance.now();
+	botInstance.generatePlays();
+	var generationEndTime = performance.now();
+	var generationSeconds = (generationEndTime - generationStartTime) / 1000;
 
-		console.log(`Tested ${botInstance.playsTested} plays in ${generationSeconds} seconds...`);
-		console.log(`Found ${botInstance.validPlays.length} valid plays...`);
+	console.log(`Tested ${botInstance.playsTested} plays in ${generationSeconds} seconds...`);
+	console.log(`Found ${botInstance.validPlays.length} valid plays...`);
 
-		var play = botInstance.choosePlay();
-		console.log(play);
-	/* var totalEndTime = performance.now();
-	var totalSeconds = (totalEndTime - totalStartTime) / 1000;
-	console.log(totalSeconds + " seconds"); */
+	var play = botInstance.choosePlay();
+	console.log(play);
 
 	postMessage(play);
 };
