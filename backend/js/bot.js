@@ -2,6 +2,7 @@ class Bot {
 	tilePerms = [];
 	playsTested = 0;
 	validPlays = [];
+	foo = [];
 
 	constructor(board, tileSet, tileMap, handTiles, dictionarySet) {
 		this.board = board;
@@ -97,13 +98,13 @@ class Bot {
 		}
 
 		// Determine if the new tiles are connected to previously played tiles 
-		let isConnected = (vector, tilesPlayed) => {
+		let isConnected = (vector, tiles) => {
 			let startsWithPrevTiles = false;
 			let endsWithPrevTiles = false;
 			let hasPrevTilesInMiddle = false;
 
-			let firstIndex = tilesPlayed[0].squareIndex;
-			let lastIndex = tilesPlayed.slice(-1).squareIndex;
+			let firstIndex = tiles[0].index;
+			let lastIndex = tiles.slice(-1).index;
 			let indexBefore = firstIndex - 1;
 			let indexAfter = lastIndex + 1;
 
@@ -115,9 +116,10 @@ class Bot {
 				if (vector[indexAfter] != " ")
 					endsWithPrevTiles = true;
 			}
-			if ((lastIndex - firstIndex + 1) > tilesPlayed.length)
+			if ((lastIndex - firstIndex + 1) > tiles.length)
 				hasPrevTilesInMiddle = true;
 
+			this.foo.push([startsWithPrevTiles, endsWithPrevTiles, hasPrevTilesInMiddle]);
 			return startsWithPrevTiles || endsWithPrevTiles || hasPrevTilesInMiddle;
 		}
 
@@ -161,6 +163,7 @@ class Bot {
 
 					// Iterate through each starting point for tile permutation
 					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length + 1; s < sn; s++) {
+						this.foo = [];
 						let tilesPlayed = [];
 						let vectorAfter = this.deepCopy(vectorBefore);
 						let scoredWords = [];
@@ -169,28 +172,29 @@ class Bot {
 						// Apply tile permutation to open squares along both vector axes
 						for (let l = 0, ln = tilePerm.length; l < ln; l++) {
 							let letter = tilePerm[l];
-							let squareIndex = openSquareIndexes[s + l];
-							let tileObject = {letter: letter, squareIndex: squareIndex};
+							let paraIndex = openSquareIndexes[s + l];
+							let paraTileObject = {letter: letter, index: paraIndex};
+							let perpTileObject = {letter: letter, index: vectorIndex};
 
-							// Apply to vector
-							tilesPlayed.push(tileObject);
-							vectorAfter[squareIndex] = letter;
+							// Apply to parallel vector
+							tilesPlayed.push(paraTileObject);
+							vectorAfter[paraIndex] = letter;
 
-							// Perpendicular business
-							let perpVectorBefore = perpVectors[squareIndex];
+							// Perpendicular validity
+							let perpVectorBefore = perpVectors[paraIndex];
 							let perpVectorAfter = this.deepCopy(perpVectorBefore);
 							perpVectorAfter[vectorIndex] = letter;
-							if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [tileObject]);
+							if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [perpTileObject]);
 							let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
 							if (perpWord.length > 1) {
-								let perpWordObject = scoredWordObject(perpWord, [tileObject], perpDirection, squareIndex);
+								let perpWordObject = scoredWordObject(perpWord, [perpTileObject], perpDirection, paraIndex);
 								scoredWords.push(perpWordObject);
 							}
 
 							this.playsTested++; //? Dev
 						}
 
-						// Parallel business
+						// Parallel validity
 						let paraConnect = isConnected(vectorBefore, tilesPlayed);
 						let paraWord = findScoredWord(vectorBefore, vectorAfter);
 						if (paraWord.length > 1) {
@@ -217,7 +221,9 @@ class Bot {
 										newVector: vectorAfter,
 										direction: direction,
 										vectorIndex: vectorIndex,
-										scoredWords: scoredWords
+										scoredWords: scoredWords,
+										connected: [paraConnect, perpConnect],
+										foo: this.foo
 									}
 
 									// Calculate score using own object, assign to self

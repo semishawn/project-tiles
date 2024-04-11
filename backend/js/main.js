@@ -66,10 +66,10 @@ function calculateScore(play, tileSet, board) {
 
 		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
 			let letter = tilesPlayed[t].letter;
-			var squareIndex = tilesPlayed[t].squareIndex;
+			var index = tilesPlayed[t].index;
 
-			let squareId = board[vectorIndex][squareIndex];
-			if (direction == "col") squareId = board[squareIndex][vectorIndex];
+			let squareId = board[vectorIndex][index];
+			if (direction == "col") squareId = board[index][vectorIndex];
 
 			switch (squareId) {
 				case 2: wordPoints += tilePoints(letter); break;

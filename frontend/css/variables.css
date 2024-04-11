@@ -18,6 +18,7 @@
 	--screen-width: 720px;
 
 	--input-border-width: 1px;
+	--indicator-border-width: calc(3 * var(--input-border-width));
 
 	--small-tile-dimension: calc(1rem + 2 * var(--input-border-width));
 	--big-tile-dimension: 1.4rem;

@@ -95,19 +95,18 @@
 	z-index: 10;
 }
 .current-player-indicator-border {
-	--border-width: calc(2 * var(--input-border-width));
-	left: calc(-1 * var(--border-width));
-	width: calc(100% + 2 * var(--border-width));
-	height: calc(50% + 2 * var(--border-width) + var(--input-border-width) / 2);
-	border: var(--border-width) solid var(--ui-color2);
+	left: calc(-1 * var(--indicator-border-width) + var(--input-border-width));
+	width: calc(100% + var(--indicator-border-width));
+	height: calc(50% + var(--indicator-border-width) + var(--input-border-width) / 2);
+	border: var(--indicator-border-width) solid black;
 	z-index: 12;
 }
 [data-current-player="user"] .current-player-indicator-bg {top: 0;}
 [data-current-player="bot"] .current-player-indicator-bg {top: 50%;}
 [data-current-player="user"] .current-player-indicator-border
-{top: calc(-1 * var(--border-width));}
+{top: calc(-1 * var(--indicator-border-width) + var(--input-border-width));}
 [data-current-player="bot"] .current-player-indicator-border
-{top: calc(50% - var(--border-width) - var(--input-border-width) / 2);}
+{top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
 
 
 
@@ -441,7 +440,7 @@
 	z-index: 102 !important;
 }
 .cell:hover .cell-indicator {
-	outline: calc(4 * var(--input-border-width)) solid var(--ui-color2);
+	outline: var(--indicator-border-width) solid var(--ui-color2);
 }
 
 
