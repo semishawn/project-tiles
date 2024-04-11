@@ -171,10 +171,13 @@ function writeMessage(player, type, content) {
 
 //* Game start function
 function newGame(lId, eId) {
-	// Dictionary variables
+	// Word list variables
 	let langExonym = languages[lId].exonym;
-	dictionary = window[camelize(langExonym) + "Dict"];
-	dictionarySet = new Set(dictionary);
+	let wordArray = window[camelize(langExonym) + "List"];
+	wordTrie = new Trie();
+	for (let w = 0, wn = wordArray.length; w < wn; w++) wordTrie.insert(wordArray[w]);
+
+	// Font variables
 	let langFont = `"Noto Sans"`;
 	if (typeof languages[lId].font !== 'undefined') langFont += `, "${languages[lId].font}"`;
 
@@ -264,11 +267,10 @@ $(".exchange-btn").click(function() {
 	updateTileBagFrontend();
 });
 
-$(".play-btn").click(function() {
-	/* var play = {
-
+/* $(".play-btn").click(function() {
+	var play = {
 	}
-	play.score = calculateScore(play, tileSet, board); */
+	play.score = calculateScore(play, tileSet, board);
 
 	for (let r = 0, rn = board.length; r < rn; r++) {
 		for (let c = 0, cn = board[0].length; c < cn; c++) {
@@ -287,7 +289,7 @@ $(".play-btn").click(function() {
 	$(".user-score").html(botScore);
 	writeMessage("user", "play", play);
 	drawTilesFrontend();
-});
+}); */
 
 $(".tilebag-icon").click(function() {
 	let tileBagContainer = $(".tilebag-container");
@@ -315,7 +317,8 @@ $(".play-history-send-btn").click(function() {
 	messageContainer.scrollTo(0, messageContainer.scrollHeight);
 });
 $(document).keydown(function(e) {
-	if (e.code == "Enter") $(".play-history-send-btn").click();
+	if (e.code == "Enter" && $(".play-history-textbox").is(':focus'))
+		$(".play-history-send-btn").click();
 });
 
 $(document).keydown(function(e) {
@@ -332,22 +335,20 @@ $(document).keydown(function(e) {
 //* Bot play
 var botWorker = new Worker("../backend/js/bot.js");
 
-$(document).keydown(function(e) {
-	if (e.code == "Space") {
-		botWorker.postMessage({
-			board: board,
-			tileSet: tileSet,
-			tileMap: tileMap,
-			handTiles: botHandTiles,
-			dictionarySet: dictionarySet,
-			functions: {
-				uniquify: "" + uniquify,
-				transpose: "" + transpose,
-				deepCopy: "" + deepCopy,
-				calculateScore: "" + calculateScore
-			}
-		});
-	}
+$(".play-btn").on("click", function() {
+	botWorker.postMessage({
+		board: board,
+		tileSet: tileSet,
+		tileMap: tileMap,
+		handTiles: botHandTiles,
+		wordTrie: wordTrie,
+		functions: {
+			uniquify: "" + uniquify,
+			transpose: "" + transpose,
+			deepCopy: "" + deepCopy,
+			calculateScore: "" + calculateScore
+		}
+	});
 });
 
 botWorker.onmessage = e => {

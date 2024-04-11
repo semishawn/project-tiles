@@ -1,15 +1,19 @@
+importScripts("trie.js");
+
 class Bot {
 	tilePerms = [];
 	playsTested = 0;
 	validPlays = [];
-	foo = [];
 
-	constructor(board, tileSet, tileMap, handTiles, dictionarySet) {
+	msElapsed = 0;
+	maxMs = 15000;
+
+	constructor(board, tileSet, tileMap, handTiles, wordTrie) {
 		this.board = board;
 		this.tileSet = tileSet;
 		this.tileMap = tileMap;
 		this.handTiles = handTiles;
-		this.dictionarySet = dictionarySet;
+		this.wordTrie = wordTrie;
 	}
 
 	//* Generate all subset permutations of tiles
@@ -75,6 +79,7 @@ class Bot {
 	generatePlays() {
 		let rows = this.tileMap;
 		let cols = this.transpose(rows);
+		let startTime = performance.now();
 
 		//
 		let findOpenSquares = vector => {
@@ -119,7 +124,6 @@ class Bot {
 			if ((lastIndex - firstIndex + 1) > tiles.length)
 				hasPrevTilesInMiddle = true;
 
-			this.foo.push([startsWithPrevTiles, endsWithPrevTiles, hasPrevTilesInMiddle]);
 			return startsWithPrevTiles || endsWithPrevTiles || hasPrevTilesInMiddle;
 		}
 
@@ -148,87 +152,89 @@ class Bot {
 			let openSquareIndexes = findOpenSquares(vectorBefore);
 			let lastVectorIndex = vectorIndex - 1;
 			let nextVectorIndex = vectorIndex + 1;
-			let isLastVectorPlayedOn = false;
-			let isThisVectorPlayedOn = openSquareIndexes.length < vectorLength;
-			let isNextVectorPlayedOn = false;
-			if (lastVectorIndex >= 0)
-				isLastVectorPlayedOn = findOpenSquares(paraVectors[lastVectorIndex]).length < vectorLength;
-			if (nextVectorIndex < vectorLength)
-				isNextVectorPlayedOn = findOpenSquares(paraVectors[nextVectorIndex]).length < vectorLength;
+			let isLastVectorPopulated = false;
+			let isThisVectorPopulated = openSquareIndexes.length < vectorLength;
+			let isNextVectorPopulated = false;
 
-			if (isLastVectorPlayedOn || isThisVectorPlayedOn || isNextVectorPlayedOn) {
+			if (lastVectorIndex >= 0)
+				isLastVectorPopulated = findOpenSquares(paraVectors[lastVectorIndex]).length < vectorLength;
+			if (nextVectorIndex < vectorLength)
+				isNextVectorPopulated = findOpenSquares(paraVectors[nextVectorIndex]).length < vectorLength;
+
+			if (isLastVectorPopulated || isThisVectorPopulated || isNextVectorPopulated) {
 				// Trying each permutation of tiles along vector
 				for (let p = 0, pn = this.tilePerms.length; p < pn; p++) {
 					let tilePerm = this.tilePerms[p];
 
 					// Iterate through each starting point for tile permutation
 					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length + 1; s < sn; s++) {
-						this.foo = [];
-						let tilesPlayed = [];
-						let vectorAfter = this.deepCopy(vectorBefore);
-						let scoredWords = [];
-						let perpConnect = false;
+						//* Time limiter
+						this.msElapsed = performance.now() - startTime;
+						if (this.msElapsed < this.maxMs) {
+							let tilesPlayed = [];
+							let vectorAfter = this.deepCopy(vectorBefore);
+							let scoredWords = [];
+							let perpConnect = false;
 
-						// Apply tile permutation to open squares along both vector axes
-						for (let l = 0, ln = tilePerm.length; l < ln; l++) {
-							let letter = tilePerm[l];
-							let paraIndex = openSquareIndexes[s + l];
-							let paraTileObject = {letter: letter, index: paraIndex};
-							let perpTileObject = {letter: letter, index: vectorIndex};
+							// Apply tile permutation to open squares along both vector axes
+							for (let l = 0, ln = tilePerm.length; l < ln; l++) {
+								let letter = tilePerm[l];
+								let paraIndex = openSquareIndexes[s + l];
+								let paraTileObject = {letter: letter, index: paraIndex};
+								let perpTileObject = {letter: letter, index: vectorIndex};
 
-							// Apply to parallel vector
-							tilesPlayed.push(paraTileObject);
-							vectorAfter[paraIndex] = letter;
+								// Apply to parallel vector
+								tilesPlayed.push(paraTileObject);
+								vectorAfter[paraIndex] = letter;
 
-							// Perpendicular validity
-							let perpVectorBefore = perpVectors[paraIndex];
-							let perpVectorAfter = this.deepCopy(perpVectorBefore);
-							perpVectorAfter[vectorIndex] = letter;
-							if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [perpTileObject]);
-							let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
-							if (perpWord.length > 1) {
-								let perpWordObject = scoredWordObject(perpWord, [perpTileObject], perpDirection, paraIndex);
-								scoredWords.push(perpWordObject);
+								// Perpendicular validity
+								let perpVectorBefore = perpVectors[paraIndex];
+								let perpVectorAfter = this.deepCopy(perpVectorBefore);
+								perpVectorAfter[vectorIndex] = letter;
+								if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [perpTileObject]);
+								let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
+								if (perpWord.length > 1) {
+									let perpWordObject = scoredWordObject(perpWord, [perpTileObject], perpDirection, paraIndex);
+									scoredWords.push(perpWordObject);
+								}
+
+								this.playsTested++; //? Dev
 							}
 
-							this.playsTested++; //? Dev
-						}
+							// Parallel validity
+							let paraConnect = isConnected(vectorBefore, tilesPlayed);
+							let paraWord = findScoredWord(vectorBefore, vectorAfter);
+							if (paraWord.length > 1) {
+								let paraWordObject = scoredWordObject(paraWord, tilesPlayed, direction, vectorIndex);
+								scoredWords.push(paraWordObject);
+							}
 
-						// Parallel validity
-						let paraConnect = isConnected(vectorBefore, tilesPlayed);
-						let paraWord = findScoredWord(vectorBefore, vectorAfter);
-						if (paraWord.length > 1) {
-							let paraWordObject = scoredWordObject(paraWord, tilesPlayed, direction, vectorIndex);
-							scoredWords.push(paraWordObject);
-						}
+							//? 1. Is the play logical?
+							if (scoredWords.length > 0) {
+								//? 2. Is the play connected parallely or perpendicularly?
+								if (paraConnect || perpConnect) {
+									let isValid = true;
+									scoredWords.forEach(wordObject => {
+										if (!this.wordTrie.search(wordObject.string)) {
+											isValid = false;
+											return false;
+										}
+									});
 
-						//? 1. Is the play logical?
-						if (scoredWords.length > 0) {
-							//? 2. Is the play connected parallely or perpendicularly?
-							if (paraConnect || perpConnect) {
-								let isValid = true;
-								scoredWords.forEach(wordObject => {
-									if (!this.dictionarySet.has(wordObject.string)) {
-										isValid = false;
-										return false;
+									//? Are all the words played real words?
+									if (isValid) {
+										let play = {
+											tilesPlayed: tilesPlayed,
+											newVector: vectorAfter,
+											direction: direction,
+											vectorIndex: vectorIndex,
+											scoredWords: scoredWords
+										}
+
+										// Calculate score using own object, assign to self
+										play.score = this.calculateScore(play, this.tileSet, this.board);
+										this.validPlays.push(play);
 									}
-								});
-
-								//? Are all the words played real words?
-								if (isValid) {
-									let play = {
-										tilesPlayed: tilesPlayed,
-										newVector: vectorAfter,
-										direction: direction,
-										vectorIndex: vectorIndex,
-										scoredWords: scoredWords,
-										connected: [paraConnect, perpConnect],
-										foo: this.foo
-									}
-
-									// Calculate score using own object, assign to self
-									play.score = this.calculateScore(play, this.tileSet, this.board);
-									this.validPlays.push(play);
 								}
 							}
 						}
@@ -275,23 +281,23 @@ onmessage = e => {
 	Bot.prototype.deepCopy = deepCopy;
 	Bot.prototype.calculateScore = calculateScore;
 
+	let wordTrie = e.data.wordTrie;
+	Object.setPrototypeOf(wordTrie, Trie.prototype);
+
 	var botInstance = new Bot(
 		e.data.board,
 		e.data.tileSet,
 		e.data.tileMap,
 		e.data.handTiles,
-		e.data.dictionarySet
+		wordTrie
 	);
 
 	botInstance.unscramble();
 	console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length} tile permutations...`);
 
-	var generationStartTime = performance.now();
 	botInstance.generatePlays();
-	var generationEndTime = performance.now();
-	var generationSeconds = (generationEndTime - generationStartTime) / 1000;
-
-	console.log(`Tested ${botInstance.playsTested} plays in ${generationSeconds} seconds...`);
+	var secondsElapsed = botInstance.msElapsed / 1000;
+	console.log(`Tested ${botInstance.playsTested} plays in ${secondsElapsed} seconds...`);
 	console.log(`Found ${botInstance.validPlays.length} valid plays...`);
 
 	var play = botInstance.choosePlay();
