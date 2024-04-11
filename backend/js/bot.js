@@ -293,12 +293,12 @@ onmessage = e => {
 	);
 
 	botInstance.unscramble();
-	console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length} tile permutations...`);
+	console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length.toLocaleString()} tile permutations...`);
 
 	botInstance.generatePlays();
 	var secondsElapsed = botInstance.msElapsed / 1000;
-	console.log(`Tested ${botInstance.playsTested} plays in ${secondsElapsed} seconds...`);
-	console.log(`Found ${botInstance.validPlays.length} valid plays...`);
+	console.log(`Tested ${botInstance.playsTested.toLocaleString()} plays in ${secondsElapsed} seconds...`);
+	console.log(`Found ${botInstance.validPlays.length.toLocaleString()} valid plays...`);
 
 	var play = botInstance.choosePlay();
 	console.log(play);

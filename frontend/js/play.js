@@ -167,6 +167,11 @@ function writeMessage(player, type, content) {
 	scrollContainer.scrollTo(0, scrollContainer.scrollHeight);
 }
 
+function changePlayer(player) {
+	currentPlayer = player;
+	$(".play-screen").attr("data-current-player", player);
+}
+
 
 
 //* Game start function
@@ -214,6 +219,7 @@ function newGame(lId, eId) {
 	userName = "Shawn";
 	userScore = 0;
 	handSize = 7;
+	currentPlayer = "bot";
 
 	// Backend
 	drawTilesBackend("user", handSize);
@@ -228,6 +234,7 @@ function newGame(lId, eId) {
 	$(".play-history-textbox").attr("placeholder", `Chat with ${botName}...`);
 	updateTileBagFrontend();
 	$(".play-screen").css("font-family", langFont);
+	changePlayer(currentPlayer);
 }
 
 
@@ -364,5 +371,5 @@ botWorker.onmessage = e => {
 	updateTileBagFrontend();
 	$(".bot-score-box").find(".player-score").html(botScore);
 	writeMessage("bot", "play", play);
-	$(".play-screen").attr("data-current-player", "user");
+	changePlayer("user");
 }
