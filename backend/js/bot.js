@@ -6,9 +6,9 @@ class Bot {
 	validPlays = [];
 
 	msElapsed = 0;
-	maxMs = 15000;
+	maxMs = 30 * 1000;
 
-	constructor(board, tileSet, tileMap, handTiles, wordTrie) {
+	constructor(board, tileSet, tileMap, handTiles) {
 		this.board = board;
 		this.tileSet = tileSet;
 		this.tileMap = tileMap;
@@ -85,40 +85,53 @@ class Bot {
 		let findOpenSquares = vector => {
 			let openSquares = [];
 			for (let i = 0, n = vector.length; i < n; i++) {
-				if (vector[i] == " ") openSquares.push(i);
+				if (vector[i] == null) openSquares.push(i);
 			}
 			return openSquares;
 		}
 
 		// Given a before and after state of a vector, determine the word that will be added to score
 		let findScoredWord = (vectorBefore, vectorAfter) => {
-			let wordsInVector = arr => arr.toString().replaceAll(",", "").trim().split(/\s+/);
-			let wordsBefore = wordsInVector(vectorBefore).filter(i => i);
+			let wordsInVector = vector => {
+				let word = "";
+				for (let i = 0; i < vector.length; i++) {
+					if (vector[i] == null) word += " ";
+					else word += vector[i].letter;
+				}
+				return word.split(/\s+/);
+			}
+			
+			let wordsBefore = wordsInVector(vectorBefore);
 			let wordsAfter = wordsInVector(vectorAfter);
 			wordsBefore.forEach(word => {
 				let wordIndex = wordsAfter.findIndex(e => e == word);
 				if (wordIndex > -1) wordsAfter.splice(wordIndex, 1);
 			});
+
 			return wordsAfter[0];
 		}
 
 		// Determine if the new tiles are connected to previously played tiles 
-		let isConnected = (vector, tiles) => {
+		let isConnected = (vector, direction, tiles) => {
 			let startsWithPrevTiles = false;
 			let endsWithPrevTiles = false;
 			let hasPrevTilesInMiddle = false;
 
-			let firstIndex = tiles[0].index;
-			let lastIndex = tiles.slice(-1).index;
+			let firstIndex = tiles[0].row;
+			let lastIndex = tiles[tiles.length - 1].row;
+			if (direction == "col") {
+				firstIndex = tiles[0].col;
+				lastIndex = tiles[tiles.length - 1].col;
+			}
 			let indexBefore = firstIndex - 1;
 			let indexAfter = lastIndex + 1;
 
 			if (indexBefore >= 0) {
-				if (vector[indexBefore] != " ")
+				if (vector[indexBefore] != null)
 					startsWithPrevTiles = true;
 			}
 			if (indexAfter <= vector.length - 1) {
-				if (vector[indexAfter] != " ")
+				if (vector[indexAfter] != null)
 					endsWithPrevTiles = true;
 			}
 			if ((lastIndex - firstIndex + 1) > tiles.length)
@@ -128,12 +141,11 @@ class Bot {
 		}
 
 		//
-		let scoredWordObject = (a, b, c, d) => {
+		let scoredWordObject = (a, b, c) => {
 			return {
 				string: a,
-				tilesPlayed: b,
-				direction: c,
-				vectorIndex: d
+				direction: b,
+				tilesPlayed: c
 			}
 		}
 
@@ -172,29 +184,35 @@ class Bot {
 						this.msElapsed = performance.now() - startTime;
 						if (this.msElapsed < this.maxMs) {
 							let tilesPlayed = [];
-							let vectorAfter = this.deepCopy(vectorBefore);
 							let scoredWords = [];
+							let vectorAfter = this.deepCopy(vectorBefore);
 							let perpConnect = false;
 
 							// Apply tile permutation to open squares along both vector axes
 							for (let l = 0, ln = tilePerm.length; l < ln; l++) {
-								let letter = tilePerm[l];
+								let tileObject = tilePerm[l];
 								let paraIndex = openSquareIndexes[s + l];
-								let paraTileObject = {letter: letter, index: paraIndex};
-								let perpTileObject = {letter: letter, index: vectorIndex};
+
+								if (direction == "col") {
+									tileObject.row = paraIndex;
+									tileObject.col = vectorIndex;
+								} else {
+									tileObject.row = vectorIndex;
+									tileObject.col = paraIndex;
+								}
 
 								// Apply to parallel vector
-								tilesPlayed.push(paraTileObject);
-								vectorAfter[paraIndex] = letter;
+								tilesPlayed.push(tileObject);
+								vectorAfter[paraIndex] = tileObject;
 
 								// Perpendicular validity
 								let perpVectorBefore = perpVectors[paraIndex];
 								let perpVectorAfter = this.deepCopy(perpVectorBefore);
-								perpVectorAfter[vectorIndex] = letter;
-								if (!perpConnect) perpConnect = isConnected(perpVectorBefore, [perpTileObject]);
+								perpVectorAfter[vectorIndex] = tileObject;
+								if (!perpConnect) perpConnect = isConnected(perpVectorBefore, direction, [tileObject]);
 								let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
 								if (perpWord.length > 1) {
-									let perpWordObject = scoredWordObject(perpWord, [perpTileObject], perpDirection, paraIndex);
+									let perpWordObject = scoredWordObject(perpWord, perpDirection, [tileObject]);
 									scoredWords.push(perpWordObject);
 								}
 
@@ -202,10 +220,10 @@ class Bot {
 							}
 
 							// Parallel validity
-							let paraConnect = isConnected(vectorBefore, tilesPlayed);
+							let paraConnect = isConnected(vectorBefore, direction, tilesPlayed);
 							let paraWord = findScoredWord(vectorBefore, vectorAfter);
 							if (paraWord.length > 1) {
-								let paraWordObject = scoredWordObject(paraWord, tilesPlayed, direction, vectorIndex);
+								let paraWordObject = scoredWordObject(paraWord, direction, tilesPlayed);
 								scoredWords.push(paraWordObject);
 							}
 
@@ -225,9 +243,7 @@ class Bot {
 									if (isValid) {
 										let play = {
 											tilesPlayed: tilesPlayed,
-											newVector: vectorAfter,
 											direction: direction,
-											vectorIndex: vectorIndex,
 											scoredWords: scoredWords
 										}
 
@@ -281,19 +297,23 @@ onmessage = e => {
 	Bot.prototype.deepCopy = deepCopy;
 	Bot.prototype.calculateScore = calculateScore;
 
-	let wordTrie = e.data.wordTrie;
+	wordTrie = e.data.wordTrie;
 	Object.setPrototypeOf(wordTrie, Trie.prototype);
 
 	var botInstance = new Bot(
 		e.data.board,
 		e.data.tileSet,
 		e.data.tileMap,
-		e.data.handTiles,
-		wordTrie
+		e.data.handTiles
 	);
 
 	botInstance.unscramble();
-	console.log(`${botInstance.handTiles} → Generated ${botInstance.tilePerms.length.toLocaleString()} tile permutations...`);
+	let handString = "";
+	for (let t = 0, tn = botInstance.handTiles.length; t < tn; t++) {
+		handString += botInstance.handTiles[t].letter;
+		if (t < tn - 1) handString += ",";
+	}
+	console.log(`${handString} → Generated ${botInstance.tilePerms.length.toLocaleString()} tile permutations...`);
 
 	botInstance.generatePlays();
 	var secondsElapsed = botInstance.msElapsed / 1000;

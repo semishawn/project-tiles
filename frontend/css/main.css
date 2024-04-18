@@ -45,9 +45,6 @@ svg:not(.player-icon svg) path {
 	stroke-linejoin: round;
 }
 
-
-
-/* Screens */
 main {
 	display: flex;
 	flex-direction: row;
@@ -64,6 +61,7 @@ main {
 	height: 100vh;
 	padding: 1rem;
 	background: var(--ui-color1);
+	overflow: hidden;
 }
 
 

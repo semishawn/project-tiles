@@ -1,28 +1,15 @@
 //* Global variables
 var dictionary, dictionarySet, board, tileSet, tileBag, alphabet;
 var englishAlphabet = languages[0].editions[0].alphabet;
+var tileMoveDuration = 500;
+var tileMoveDelay = 100;
 
 
 
 //* Tailored deep copy function
 //* Works for 2D arrays, object arrays, and mixed-type arrays
 function deepCopy(arr) {
-	let arrCopy = [];
-
-	// 2D array
-	if (arr[0].constructor === Array) {
-		for (let i = 0, n = arr.length; i < n; i++) {
-			arrCopy[i] = arr[i].slice();
-		}
-	}
-	// Object array
-	else if (arr[0].constructor === Object) {
-		arrCopy = structuredClone(arr);
-	}
-	// 1D array
-	else arrCopy = arr.slice(0);
-
-	return arrCopy;
+	return structuredClone(arr);
 }
 
 
@@ -61,15 +48,12 @@ function calculateScore(play, tileSet, board) {
 		let word = play.scoredWords[w].string;
 		let wordPoints = unmodifiedPoints(word);
 		let tilesPlayed = play.scoredWords[w].tilesPlayed;
-		let direction = play.scoredWords[w].direction;
-		let vectorIndex = play.scoredWords[w].vectorIndex;
 
 		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
 			let letter = tilesPlayed[t].letter;
-			var index = tilesPlayed[t].index;
-
-			let squareId = board[vectorIndex][index];
-			if (direction == "col") squareId = board[index][vectorIndex];
+			let row = tilesPlayed[t].row;
+			let col = tilesPlayed[t].col;
+			let squareId = board[row][col];
 
 			switch (squareId) {
 				case 2: wordPoints += tilePoints(letter); break;
@@ -89,7 +73,7 @@ function calculateScore(play, tileSet, board) {
 
 //* Tile map operations
 function newTileMap(dimension) {
-	return Array(dimension).fill().map(() => Array(dimension).fill(" "));
+	return Array(dimension).fill().map(() => Array(dimension).fill(null));
 }
 
 function transpose(arr) {
@@ -99,40 +83,51 @@ function transpose(arr) {
 
 
 //* Randomly draw (and remove) specified number of tiles from tile bag
-function drawTilesBackend(player, numTiles) {
-	let howManyTiles = Math.min(numTiles, tileBag.length);
+function drawTilesBackend(player) {
+	let howManyTiles = Math.min(handSize, tileBag.length);
 	let newTiles = [];
 
 	for (let t = 0; t < howManyTiles; t++) {
 		let tileIndex = Math.floor(Math.random() * tileBag.length);
-		let tileLetter = tileBag[tileIndex];
+		let tileObject = {
+			letter: tileBag[tileIndex],
+			isBlank: false
+		}
+		if (tileObject.letter == "?") tileObject.isBlank = true;
+
 		tileBag.splice(tileIndex, 1);
-		newTiles.push(tileLetter);
+		newTiles.push(tileObject);
 	}
 
-	if (player == "user") userHandTiles.push(...newTiles);
-	else                  botHandTiles.push(...newTiles);
-	userHandTiles.sort();
-	botHandTiles.sort();
+	if (player == "user") {
+		userHandTiles.push(...newTiles);
+		// userHandTiles.sort();
+	} else {
+		botHandTiles.push(...newTiles);
+		// botHandTiles.sort();
+	}
 }
 
 
 
 //* Apply play to tile map
-function applyPlay(player, play) {
+function applyPlayBackend(player, play) {
+	let tilesPlayed = play.tilesPlayed;
+	
 	// Update tile map
-	let rows = deepCopy(tileMap);
-	if (play.direction == "row") {
-		rows[play.vectorIndex] = play.newVector;
-		tileMap = rows;
-	} else {
-		let cols = transpose(rows);
-		cols[play.vectorIndex] = play.newVector;
-		tileMap = transpose(cols);
+	for (let t = 0, tn = tilesPlayed; t < tn; t++) {
+		let tile = tilesPlayed[t];
+		if (play.direction == "row") {
+			tileRow = play.vectorIndex;
+			tileCol = tile.index;
+		} else {
+			tileRow = tile.index;
+			tileCol = play.vectorIndex;
+		}
+		tileMap[tileRow][tileCol] = tile.letter;
 	}
 
 	// Update tile hands
-	let tilesPlayed = play.tilesPlayed;
 	if (player == "user") {
 		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
 			let tileIndex = userHandTiles.findIndex(x => x === tilesPlayed[t].letter);

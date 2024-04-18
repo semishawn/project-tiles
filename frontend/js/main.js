@@ -2,6 +2,7 @@
 var standardCellDimension = parseInt($("html").css("font-size"));
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
 var bigTileDimension = $(".big-tile-sizer").outerWidth();
+var currentScreen;
 
 
 
@@ -42,6 +43,7 @@ function tileMapToString(arr) {
 }
 
 function newScreen(screen) {
+	currentScreen = screen;
 	let screenId = $("." + screen + "-screen").index();
 	$("main").css("margin-left", -100 * screenId + "vw");
 }

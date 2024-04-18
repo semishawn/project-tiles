@@ -1,13 +1,3 @@
-/* Actual game */
-[cell-id="0"] {--bg: var(--cell-color);}
-[cell-id="1"] {--bg: var(--start-color);}
-[cell-id="2"] {--bg: var(--dl-color);}
-[cell-id="3"] {--bg: var(--dw-color);}
-[cell-id="4"] {--bg: var(--tl-color);}
-[cell-id="5"] {--bg: var(--tw-color);}
-[cell-id="6"] {--bg: var(--ql-color);}
-[cell-id="7"] {--bg: var(--qw-color);}
-
 .play-screen {
 	flex-direction: row;
 	align-items: flex-end;
@@ -96,17 +86,11 @@
 }
 .current-player-indicator-border {
 	left: calc(-1 * var(--indicator-border-width) + var(--input-border-width));
-	width: calc(100% + var(--indicator-border-width));
+	width: calc(100% + 2 * (var(--indicator-border-width) - var(--input-border-width)));
 	height: calc(50% + var(--indicator-border-width) + var(--input-border-width) / 2);
 	border: var(--indicator-border-width) solid black;
 	z-index: 12;
 }
-[data-current-player="user"] .current-player-indicator-bg {top: 0;}
-[data-current-player="bot"] .current-player-indicator-bg {top: 50%;}
-[data-current-player="user"] .current-player-indicator-border
-{top: calc(-1 * var(--indicator-border-width) + var(--input-border-width));}
-[data-current-player="bot"] .current-player-indicator-border
-{top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
 
 
 
@@ -175,7 +159,7 @@
 	align-items: center;
 	text-align: center;
 	width: 100%;
-	font-size: calc(0.28 * var(--tilebag-height));
+	font-size: calc(var(--tilebag-height) / 4);
 	margin-top: calc(0.22 * var(--tilebag-height));
 	pointer-events: none;
 }
@@ -186,7 +170,7 @@
 }
 .tilebag-tile-text {
 	font-size: 0.35em;
-	margin-top: -0.7em;
+	margin-top: -0.6em;
 }
 .tilebag-hover-text {
 	position: absolute;
@@ -409,20 +393,23 @@
 	border: var(--input-border-width) solid var(--ui-color2);
 	box-sizing: content-box;
 }
-.cell[cell-id="0"] {--bg: var(--cell-color);}
-.cell[cell-id="1"] {--bg: var(--start-color);}
-.cell[cell-id="1"] svg {
+.cell[data-cell-id="0"] {--bg: var(--cell-color);}
+.cell[data-cell-id="1"] {--bg: var(--start-color);}
+.cell[data-cell-id="2"] {--bg: var(--dl-color);}
+.cell[data-cell-id="3"] {--bg: var(--dw-color);}
+.cell[data-cell-id="4"] {--bg: var(--tl-color);}
+.cell[data-cell-id="5"] {--bg: var(--tw-color);}
+.cell[data-cell-id="6"] {--bg: var(--ql-color);}
+.cell[data-cell-id="7"] {--bg: var(--qw-color);}
+
+.cell[data-cell-id="1"] svg {
 	height: 0.7rem;
 	opacity: 0.5;
 }
-.cell[cell-id="1"] path {
+.cell[data-cell-id="1"] path {
 	fill: var(--ui-color3);
 	stroke: none;
 }
-.cell[cell-id="2"] {--bg: var(--dl-color);}
-.cell[cell-id="3"] {--bg: var(--dw-color);}
-.cell[cell-id="4"] {--bg: var(--tl-color);}
-.cell[cell-id="5"] {--bg: var(--tw-color);}
 
 .cell-abbr {
 	font-size: 0.5rem;
@@ -460,7 +447,7 @@
 
 
 /* Tiles */
-.player-hand-tiles {
+.user-hand-tiles {
 	flex-direction: row;
 	margin: 0 0.5rem;
 }
@@ -491,12 +478,17 @@
 	color: var(--ui-color2);
 	border: var(--input-border-width) solid var(--ui-color2);
 	user-select: none;
+	transition: all 0.1s;
 }
 .tile, .tile * {transition: transform 0.05s;}
 .tile.blank * {display: none;}
 
 .tile[data-state="hand"] {
-	position: relative;
+	position: absolute;
+}
+.tile[data-state*="hand"]:hover {
+	transform: scale(1.1);
+	cursor: pointer;
 }
 .tile[data-state="dragging"] {
 	--tile-dimension: var(--big-tile-dimension);
@@ -507,10 +499,6 @@
 .tile[data-state="placed-hand"] {
 	--tile-dimension: var(--small-tile-dimension);
 	position: absolute;
-}
-.tile[data-state*="hand"]:hover {
-	transform: scale(1.1);
-	cursor: pointer;
 }
 .tile[data-state="placed-board"] {
 	--tile-dimension: var(--small-tile-dimension);
@@ -561,3 +549,27 @@
 }
 
 .play-btn, .bot-play-btn {--inside-bg: var(--ui-color3);}
+
+
+
+/* Bot elements */
+.bot-hand-tiles {
+	position: absolute;
+	top: calc(-5rem);
+	right: 5.05rem;
+	flex-direction: row;
+}
+
+
+
+/** Player states */
+[data-current-player="user"] .current-player-indicator-bg {top: 0;}
+[data-current-player="user"] .current-player-indicator-border
+{top: calc(-1 * var(--indicator-border-width) + var(--input-border-width));}
+
+[data-current-player="bot"] .current-player-indicator-bg {top: 50%;}
+[data-current-player="bot"] .current-player-indicator-border
+{top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
+[data-current-player="bot"] .action-btn-container {pointer-events: none;}
+[data-current-player="bot"] .play-btn {--inside-bg: var(--ui-color1);}
+[data-current-player="bot"] .tile[data-state="hand"] {pointer-events: none;}

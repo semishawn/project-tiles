@@ -7,6 +7,7 @@ $("body").on("mouseenter", `.tile[data-state="hand"]`, function() {
 
 //* Drag events
 var dragging = false;
+var draggingTile;
 
 $("body").on("mousedown", `.tile[data-state*="hand"]`, function() {
 	dragging = true;
@@ -27,39 +28,40 @@ $("body").on("mousemove", function(e) {
 })
 .on("mouseup", function() {
 	if (dragging) {
-		let tileLetter = draggingTile.attr("letter");
-
 		//* Success
-		if ($(".cell:hover").length != 0) {
+		if ($(".cell:hover").length > 0) {
+			let tileLetter = draggingTile.attr("data-letter");
 			let hoveredCell = $(".cell:hover");
 			let cellOffsetLeft = hoveredCell.offset().left;
 			let cellOffsetTop = hoveredCell.offset().top;
+			let cellRow = hoveredCell.attr("data-row");
+			let cellCol = hoveredCell.attr("data-col");
 
-			// State change
+			// Backend
+			playTileMap[cellRow][cellCol] = tileLetter;
+
+			// Frontend
 			draggingTile.attr("data-state", "placed-hand");
 			draggingTile.css({
-				"left": cellOffsetLeft + "px",
-				"top": cellOffsetTop + "px"
+				"left": cellOffsetLeft,
+				"top": cellOffsetTop
 			});
-
-			//? Backend
-			let cellIndex = hoveredCell.index();
-			chosenCellRow = Math.ceil(cellIndex / board.length);
-			chosenCellCol = cellIndex % board.length;
-			playTileMap[chosenCellRow][chosenCellCol] = tileLetter;
 		}
 
 		//! Fail
 		else {
-			// State change
+			let handIndex = draggingTile.attr("data-hand-index");
+			let correspondingSlot = $(".user-hand-tiles .tile-slot").eq(handIndex);
+
+			// Backend
+			// playTileMap[cellRow][cellCol] = " ";
+
+			// Frontend
 			draggingTile.attr("data-state", "hand");
 			draggingTile.css({
-				"left": 0,
-				"top": 0
+				"left": correspondingSlot.offset().top,
+				"top": correspondingSlot.offset().top
 			});
-
-			//? Backend
-			playTileMap[chosenCellRow][chosenCellCol] = " ";
 		}
 
 		$("body").css("cursor", "default");

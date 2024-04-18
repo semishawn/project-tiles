@@ -30,25 +30,49 @@
 	<link rel="stylesheet" href="frontend/css/title.css">
 	<link rel="stylesheet" href="frontend/css/options.css">
 	<link rel="stylesheet" href="frontend/css/play.css">
+	<link rel="stylesheet" href="https://semipedia.cool/fonts/fonts.css">
 </head>
 
 <body>
 	<main>
+		<div class="screen start-screen"></div>
+
 		<div class="screen title-screen">
-			<div class="logo-container">
-				<div class="logo-text1">Project</div>
+			<div class="title-logo-container">
+				<div class="logo-text1">
+					<div class="logo-top-text">
+						<div>project</div>
+						<div>project</div>
+					</div>
+
+					<div class="logo-bars">
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+				</div>
+
 				<div class="logo-text2">
-					<div class="tile">T</div>
-					<div class="tile">I</div>
-					<div class="tile">L</div>
-					<div class="tile">E</div>
-					<div class="tile">S</div>
+					<div class="btn logo-tile"></div>
+					<div class="btn logo-tile"></div>
+					<div class="btn logo-tile"></div>
+					<div class="btn logo-tile"></div>
+					<div class="btn logo-tile"></div>
 				</div>
 			</div>
 
-			<div class="title-btn-container">
-				<div class="btn important-btn title-play-btn">Play</div>
-				<div class="btn important-btn title-download-btn">Download</div>
+			<div class="title-bottom-container">
+				<div class="semipedia-text">
+					<div>Brought to you by:</div>
+					<div>Semipedia</div>
+				</div>
+
+				<div class="title-btn-container">
+					<div class="btn important-btn title-play-btn">Begin</div>
+					<div class="btn important-btn title-download-btn">Download</div>
+				</div>
 			</div>
 		</div>
 
@@ -234,7 +258,7 @@
 	
 					<div class="player-hand">
 						<div class="btn hand-btn shuffle-btn"></div>
-						<div class="player-hand-tiles"></div>
+						<div class="hand-tiles user-hand-tiles"></div>
 						<div class="btn hand-btn recall-btn"></div>
 					</div>
 	
@@ -243,6 +267,8 @@
 						<div class="btn action-btn exchange-btn">Exchange tiles</div>
 						<div class="btn action-btn play-btn">Play</div>
 					</div>
+
+					<div class="hand-tiles bot-hand-tiles"></div>
 				</div>
 			</div>
 		</div>

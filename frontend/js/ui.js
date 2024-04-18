@@ -1,4 +1,12 @@
 //* UI Variables
+var logoLetters = [
+	["T", "ת", "ت", "ट", "た", "タ"],
+	["I", "Í", "И", "い", "イ"],
+	["L", "Л", "Λ", "ל", "ل", "ल", "ら", "ラ"],
+	["E", "É", "エ", "え"],
+	["S", "С", "Σ", "サ", "さ"]
+]
+
 var backBtnLang = $(".lang-screen .back-btn");
 var backBtnEdit = $(".edition-screen .back-btn");
 var backBtnPref = $(".pref-screen .back-btn");
@@ -13,26 +21,38 @@ var editionOptionTemplate = $(".edition-option");
 var langId = 0;
 var editionId = 0;
 
-var botIconOptions = [
-	"robot",
-	"robot",
-	"robot",
-	"robot",
-	"robot",
-	"robot",
-];
-var userIconOptions = [
-	"dragon",
-	"dragon",
-	"dragon",
-	"dragon",
-	"dragon",
-	"dragon",
-];
-
 
 
 //* Visuals
+$(".logo-tile").each(function(t) {
+	let $this = $(this);
+	for (let l = 0; l < logoLetters[t].length; l++) {
+		let letter = logoLetters[t][l];
+		$this.append(`<div class="logo-tile-letter">${letter}</div>`);
+	}
+});
+
+var lastTileIndex = 0;
+var tileIndex = 0;
+setInterval(function() {
+	if (currentScreen == "title") {
+		while (tileIndex == lastTileIndex) tileIndex = Math.floor(Math.random() * 5);
+		let letterIndex = Math.floor(Math.random() * logoLetters[tileIndex].length);
+
+		// Going down
+		$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
+		$(".logo-tile-hover .logo-tile-letter").eq(0).css("opacity", 1);
+		$(".logo-tile-hover").removeClass("logo-tile-hover");
+
+		// Going up
+		$(".logo-tile").eq(tileIndex).addClass("logo-tile-hover");
+		$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
+		$(".logo-tile-hover .logo-tile-letter").eq(letterIndex).css("opacity", 1);
+
+		lastTileIndex = tileIndex;
+	}
+}, 400);
+
 languages.sort(function(a, b) {
 	return a.exonym.localeCompare(b.exonym);
 });
@@ -41,7 +61,7 @@ for (let i = 0; i < languages.length; i++) {
 	let langExonym = languages[i].exonym;
 	let langEndonym = languages[i].endonym;
 	let langFont = `"Noto Sans"`;
-	if (typeof languages[i].font !== 'undefined') langFont += `, "${languages[i].font}"`;
+	if (typeof languages[i].font !== "undefined") langFont += `, "${languages[i].font}"`;
 
 	let langOption = $(`
 		<input type="radio" id="lang-option${i}" name="lang-option" autocomplete="off">
@@ -55,7 +75,7 @@ for (let i = 0; i < languages.length; i++) {
 	$(".lang-container").append(langOption);
 }
 
-for (let i = 0, n = botIconOptions.length + userIconOptions.length; i < n; i++) {
+/* for (let i = 0, n = botIconOptions.length + userIconOptions.length; i < n; i++) {
 	let index = i % (n / 2);
 	let player = "bot";
 	let icon = botIconOptions[i];
@@ -72,29 +92,11 @@ for (let i = 0, n = botIconOptions.length + userIconOptions.length; i < n; i++) 
 			</div>
 		</label>
 	`);
-}
+} */
 
 
 
 //* Buttons
-/*
-let c1 = thisIndex > checkedIndex;
-let c2 = continueBtnHotspot(thisOption);
-let c3 = continueBtnHotspot(checkedOption);
-let btnPrecedence = [];
-
-if      ( c1 &&  c2 &&  c3) btnPrecedence = [checkedOption, thisOption, continueBtn1]; //* A
-else if ( c1 &&  c2 && !c3) btnPrecedence = [checkedOption, thisOption, continueBtn1]; //* A
-else if ( c1 && !c2 &&  c3) btnPrecedence = [checkedOption, continueBtn1, thisOption];
-else if ( c1 &&  c2 && !c3) btnPrecedence = [checkedOption, thisOption, continueBtn1]; //* A
-else if ( c1 && !c2 && !c3) btnPrecedence = [continueBtn1, checkedOption, thisOption];
-else if (!c1 &&  c2 &&  c3) btnPrecedence = [thisOption, checkedOption, continueBtn1]; //* B
-else if (!c1 &&  c2 && !c3) btnPrecedence = [thisOption, continueBtn1, checkedOption];
-else if (!c1 && !c2 &&  c3) btnPrecedence = [thisOption, checkedOption, continueBtn1]; //* B
-else if (!c1 && !c2 && !c3) btnPrecedence = [continueBtn1, thisOption, checkedOption];
-*/
-
-
 // Title screen
 $(".title-play-btn").on("click", function() {
 	newScreen("lang");

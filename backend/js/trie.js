@@ -1,4 +1,4 @@
-class Node {
+class TrieNode {
 	constructor() {
 		this.children = {};
 		this.isEndOfWord = false;
@@ -7,14 +7,14 @@ class Node {
 
 class Trie {
 	constructor() {
-		this.root = new Node();
+		this.root = new TrieNode();
 	}
 
 	insert(word) {
 		let node = this.root;
 		for (let i = 0; i < word.length; i++) {
 			let char = word[i];
-			if (!node.children[char]) node.children[char] = new Node();
+			if (!node.children[char]) node.children[char] = new TrieNode();
 			node = node.children[char];
 		}
 		node.isEndOfWord = true;
