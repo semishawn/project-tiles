@@ -28,9 +28,10 @@ $("body").on("mousemove", function(e) {
 })
 .on("mouseup", function() {
 	if (dragging) {
+		let handIndex = draggingTile.attr("data-hand-index");
+
 		//* Success
 		if ($(".cell:hover").length > 0) {
-			let tileLetter = draggingTile.attr("data-letter");
 			let hoveredCell = $(".cell:hover");
 			let cellOffsetLeft = hoveredCell.offset().left;
 			let cellOffsetTop = hoveredCell.offset().top;
@@ -38,11 +39,15 @@ $("body").on("mousemove", function(e) {
 			let cellCol = hoveredCell.attr("data-col");
 
 			// Backend
-			playTileMap[cellRow][cellCol] = tileLetter;
+			userHandTiles[handIndex].row = cellRow;
+			userHandTiles[handIndex].col = cellCol;
 
 			// Frontend
-			draggingTile.attr("data-state", "placed-hand");
-			draggingTile.css({
+			draggingTile.attr({
+				"data-state": "placed-hand",
+				"data-row": cellRow,
+				"data-col": cellCol
+			}).css({
 				"left": cellOffsetLeft,
 				"top": cellOffsetTop
 			});
@@ -50,15 +55,18 @@ $("body").on("mousemove", function(e) {
 
 		//! Fail
 		else {
-			let handIndex = draggingTile.attr("data-hand-index");
 			let correspondingSlot = $(".user-hand-tiles .tile-slot").eq(handIndex);
 
 			// Backend
-			// playTileMap[cellRow][cellCol] = " ";
+			userHandTiles[handIndex].row = null;
+			userHandTiles[handIndex].col = null;
 
 			// Frontend
-			draggingTile.attr("data-state", "hand");
-			draggingTile.css({
+			draggingTile.attr({
+				"data-state": "hand",
+				"data-row": "",
+				"data-col": ""
+			}).css({
 				"left": correspondingSlot.offset().top,
 				"top": correspondingSlot.offset().top
 			});

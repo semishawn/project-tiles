@@ -65,7 +65,7 @@ $(document).ready(function() {
 		$(this).btn();
 	});
 
-	// newScreen("title");
-	newGame(17, 0);
-	newScreen("play");
+	newScreen("title");
+	/* newGame(17, 0);
+	newScreen("play"); */
 });

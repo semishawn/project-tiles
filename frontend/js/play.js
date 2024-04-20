@@ -106,7 +106,9 @@ function drawTilesFrontend(player, numTiles) {
 			"data-letter": letter,
 			"data-blank": blank,
 			"data-player": player,
-			"data-hand-index": handIndex
+			"data-hand-index": handIndex,
+			"data-row": "",
+			"data-col": "",
 		});
 
 		if (!blank) {
@@ -228,8 +230,7 @@ function newGame(lId, eId) {
 	});
 	premiumCells = languages[lId].editions[eId].premiumCells;
 	tileMap = newTileMap(board.length);
-	tileMap[7][7] = {letter: "A", blank: false, row: 7, col: 7};
-	playTileMap = newTileMap(board.length);
+	// playTileMap = newTileMap(board.length);
 
 	// Tile variables
 	alphabet = languages[lId].editions[eId].alphabet;
@@ -338,29 +339,46 @@ $(".exchange-btn").click(function() {
 	updateTileBagFrontend();
 });
 
-/* $(".play-btn").click(function() {
-	var play = {
-	}
-	play.score = calculateScore(play, tileSet, board);
+$(".play-btn").click(function() {
+	let tilesPlayed = [];
+	$(`.tile[data-player="user"][data-state="placed-hand"]`).each(function(t) {
+		let tileObject = userHandTiles[t];
+		tilesPlayed.push(tileObject);
+	});
 
 	if (true) {
-		for (let r = 0, rn = board.length; r < rn; r++) {
-			for (let c = 0, cn = board[0].length; c < cn; c++) {
-				tileMap[r][c] = playTileMap[r][c];
-			}
+		let play = {
+			tilesPlayed: tilesPlayed,
+			score: 69
 		}
+		// play.score = calculateScore(play, tileSet, board);
 
 		// Backend
-		// applyPlayBackend("user", play);
+		applyPlayBackend("user", play);
 		let neededTiles = handSize - userHandTiles.length;
 		drawTilesBackend("user", neededTiles);
 
 		// Frontend
-		$(".user-score").html(userScore);
-		writeMessage("user", "play", play);
-		drawTilesFrontend("user");
+		$(".user-score-box").find(".player-score").html(userScore);
+		// writeMessage("user", "play", play);
+		drawTilesFrontend("user", neededTiles);
+		changePlayer("bot");
+
+		botWorker.postMessage({
+			board: board,
+			tileSet: tileSet,
+			tileMap: tileMap,
+			handTiles: botHandTiles,
+			wordTrie: wordTrie,
+			functions: {
+				uniquify: "" + uniquify,
+				transpose: "" + transpose,
+				deepCopy: "" + deepCopy,
+				calculateScore: "" + calculateScore
+			}
+		});
 	}
-}); */
+});
 
 $(".tilebag-icon").click(function() {
 	let tileBagContainer = $(".tilebag-container");
@@ -405,22 +423,6 @@ $(document).keydown(function(e) {
 
 //* Bot play
 var botWorker = new Worker("../backend/js/bot.js");
-
-$(".play-btn").on("click", function() {
-	botWorker.postMessage({
-		board: board,
-		tileSet: tileSet,
-		tileMap: tileMap,
-		handTiles: botHandTiles,
-		wordTrie: wordTrie,
-		functions: {
-			uniquify: "" + uniquify,
-			transpose: "" + transpose,
-			deepCopy: "" + deepCopy,
-			calculateScore: "" + calculateScore
-		}
-	});
-});
 
 botWorker.onmessage = e => {
 	let play = e.data;

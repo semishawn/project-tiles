@@ -96,7 +96,9 @@ function drawTilesBackend(player, numTiles) {
 			letter: letter,
 			blank: (letter == "?"),
 			player: player,
-			handIndex: handSize - numTiles + t
+			handIndex: handSize - numTiles + t,
+			row: null,
+			col: null
 		}
 		tileBag.splice(tileBagIndex, 1);
 		newHandTiles.push(tileObject);
@@ -124,17 +126,14 @@ function applyPlayBackend(player, play) {
 	}
 
 	// Update tile hands
-	if (player == "user") {
-		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-			let tileIndex = userHandTiles.findIndex(x => x === tilesPlayed[t].letter);
-			userHandTiles.splice(tileIndex, 1);
+	for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
+		let handIndex = tilesPlayed[t].handIndex;
+		if (player == "user") {
+			userHandTiles.splice(handIndex, 1);
+			userScore += play.score;
+		} else {
+			botHandTiles.splice(handIndex, 1);
+			botScore += play.score;
 		}
-		userScore += play.score;
-	} else {
-		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-			let tileIndex = botHandTiles.findIndex(x => x === tilesPlayed[t].letter);
-			botHandTiles.splice(tileIndex, 1);
-		}
-		botScore += play.score;
 	}
 }
