@@ -1,3 +1,8 @@
+var tileMoveDuration = 500;
+var tileMoveDelay = 150;
+
+
+
 //* Visual functions
 var tileElement = $(`
 	<div class="tile">
@@ -58,12 +63,12 @@ function createHands() {
 }
 
 //
-function drawTilesFrontend(player) {
+function drawTilesFrontend(player, numTiles) {
 	let tilesContainer = $(".tilebag-tiles-container");
 	let handTiles = userHandTiles;
 	if (player == "bot") handTiles = botHandTiles;
 
-	// Update tilebag
+	// Update tilebag tiles
 	$(".tilebag-count").html(tileBag.length);
 	tilesContainer.empty();
 	for (let l = 0, ln = tileBag.length; l < ln; l++) {
@@ -72,28 +77,44 @@ function drawTilesFrontend(player) {
 		let rotLimit = 8;
 		let randomRot = Math.random() * 2 * rotLimit - rotLimit;
 
-		if (letter == "?") newTileElement.addClass("blank");
+		if (letter == "?") newTileElement.attr("data-blank", "blank");
 		else newTileElement.find(".tile-letter").html(letter);
 		newTileElement.css("transform", `rotate(${randomRot}deg)`);
 		tilesContainer.append(newTileElement);
 	}
 
-	// Update hand
-	for (let t = 0, tn = handTiles.length; t < tn; t++) {
-		let letter = handTiles[t].letter;
-		let newTileElement = tileElement.clone();
-		let correspondingSlot = $(`.${player}-hand-tiles .tile-slot`).eq(t);
+	// Update hand tiles
+	$(`.tile[data-player="${player}"][data-state="hand"]`).each(function(handIndex) {
+		let correspondingSlot = $(`.${player}-hand-tiles .tile-slot`).eq(handIndex);
+		$(this).attr("data-hand-index", handIndex);
+		$(this).animate({
+			"top": correspondingSlot.offset().top,
+			"left": correspondingSlot.offset().left
+		}, tileMoveDuration);
+	});
 
-		newTileElement.attr("data-state", "hand");
-		newTileElement.attr("data-letter", letter);
-		newTileElement.attr("data-hand-index", t);
-		if (letter == "?") {
-			newTileElement.addClass("blank");
-		} else {
+	// Transfer new tiles from tilebag to hand
+	for (let t = 0; t < numTiles; t++) {
+		let handIndex = handSize - numTiles + t;
+		let letter = handTiles[handIndex].letter;
+		let blank = handTiles[handIndex].blank;
+		let newTileElement = tileElement.clone();
+		let correspondingSlot = $(`.${player}-hand-tiles .tile-slot`).eq(handIndex);
+
+		newTileElement.attr({
+			"data-state": "hand",
+			"data-letter": letter,
+			"data-blank": blank,
+			"data-player": player,
+			"data-hand-index": handIndex
+		});
+
+		if (!blank) {
 			let points = tileSet.find(x => x.letter === letter).pts;
 			newTileElement.find(".tile-letter").html(letter);
 			newTileElement.find(".tile-points").html(points);
 		}
+
 		newTileElement.css({
 			"top": tilesContainer.offset().top,
 			"left": tilesContainer.offset().left
@@ -169,15 +190,18 @@ function changePlayer(player) {
 function botPlayTiles(play) {
 	for (let t = 0; t < play.tilesPlayed.length; t++) {
 		let tile = play.tilesPlayed[t];
+		let handIndex = tile.handIndex;
+		let correspondingTile = $(`.tile[data-player="bot"][data-state="hand"][data-hand-index="${handIndex}"]`);
 		let cellIndex = tile.row * board.length + tile.col;
 		let correspondingCell = $(".cell").eq(cellIndex);
 
+		correspondingTile.attr("data-state", "placed-board");
 		setTimeout(function() {
-			newTileElement.animate({
+			correspondingTile.animate({
 				"top": correspondingCell.offset().top,
 				"left": correspondingCell.offset().left
 			}, tileMoveDuration);
-		}, tileMoveDelay);
+		}, t * tileMoveDelay);
 	}
 }
 
@@ -204,7 +228,7 @@ function newGame(lId, eId) {
 	});
 	premiumCells = languages[lId].editions[eId].premiumCells;
 	tileMap = newTileMap(board.length);
-	tileMap[7][7] = {letter: "A", isBlank: false, row: 7, col: 7};
+	tileMap[7][7] = {letter: "A", blank: false, row: 7, col: 7};
 	playTileMap = newTileMap(board.length);
 
 	// Tile variables
@@ -220,7 +244,7 @@ function newGame(lId, eId) {
 		delete tileBagCounts[l].pts;
 	}
 	totalTileCount = tileBag.length;
-	handSize = 7;
+	handSize = 6;
 	userHandTiles = [];
 	botHandTiles = [];
 
@@ -234,8 +258,8 @@ function newGame(lId, eId) {
 	$(".tilebag-count").html(tileBag.length);
 
 	// Backend
-	drawTilesBackend("user");
-	drawTilesBackend("bot");
+	drawTilesBackend("user", handSize);
+	drawTilesBackend("bot", handSize);
 
 	// Frontend
 	$(".play-screen").css("font-family", langFont);
@@ -247,8 +271,8 @@ function newGame(lId, eId) {
 	$(".user-score-box").find(".player-name").html(userName);
 	$(".bot-score-box").find(".player-name").html(botName);
 	setTimeout(function() {
-		drawTilesFrontend("user");
-		drawTilesFrontend("bot");
+		drawTilesFrontend("user", handSize);
+		drawTilesFrontend("bot", handSize);
 	}, 1000);
 }
 
@@ -266,17 +290,42 @@ $(".resign-btn").click(function() {
 });
 
 $(".shuffle-btn").click(function() {
-	var hand = $(".player-hand-tiles");
-    var tiles = hand.children();
-    while (tiles.length) {
-        hand.append(tiles.splice(Math.floor(Math.random() * tiles.length), 1)[0]);
+	let shuffleArray = arr => {
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
 	}
+
+	shuffleArray(userHandTiles);
+
+	$(`.tile[data-player="user"][data-state*="hand"]`).each(function(t) {
+		let $this = $(this);
+		let handIndex = userHandTiles[t].handIndex;
+		let correspondingSlot = $(`.user-hand-tiles .tile-slot`).eq(handIndex);
+
+		userHandTiles[t].handIndex = t;
+		$this.attr("data-hand-index", handIndex);
+
+		if ($this.is(`[data-state="hand"]`)) {
+			$this.animate({
+				"top": correspondingSlot.offset().top,
+				"left": correspondingSlot.offset().left
+			}, tileMoveDuration / 2);
+		}
+	});
 });
 
 $(".recall-btn").click(function() {
-	$(`.tile[data-state="placed-hand"]`).each(function() {
+	$(`.tile[data-player="user"][data-state="placed-hand"]`).each(function() {
+		let handIndex = $(this).attr("data-hand-index");
+		let correspondingSlot = $(`.user-hand-tiles .tile-slot`).eq(handIndex);
+
 		$(this).attr("data-state", "hand");
-		$(this).css({"top": "", "left": ""});
+		$(this).animate({
+			"top": correspondingSlot.offset().top,
+			"left": correspondingSlot.offset().left
+		}, tileMoveDuration);
 	});
 });
 
@@ -383,8 +432,11 @@ botWorker.onmessage = e => {
 
 	// Frontend
 	botPlayTiles(play);
-	drawTilesFrontend("bot");
 	$(".bot-score-box").find(".player-score").html(botScore);
 	writeMessage("bot", "play", play);
 	changePlayer("user");
+
+	setTimeout(function() {
+		drawTilesFrontend("bot", neededTiles);
+	}, tileMoveDuration + (neededTiles - 1) * tileMoveDelay);
 }

@@ -481,7 +481,7 @@
 	transition: all 0.1s;
 }
 .tile, .tile * {transition: transform 0.05s;}
-.tile.blank * {display: none;}
+.tile[data-blank="true"] * {display: none;}
 
 .tile[data-state="hand"] {
 	position: absolute;
@@ -555,8 +555,10 @@
 /* Bot elements */
 .bot-hand-tiles {
 	position: absolute;
-	top: calc(-5rem);
-	right: 5.05rem;
+	/* top: calc(-5rem);
+	right: 5.05rem; */
+	top: 0;
+	right: 0;
 	flex-direction: row;
 }
 

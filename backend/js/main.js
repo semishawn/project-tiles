@@ -1,8 +1,6 @@
 //* Global variables
 var dictionary, dictionarySet, board, tileSet, tileBag, alphabet;
 var englishAlphabet = languages[0].editions[0].alphabet;
-var tileMoveDuration = 500;
-var tileMoveDelay = 100;
 
 
 
@@ -83,29 +81,34 @@ function transpose(arr) {
 
 
 //* Randomly draw (and remove) specified number of tiles from tile bag
-function drawTilesBackend(player) {
-	let howManyTiles = Math.min(handSize, tileBag.length);
-	let newTiles = [];
+function drawTilesBackend(player, numTiles) {
+	let howManyTilesToDraw = Math.min(numTiles, tileBag.length);
+	let newHandTiles = [];
 
-	for (let t = 0; t < howManyTiles; t++) {
-		let tileIndex = Math.floor(Math.random() * tileBag.length);
+	if (player == "user") newHandTiles = deepCopy(userHandTiles);
+	else                  newHandTiles = deepCopy(botHandTiles);
+
+	// Adding tiles to hand
+	for (let t = 0; t < howManyTilesToDraw; t++) {
+		let tileBagIndex = Math.floor(Math.random() * tileBag.length);
+		let letter = tileBag[tileBagIndex];
 		let tileObject = {
-			letter: tileBag[tileIndex],
-			isBlank: false
+			letter: letter,
+			blank: (letter == "?"),
+			player: player,
+			handIndex: handSize - numTiles + t
 		}
-		if (tileObject.letter == "?") tileObject.isBlank = true;
-
-		tileBag.splice(tileIndex, 1);
-		newTiles.push(tileObject);
+		tileBag.splice(tileBagIndex, 1);
+		newHandTiles.push(tileObject);
 	}
 
-	if (player == "user") {
-		userHandTiles.push(...newTiles);
-		// userHandTiles.sort();
-	} else {
-		botHandTiles.push(...newTiles);
-		// botHandTiles.sort();
+	// Reordering current tiles
+	for (let t = 0, tn = newHandTiles.length; t < tn; t++) {
+		newHandTiles[t].handIndex = t;
 	}
+
+	if (player == "user") userHandTiles = newHandTiles;
+	else                   botHandTiles = newHandTiles;
 }
 
 
@@ -115,16 +118,9 @@ function applyPlayBackend(player, play) {
 	let tilesPlayed = play.tilesPlayed;
 	
 	// Update tile map
-	for (let t = 0, tn = tilesPlayed; t < tn; t++) {
-		let tile = tilesPlayed[t];
-		if (play.direction == "row") {
-			tileRow = play.vectorIndex;
-			tileCol = tile.index;
-		} else {
-			tileRow = tile.index;
-			tileCol = play.vectorIndex;
-		}
-		tileMap[tileRow][tileCol] = tile.letter;
+	for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
+		let tileObject = tilesPlayed[t];
+		tileMap[tileObject.row][tileObject.col] = tileObject;
 	}
 
 	// Update tile hands

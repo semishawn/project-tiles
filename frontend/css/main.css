@@ -1,4 +1,4 @@
-html {font-size: calc(var(--screen-width) / 30);}
+html {font-size: calc(10vw / 3);}
 
 html, body {
 	width: 100%;

@@ -5,7 +5,7 @@ var logoLetters = [
 	["L", "Л", "Λ", "ל", "ل", "ल", "ら", "ラ"],
 	["E", "É", "エ", "え"],
 	["S", "С", "Σ", "サ", "さ"]
-]
+];
 
 var backBtnLang = $(".lang-screen .back-btn");
 var backBtnEdit = $(".edition-screen .back-btn");

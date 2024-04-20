@@ -8,12 +8,8 @@ class Bot {
 	msElapsed = 0;
 	maxMs = 30 * 1000;
 
-	constructor(board, tileSet, tileMap, handTiles) {
-		this.board = board;
-		this.tileSet = tileSet;
-		this.tileMap = tileMap;
+	constructor(handTiles) {
 		this.handTiles = handTiles;
-		this.wordTrie = wordTrie;
 	}
 
 	//* Generate all subset permutations of tiles
@@ -77,7 +73,7 @@ class Bot {
 
 	//* Generate all possible plays based on tile permutations applied to all rows and columns
 	generatePlays() {
-		let rows = this.tileMap;
+		let rows = tileMap;
 		let cols = this.transpose(rows);
 		let startTime = performance.now();
 
@@ -190,15 +186,15 @@ class Bot {
 
 							// Apply tile permutation to open squares along both vector axes
 							for (let l = 0, ln = tilePerm.length; l < ln; l++) {
-								let tileObject = tilePerm[l];
+								let tileObject = this.deepCopy(tilePerm[l]);
 								let paraIndex = openSquareIndexes[s + l];
 
-								if (direction == "col") {
-									tileObject.row = paraIndex;
-									tileObject.col = vectorIndex;
-								} else {
+								if (direction == "row") {
 									tileObject.row = vectorIndex;
 									tileObject.col = paraIndex;
+								} else {
+									tileObject.row = paraIndex;
+									tileObject.col = vectorIndex;
 								}
 
 								// Apply to parallel vector
@@ -233,7 +229,7 @@ class Bot {
 								if (paraConnect || perpConnect) {
 									let isValid = true;
 									scoredWords.forEach(wordObject => {
-										if (!this.wordTrie.search(wordObject.string)) {
+										if (!wordTrie.search(wordObject.string)) {
 											isValid = false;
 											return false;
 										}
@@ -248,7 +244,7 @@ class Bot {
 										}
 
 										// Calculate score using own object, assign to self
-										play.score = this.calculateScore(play, this.tileSet, this.board);
+										play.score = this.calculateScore(play, tileSet, board);
 										this.validPlays.push(play);
 									}
 								}
@@ -297,15 +293,15 @@ onmessage = e => {
 	Bot.prototype.deepCopy = deepCopy;
 	Bot.prototype.calculateScore = calculateScore;
 
+	board = e.data.board,
+	tileSet = e.data.tileSet,
+	tileMap = e.data.tileMap,
 	wordTrie = e.data.wordTrie;
 	Object.setPrototypeOf(wordTrie, Trie.prototype);
 
-	var botInstance = new Bot(
-		e.data.board,
-		e.data.tileSet,
-		e.data.tileMap,
-		e.data.handTiles
-	);
+
+	// Actually generating plays
+	var botInstance = new Bot(e.data.handTiles);
 
 	botInstance.unscramble();
 	let handString = "";
@@ -322,6 +318,7 @@ onmessage = e => {
 
 	var play = botInstance.choosePlay();
 	console.log(play);
+
 
 	postMessage(play);
 };
