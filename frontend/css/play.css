@@ -432,22 +432,22 @@
 
 
 
-/* Player hand */
-.player-hand, .action-btn-container {width: 100%;}
+/* Player rack */
+.player-rack, .action-btn-container {width: 100%;}
 
-.player-hand {
+.player-rack {
 	flex-direction: row;
 	justify-content: center;
 	height: var(--big-tile-dimension);
 	margin: 0.5rem 0;
 }
 
-.hand-btn {font-size: calc(var(--big-tile-dimension) / 2);}
+.rack-btn {font-size: calc(var(--big-tile-dimension) / 2);}
 
 
 
 /* Tiles */
-.user-hand-tiles {
+.user-rack-tiles {
 	flex-direction: row;
 	margin: 0 0.5rem;
 }
@@ -483,10 +483,10 @@
 .tile, .tile * {transition: transform 0.05s;}
 .tile[data-blank="true"] * {display: none;}
 
-.tile[data-state="hand"] {
+.tile[data-state="rack"] {
 	position: absolute;
 }
-.tile[data-state*="hand"]:hover {
+.tile[data-state*="rack"]:hover {
 	transform: scale(1.1);
 	cursor: pointer;
 }
@@ -496,7 +496,7 @@
 	pointer-events: none;
 	z-index: 103 !important;
 }
-.tile[data-state="placed-hand"] {
+.tile[data-state="placed-rack"] {
 	--tile-dimension: var(--small-tile-dimension);
 	position: absolute;
 }
@@ -535,7 +535,7 @@
 	height: var(--big-tile-dimension);
 }
 
-.action-btn, .hand-btn {width: 100%;}
+.action-btn, .rack-btn {width: 100%;}
 .shuffle-btn svg {height: 0.7rem;}
 .recall-btn svg {height: 0.5rem;}
 .action-btn .btn-inside {
@@ -553,7 +553,7 @@
 
 
 /* Bot elements */
-.bot-hand-tiles {
+.bot-rack-tiles {
 	position: absolute;
 	/* top: calc(-5rem);
 	right: 5.05rem; */
@@ -574,4 +574,4 @@
 {top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
 [data-current-player="bot"] .action-btn-container {pointer-events: none;}
 [data-current-player="bot"] .play-btn {--inside-bg: var(--ui-color1);}
-[data-current-player="bot"] .tile[data-state="hand"] {pointer-events: none;}
+[data-current-player="bot"] .tile[data-state="rack"] {pointer-events: none;}

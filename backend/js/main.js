@@ -80,41 +80,6 @@ function transpose(arr) {
 
 
 
-//* Randomly draw (and remove) specified number of tiles from tile bag
-function drawTilesBackend(player, numTiles) {
-	let howManyTilesToDraw = Math.min(numTiles, tileBag.length);
-	let newHandTiles = [];
-
-	if (player == "user") newHandTiles = deepCopy(userHandTiles);
-	else                  newHandTiles = deepCopy(botHandTiles);
-
-	// Adding tiles to hand
-	for (let t = 0; t < howManyTilesToDraw; t++) {
-		let tileBagIndex = Math.floor(Math.random() * tileBag.length);
-		let letter = tileBag[tileBagIndex];
-		let tileObject = {
-			letter: letter,
-			blank: (letter == "?"),
-			player: player,
-			handIndex: handSize - numTiles + t,
-			row: null,
-			col: null
-		}
-		tileBag.splice(tileBagIndex, 1);
-		newHandTiles.push(tileObject);
-	}
-
-	// Reordering current tiles
-	for (let t = 0, tn = newHandTiles.length; t < tn; t++) {
-		newHandTiles[t].handIndex = t;
-	}
-
-	if (player == "user") userHandTiles = newHandTiles;
-	else                   botHandTiles = newHandTiles;
-}
-
-
-
 //* Apply play to tile map
 function applyPlayBackend(player, play) {
 	let tilesPlayed = play.tilesPlayed;
@@ -125,15 +90,48 @@ function applyPlayBackend(player, play) {
 		tileMap[tileObject.row][tileObject.col] = tileObject;
 	}
 
-	// Update tile hands
+	// Update tile racks
 	for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-		let handIndex = tilesPlayed[t].handIndex;
+		let rackIndex = tilesPlayed[t].rackIndex;
 		if (player == "user") {
-			userHandTiles.splice(handIndex, 1);
+			userRackTiles = $.grep(userRackTiles, tile => tile.rackIndex != rackIndex);
 			userScore += play.score;
 		} else {
-			botHandTiles.splice(handIndex, 1);
+			botRackTiles = $.grep(botRackTiles, tile => tile.rackIndex != rackIndex);
 			botScore += play.score;
 		}
 	}
+}
+
+
+
+//* Randomly draw (and remove) specified number of tiles from tile bag
+function drawTilesBackend(player, numTiles) {
+	let newRackTiles = [];
+	if (player == "user") newRackTiles = deepCopy(userRackTiles);
+	else                  newRackTiles = deepCopy(botRackTiles);
+	let maxRackSize = newRackTiles.length + numTiles;
+
+	// Adding tiles to rack and reordering
+	for (let t = 0; t < maxRackSize; t++) {
+		if (t < newRackTiles.length) {
+			newRackTiles[t].rackIndex = t;
+		} else {
+			let tileBagIndex = Math.floor(Math.random() * tileBag.length);
+			let letter = tileBag[tileBagIndex];
+			let tileObject = {
+				letter: letter,
+				blank: (letter == "?"),
+				player: player,
+				rackIndex: t,
+				row: null,
+				col: null
+			}
+			tileBag.splice(tileBagIndex, 1);
+			newRackTiles.push(tileObject);
+		}
+	}
+
+	if (player == "user") userRackTiles = newRackTiles;
+	else                   botRackTiles = newRackTiles;
 }

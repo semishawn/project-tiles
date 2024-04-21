@@ -1,6 +1,6 @@
 //* Hover event
-$("body").on("mouseenter", `.tile[data-state="hand"]`, function() {
-	$(this).maxZ(`.tile[data-state="hand"]`);
+$("body").on("mouseenter", `.tile[data-state="rack"]`, function() {
+	$(this).maxZ(`.tile[data-state="rack"]`);
 })
 
 
@@ -9,10 +9,10 @@ $("body").on("mouseenter", `.tile[data-state="hand"]`, function() {
 var dragging = false;
 var draggingTile;
 
-$("body").on("mousedown", `.tile[data-state*="hand"]`, function() {
+$("body").on("mousedown", `.tile[data-state*="rack"]`, function() {
 	dragging = true;
 	draggingTile = $(this);
-	draggingTile.maxZ(`.tile[data-state="hand"]`);
+	draggingTile.maxZ(`.tile[data-state="rack"]`);
 	$("body").css("cursor", "grabbing");
 });
 
@@ -28,7 +28,7 @@ $("body").on("mousemove", function(e) {
 })
 .on("mouseup", function() {
 	if (dragging) {
-		let handIndex = draggingTile.attr("data-hand-index");
+		let rackIndex = draggingTile.attr("data-rack-index");
 
 		//* Success
 		if ($(".cell:hover").length > 0) {
@@ -39,12 +39,12 @@ $("body").on("mousemove", function(e) {
 			let cellCol = hoveredCell.attr("data-col");
 
 			// Backend
-			userHandTiles[handIndex].row = cellRow;
-			userHandTiles[handIndex].col = cellCol;
+			userRackTiles[rackIndex].row = cellRow;
+			userRackTiles[rackIndex].col = cellCol;
 
 			// Frontend
 			draggingTile.attr({
-				"data-state": "placed-hand",
+				"data-state": "placed-rack",
 				"data-row": cellRow,
 				"data-col": cellCol
 			}).css({
@@ -55,21 +55,21 @@ $("body").on("mousemove", function(e) {
 
 		//! Fail
 		else {
-			let correspondingSlot = $(".user-hand-tiles .tile-slot").eq(handIndex);
+			let correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
 			// Backend
-			userHandTiles[handIndex].row = null;
-			userHandTiles[handIndex].col = null;
+			userRackTiles[rackIndex].row = null;
+			userRackTiles[rackIndex].col = null;
 
 			// Frontend
 			draggingTile.attr({
-				"data-state": "hand",
+				"data-state": "rack",
 				"data-row": "",
 				"data-col": ""
-			}).css({
-				"left": correspondingSlot.offset().top,
-				"top": correspondingSlot.offset().top
-			});
+			}).animate({
+				"top": correspondingSlot.offset().top,
+				"left": correspondingSlot.offset().left
+			}, tileMoveDurationQuick);
 		}
 
 		$("body").css("cursor", "default");

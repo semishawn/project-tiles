@@ -8,8 +8,8 @@ class Bot {
 	msElapsed = 0;
 	maxMs = 30 * 1000;
 
-	constructor(handTiles) {
-		this.handTiles = handTiles;
+	constructor(rackTiles) {
+		this.rackTiles = rackTiles;
 	}
 
 	//* Generate all subset permutations of tiles
@@ -61,7 +61,7 @@ class Bot {
 		};
 
 		//* Combinate, permutate, remove duplicates
-		let allCombos = powerset(this.handTiles);
+		let allCombos = powerset(this.rackTiles);
 		let uniqueCombos = this.uniquify(allCombos);
 		let allPerms = [];
 		for (let i = 0, n = uniqueCombos.length; i < n; i++) {
@@ -301,15 +301,15 @@ onmessage = e => {
 
 
 	// Actually generating plays
-	var botInstance = new Bot(e.data.handTiles);
+	var botInstance = new Bot(e.data.rackTiles);
 
 	botInstance.unscramble();
-	let handString = "";
-	for (let t = 0, tn = botInstance.handTiles.length; t < tn; t++) {
-		handString += botInstance.handTiles[t].letter;
-		if (t < tn - 1) handString += ",";
+	let rackString = "";
+	for (let t = 0, tn = botInstance.rackTiles.length; t < tn; t++) {
+		rackString += botInstance.rackTiles[t].letter;
+		if (t < tn - 1) rackString += ",";
 	}
-	console.log(`${handString} → Generated ${botInstance.tilePerms.length.toLocaleString()} tile permutations...`);
+	console.log(`${rackString} → Generated ${botInstance.tilePerms.length.toLocaleString()} tile permutations...`);
 
 	botInstance.generatePlays();
 	var secondsElapsed = botInstance.msElapsed / 1000;

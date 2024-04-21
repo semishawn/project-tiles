@@ -1,4 +1,5 @@
 var tileMoveDuration = 500;
+var tileMoveDurationQuick = tileMoveDuration / 2;
 var tileMoveDelay = 150;
 
 
@@ -50,11 +51,11 @@ function createBoard() {
 }
 
 //
-function createHands() {
-	$(".hand-tiles").empty();
+function createRacks() {
+	$(".rack-tiles").empty();
 
-	for (let i = 0; i < handSize; i++) {
-		$(".hand-tiles").append(`
+	for (let i = 0; i < rackSize; i++) {
+		$(".rack-tiles").append(`
 			<div class="tile-slot">
 				<div class="tile-slot-indicator"></div>
 			</div>
@@ -64,9 +65,9 @@ function createHands() {
 
 //
 function drawTilesFrontend(player, numTiles) {
+	let rackTiles = userRackTiles;
+	if (player == "bot") rackTiles = botRackTiles;
 	let tilesContainer = $(".tilebag-tiles-container");
-	let handTiles = userHandTiles;
-	if (player == "bot") handTiles = botHandTiles;
 
 	// Update tilebag tiles
 	$(".tilebag-count").html(tileBag.length);
@@ -83,52 +84,51 @@ function drawTilesFrontend(player, numTiles) {
 		tilesContainer.append(newTileElement);
 	}
 
-	// Update hand tiles
-	$(`.tile[data-player="${player}"][data-state="hand"]`).each(function(handIndex) {
-		let correspondingSlot = $(`.${player}-hand-tiles .tile-slot`).eq(handIndex);
-		$(this).attr("data-hand-index", handIndex);
-		$(this).animate({
-			"top": correspondingSlot.offset().top,
-			"left": correspondingSlot.offset().left
-		}, tileMoveDuration);
-	});
+	// Update rack tiles
+	for (let t = 0, tn = rackTiles.length; t < tn; t++) {
+		let correspondingSlot = $(`.${player}-rack-tiles .tile-slot`).eq(t);
 
-	// Transfer new tiles from tilebag to hand
-	for (let t = 0; t < numTiles; t++) {
-		let handIndex = handSize - numTiles + t;
-		let letter = handTiles[handIndex].letter;
-		let blank = handTiles[handIndex].blank;
-		let newTileElement = tileElement.clone();
-		let correspondingSlot = $(`.${player}-hand-tiles .tile-slot`).eq(handIndex);
-
-		newTileElement.attr({
-			"data-state": "hand",
-			"data-letter": letter,
-			"data-blank": blank,
-			"data-player": player,
-			"data-hand-index": handIndex,
-			"data-row": "",
-			"data-col": "",
-		});
-
-		if (!blank) {
-			let points = tileSet.find(x => x.letter === letter).pts;
-			newTileElement.find(".tile-letter").html(letter);
-			newTileElement.find(".tile-points").html(points);
-		}
-
-		newTileElement.css({
-			"top": tilesContainer.offset().top,
-			"left": tilesContainer.offset().left
-		});
-		$(".play-screen").append(newTileElement);
-
-		setTimeout(function() {
-			newTileElement.animate({
+		if (t < rackTiles.length - numTiles) {
+			let correspondingTile = $(`.tile[data-player="${player}"][data-state="rack"]`).eq(t);
+			correspondingTile.attr("data-rack-index", t);
+			correspondingTile.animate({
 				"top": correspondingSlot.offset().top,
 				"left": correspondingSlot.offset().left
 			}, tileMoveDuration);
-		}, t * tileMoveDelay);
+		} else {
+			let letter = rackTiles[t].letter;
+			let blank = rackTiles[t].blank;
+			let newTileElement = tileElement.clone();
+
+			newTileElement.attr({
+				"data-state": "rack",
+				"data-letter": letter,
+				"data-blank": blank,
+				"data-player": player,
+				"data-rack-index": t,
+				"data-row": "",
+				"data-col": "",
+			});
+
+			if (!blank) {
+				let points = tileSet.find(x => x.letter === letter).pts;
+				newTileElement.find(".tile-letter").html(letter);
+				newTileElement.find(".tile-points").html(points);
+			}
+
+			newTileElement.css({
+				"top": tilesContainer.offset().top,
+				"left": tilesContainer.offset().left
+			});
+			$(".play-screen").append(newTileElement);
+
+			setTimeout(function() {
+				newTileElement.animate({
+					"top": correspondingSlot.offset().top,
+					"left": correspondingSlot.offset().left
+				}, tileMoveDuration);
+			}, t * tileMoveDelay);
+		}
 	}
 }
 
@@ -178,7 +178,7 @@ function writeMessage(player, type, content) {
 		</div>
 	`);
 
-	var scrollContainer = $(".play-history-scroll-container")[0];
+	let scrollContainer = $(".play-history-scroll-container")[0];
 	scrollContainer.scrollTo(0, scrollContainer.scrollHeight);
 }
 
@@ -192,8 +192,8 @@ function changePlayer(player) {
 function botPlayTiles(play) {
 	for (let t = 0; t < play.tilesPlayed.length; t++) {
 		let tile = play.tilesPlayed[t];
-		let handIndex = tile.handIndex;
-		let correspondingTile = $(`.tile[data-player="bot"][data-state="hand"][data-hand-index="${handIndex}"]`);
+		let rackIndex = tile.rackIndex;
+		let correspondingTile = $(`.tile[data-player="bot"][data-state="rack"][data-rack-index="${rackIndex}"]`);
 		let cellIndex = tile.row * board.length + tile.col;
 		let correspondingCell = $(".cell").eq(cellIndex);
 
@@ -245,9 +245,9 @@ function newGame(lId, eId) {
 		delete tileBagCounts[l].pts;
 	}
 	totalTileCount = tileBag.length;
-	handSize = 6;
-	userHandTiles = [];
-	botHandTiles = [];
+	rackSize = 6;
+	userRackTiles = [];
+	botRackTiles = [];
 
 	// Player variables
 	botName = languages[lId].editions[eId].botName;
@@ -259,21 +259,21 @@ function newGame(lId, eId) {
 	$(".tilebag-count").html(tileBag.length);
 
 	// Backend
-	drawTilesBackend("user", handSize);
-	drawTilesBackend("bot", handSize);
+	drawTilesBackend("user", rackSize);
+	drawTilesBackend("bot", rackSize);
 
 	// Frontend
 	$(".play-screen").css("font-family", langFont);
 	changePlayer("user");
 	$(".play-history-textbox").attr("placeholder", `Chat with ${botName}...`);
 	createBoard();
-	createHands();
+	createRacks();
 
 	$(".user-score-box").find(".player-name").html(userName);
 	$(".bot-score-box").find(".player-name").html(botName);
 	setTimeout(function() {
-		drawTilesFrontend("user", handSize);
-		drawTilesFrontend("bot", handSize);
+		drawTilesFrontend("user", rackSize);
+		drawTilesFrontend("bot", rackSize);
 	}, 1000);
 }
 
@@ -298,31 +298,31 @@ $(".shuffle-btn").click(function() {
 		}
 	}
 
-	shuffleArray(userHandTiles);
+	shuffleArray(userRackTiles);
 
-	$(`.tile[data-player="user"][data-state*="hand"]`).each(function(t) {
+	$(`.tile[data-player="user"][data-state*="rack"]`).each(function(t) {
 		let $this = $(this);
-		let handIndex = userHandTiles[t].handIndex;
-		let correspondingSlot = $(`.user-hand-tiles .tile-slot`).eq(handIndex);
+		let rackIndex = userRackTiles[t].rackIndex;
+		let correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
-		userHandTiles[t].handIndex = t;
-		$this.attr("data-hand-index", handIndex);
+		userRackTiles[t].rackIndex = t;
+		$this.attr("data-rack-index", rackIndex);
 
-		if ($this.is(`[data-state="hand"]`)) {
+		if ($this.is(`[data-state="rack"]`)) {
 			$this.animate({
 				"top": correspondingSlot.offset().top,
 				"left": correspondingSlot.offset().left
-			}, tileMoveDuration / 2);
+			}, tileMoveDurationQuick);
 		}
 	});
 });
 
 $(".recall-btn").click(function() {
-	$(`.tile[data-player="user"][data-state="placed-hand"]`).each(function() {
-		let handIndex = $(this).attr("data-hand-index");
-		let correspondingSlot = $(`.user-hand-tiles .tile-slot`).eq(handIndex);
+	$(`.tile[data-player="user"][data-state="placed-rack"]`).each(function() {
+		let rackIndex = $(this).attr("data-rack-index");
+		let correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
-		$(this).attr("data-state", "hand");
+		$(this).attr("data-state", "rack");
 		$(this).animate({
 			"top": correspondingSlot.offset().top,
 			"left": correspondingSlot.offset().left
@@ -335,18 +335,20 @@ $(".skip-btn").click(function() {
 });
 
 $(".exchange-btn").click(function() {
-	drawTiles("user", handSize);
+	drawTiles("user", rackSize);
 	updateTileBagFrontend();
 });
 
 $(".play-btn").click(function() {
-	let tilesPlayed = [];
-	$(`.tile[data-player="user"][data-state="placed-hand"]`).each(function(t) {
-		let tileObject = userHandTiles[t];
-		tilesPlayed.push(tileObject);
-	});
+	if ($(`.tile[data-player="user"][data-state="placed-rack"]`).length > 0) {
+		let tilesPlayed = [];
+		$(`.tile[data-player="user"][data-state="placed-rack"]`).each(function() {
+			let rackIndex = $(this).attr("data-rack-index");
+			let tileObject = userRackTiles[rackIndex];
+			tilesPlayed.push(tileObject);
+			$(this).attr("data-state", "placed-board");
+		});
 
-	if (true) {
 		let play = {
 			tilesPlayed: tilesPlayed,
 			score: 69
@@ -355,20 +357,24 @@ $(".play-btn").click(function() {
 
 		// Backend
 		applyPlayBackend("user", play);
-		let neededTiles = handSize - userHandTiles.length;
-		drawTilesBackend("user", neededTiles);
+		let numTilesDesired = play.tilesPlayed.length;
+		let numTilesAllowed = Math.min(numTilesDesired, tileBag.length);
+		drawTilesBackend("user", numTilesAllowed);
 
 		// Frontend
 		$(".user-score-box").find(".player-score").html(userScore);
 		// writeMessage("user", "play", play);
-		drawTilesFrontend("user", neededTiles);
+		drawTilesFrontend("user", numTilesAllowed);
 		changePlayer("bot");
+
+		console.log("User rack:");
+		console.log(userRackTiles);
 
 		botWorker.postMessage({
 			board: board,
 			tileSet: tileSet,
 			tileMap: tileMap,
-			handTiles: botHandTiles,
+			rackTiles: botRackTiles,
 			wordTrie: wordTrie,
 			functions: {
 				uniquify: "" + uniquify,
@@ -429,8 +435,9 @@ botWorker.onmessage = e => {
 
 	// Backend
 	applyPlayBackend("bot", play);
-	let neededTiles = handSize - botHandTiles.length;
-	drawTilesBackend("bot", neededTiles);
+	let numTilesDesired = play.tilesPlayed.length;
+	let numTilesAllowed = Math.min(numTilesDesired, tileBag.length);
+	drawTilesBackend("bot", numTilesAllowed);
 
 	// Frontend
 	botPlayTiles(play);
@@ -438,7 +445,10 @@ botWorker.onmessage = e => {
 	writeMessage("bot", "play", play);
 	changePlayer("user");
 
+	console.log("Bot rack:");
+	console.log(botRackTiles);
+
 	setTimeout(function() {
-		drawTilesFrontend("bot", neededTiles);
-	}, tileMoveDuration + (neededTiles - 1) * tileMoveDelay);
+		drawTilesFrontend("bot", numTilesAllowed);
+	}, tileMoveDuration + (numTilesAllowed - 1) * tileMoveDelay);
 }
