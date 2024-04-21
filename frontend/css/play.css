@@ -75,7 +75,7 @@
 .current-player-indicator-bg,
 .current-player-indicator-border {
 	position: absolute;
-	transition: all 0.2s;
+	transition: all 0.3s;
 }
 .current-player-indicator-bg {
 	left: 0;
@@ -555,10 +555,10 @@
 /* Bot elements */
 .bot-rack-tiles {
 	position: absolute;
-	/* top: calc(-5rem);
-	right: 5.05rem; */
-	top: 0;
-	right: 0;
+	top: calc(-5rem);
+	right: 5.05rem;
+	/* top: 0;
+	right: 0; */
 	flex-direction: row;
 }
 

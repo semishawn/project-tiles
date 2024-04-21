@@ -367,9 +367,6 @@ $(".play-btn").click(function() {
 		drawTilesFrontend("user", numTilesAllowed);
 		changePlayer("bot");
 
-		console.log("User rack:");
-		console.log(userRackTiles);
-
 		botWorker.postMessage({
 			board: board,
 			tileSet: tileSet,
@@ -444,9 +441,6 @@ botWorker.onmessage = e => {
 	$(".bot-score-box").find(".player-score").html(botScore);
 	writeMessage("bot", "play", play);
 	changePlayer("user");
-
-	console.log("Bot rack:");
-	console.log(botRackTiles);
 
 	setTimeout(function() {
 		drawTilesFrontend("bot", numTilesAllowed);

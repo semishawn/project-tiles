@@ -113,26 +113,27 @@ class Bot {
 			let endsWithPrevTiles = false;
 			let hasPrevTilesInMiddle = false;
 
-			let firstIndex = tiles[0].row;
-			let lastIndex = tiles[tiles.length - 1].row;
+			let firstIndex = Math.min(...tiles.map(tile => tile.row));
+			let lastIndex =  Math.max(...tiles.map(tile => tile.row));
 			if (direction == "col") {
-				firstIndex = tiles[0].col;
-				lastIndex = tiles[tiles.length - 1].col;
+				firstIndex = Math.min(...tiles.map(tile => tile.col));
+				lastIndex =  Math.max(...tiles.map(tile => tile.col));
 			}
 			let indexBefore = firstIndex - 1;
 			let indexAfter = lastIndex + 1;
 
 			if (indexBefore >= 0) {
-				if (vector[indexBefore] != null)
+				if (vector[indexBefore] !== null)
 					startsWithPrevTiles = true;
 			}
 			if (indexAfter <= vector.length - 1) {
-				if (vector[indexAfter] != null)
+				if (vector[indexAfter] !== null)
 					endsWithPrevTiles = true;
 			}
 			if ((lastIndex - firstIndex + 1) > tiles.length)
 				hasPrevTilesInMiddle = true;
 
+			
 			return startsWithPrevTiles || endsWithPrevTiles || hasPrevTilesInMiddle;
 		}
 
@@ -240,7 +241,8 @@ class Bot {
 										let play = {
 											tilesPlayed: tilesPlayed,
 											direction: direction,
-											scoredWords: scoredWords
+											scoredWords: scoredWords,
+											connect: [paraConnect, perpConnect]
 										}
 
 										// Calculate score using own object, assign to self
