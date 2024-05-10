@@ -98,12 +98,14 @@ function drawTilesFrontend(player, numTiles) {
 		} else {
 			let letter = rackTiles[t].letter;
 			let blank = rackTiles[t].blank;
+			let points = rackTiles[t].points;
 			let newTileElement = tileElement.clone();
 
 			newTileElement.attr({
 				"data-state": "rack",
 				"data-letter": letter,
 				"data-blank": blank,
+				"data-points": points,
 				"data-player": player,
 				"data-rack-index": t,
 				"data-row": "",
@@ -111,7 +113,6 @@ function drawTilesFrontend(player, numTiles) {
 			});
 
 			if (!blank) {
-				let points = tileSet.find(x => x.letter === letter).pts;
 				newTileElement.find(".tile-letter").html(letter);
 				newTileElement.find(".tile-points").html(points);
 			}
@@ -189,21 +190,27 @@ function changePlayer(player) {
 }
 
 // 
-function botPlayTiles(play) {
-	for (let t = 0; t < play.tilesPlayed.length; t++) {
-		let tile = play.tilesPlayed[t];
-		let rackIndex = tile.rackIndex;
-		let correspondingTile = $(`.tile[data-player="bot"][data-state="rack"][data-rack-index="${rackIndex}"]`);
-		let cellIndex = tile.row * board.length + tile.col;
-		let correspondingCell = $(".cell").eq(cellIndex);
+function applyPlayFrontend(player, play) {
+	if (player == "user") {
+		$(`.tile[data-player="user"][data-state="placed-rack"]`).attr("data-state", "placed-board");
+		$(".user-score-box").find(".player-score").html(userScore);
+	} else {
+		for (let t = 0; t < play.tilesPlayed.length; t++) {
+			let tile = play.tilesPlayed[t];
+			let rackIndex = tile.rackIndex;
+			let correspondingTile = $(`.tile[data-player="bot"][data-state="rack"][data-rack-index="${rackIndex}"]`);
+			let correspondingCell = $(`.cell[data-row="${tile.row}"][data-col="${tile.col}"]`);
 
-		correspondingTile.attr("data-state", "placed-board");
-		setTimeout(function() {
-			correspondingTile.animate({
-				"top": correspondingCell.offset().top,
-				"left": correspondingCell.offset().left
-			}, tileMoveDuration);
-		}, t * tileMoveDelay);
+			correspondingTile.attr("data-state", "placed-board");
+			setTimeout(function() {
+				correspondingTile.animate({
+					"top": correspondingCell.offset().top,
+					"left": correspondingCell.offset().left
+				}, tileMoveDuration);
+			}, t * tileMoveDelay);
+
+			$(".bot-score-box").find(".player-score").html(botScore);
+		}
 	}
 }
 
@@ -216,10 +223,6 @@ function newGame(lId, eId) {
 	let wordArray = window[camelize(langExonym) + "List"];
 	wordTrie = new Trie();
 	for (let w = 0, wn = wordArray.length; w < wn; w++) wordTrie.insert(wordArray[w]);
-
-	// Font variables
-	let langFont = `"Noto Sans"`;
-	if (typeof languages[lId].font !== 'undefined') langFont += `, "${languages[lId].font}"`;
 
 	// Board variables
 	let boardId = languages[lId].editions[eId].boards[0];
@@ -242,21 +245,24 @@ function newGame(lId, eId) {
 		for (let i = 0; i < letterObject.freq; i++) {
 			tileBag.push(letterObject.letter);
 		}
-		delete tileBagCounts[l].pts;
+		delete tileBagCounts[l].points;
 	}
 	totalTileCount = tileBag.length;
-	rackSize = 6;
-	userRackTiles = [];
-	botRackTiles = [];
+	rackSize = languages[lId].editions[eId].rackSize;
 
 	// Player variables
-	botName = languages[lId].editions[eId].botName;
-	botScore = 0;
 	userName = "Shawn";
 	userScore = 0;
+	userRackTiles = [];
+	botName = languages[lId].editions[eId].botName;
+	botScore = 0;
+	botRackTiles = [];
 	currentPlayer = "bot";
 
-	$(".tilebag-count").html(tileBag.length);
+	// Text variables
+	let langFont = `"Noto Sans"`;
+	if (typeof languages[lId].font !== 'undefined') langFont += `, "${languages[lId].font}"`;
+	errorMessages = languages[lId].editions[eId].errorMessages;
 
 	// Backend
 	drawTilesBackend("user", rackSize);
@@ -268,6 +274,7 @@ function newGame(lId, eId) {
 	$(".play-history-textbox").attr("placeholder", `Chat with ${botName}...`);
 	createBoard();
 	createRacks();
+	$(".tilebag-count").html(tileBag.length);
 
 	$(".user-score-box").find(".player-name").html(userName);
 	$(".bot-score-box").find(".player-name").html(botName);
@@ -291,30 +298,33 @@ $(".resign-btn").click(function() {
 });
 
 $(".shuffle-btn").click(function() {
-	let shuffleArray = arr => {
+	let shuffle = arr => {
 		for (let i = arr.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[arr[i], arr[j]] = [arr[j], arr[i]];
 		}
 	}
 
-	shuffleArray(userRackTiles);
+	shuffle(userRackTiles);
 
 	$(`.tile[data-player="user"][data-state*="rack"]`).each(function(t) {
 		let $this = $(this);
+		let state = $this.attr("data-state");
 		let rackIndex = userRackTiles[t].rackIndex;
 		let correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
 		userRackTiles[t].rackIndex = t;
 		$this.attr("data-rack-index", rackIndex);
 
-		if ($this.is(`[data-state="rack"]`)) {
+		if (state == "rack") {
 			$this.animate({
 				"top": correspondingSlot.offset().top,
 				"left": correspondingSlot.offset().left
 			}, tileMoveDurationQuick);
 		}
 	});
+
+	console.log(userRackTiles);
 });
 
 $(".recall-btn").click(function() {
@@ -339,50 +349,6 @@ $(".exchange-btn").click(function() {
 	updateTileBagFrontend();
 });
 
-$(".play-btn").click(function() {
-	if ($(`.tile[data-player="user"][data-state="placed-rack"]`).length > 0) {
-		let tilesPlayed = [];
-		$(`.tile[data-player="user"][data-state="placed-rack"]`).each(function() {
-			let rackIndex = $(this).attr("data-rack-index");
-			let tileObject = userRackTiles[rackIndex];
-			tilesPlayed.push(tileObject);
-			$(this).attr("data-state", "placed-board");
-		});
-
-		let play = {
-			tilesPlayed: tilesPlayed,
-			score: 69
-		}
-		// play.score = calculateScore(play, tileSet, board);
-
-		// Backend
-		applyPlayBackend("user", play);
-		let numTilesDesired = play.tilesPlayed.length;
-		let numTilesAllowed = Math.min(numTilesDesired, tileBag.length);
-		drawTilesBackend("user", numTilesAllowed);
-
-		// Frontend
-		$(".user-score-box").find(".player-score").html(userScore);
-		// writeMessage("user", "play", play);
-		drawTilesFrontend("user", numTilesAllowed);
-		changePlayer("bot");
-
-		botWorker.postMessage({
-			board: board,
-			tileSet: tileSet,
-			tileMap: tileMap,
-			rackTiles: botRackTiles,
-			wordTrie: wordTrie,
-			functions: {
-				uniquify: "" + uniquify,
-				transpose: "" + transpose,
-				deepCopy: "" + deepCopy,
-				calculateScore: "" + calculateScore
-			}
-		});
-	}
-});
-
 $(".tilebag-icon").click(function() {
 	let tileBagContainer = $(".tilebag-container");
 	let showTime = parseFloat(tileBagContainer.css("--show-duration")) * 1000;
@@ -393,8 +359,8 @@ $(".tilebag-icon").click(function() {
 });
 
 $(".play-history-send-btn").click(function() {
-	var textboxVal = $(".play-history-textbox").val();
-	var messageContainer = $(".play-history-message-container")[0];
+	let textboxVal = $(".play-history-textbox").val();
+	let messageContainer = $(".play-history-message-container")[0];
 
 	if (textboxVal.length > 0) {
 		writeMessage("user", "talk", textboxVal);
@@ -409,27 +375,51 @@ $(".play-history-send-btn").click(function() {
 	messageContainer.scrollTo(0, messageContainer.scrollHeight);
 });
 $(document).keydown(function(e) {
-	if (e.code == "Enter" && $(".play-history-textbox").is(':focus'))
+	if (e.code == "Enter" && $(".play-history-textbox").is(':focus')) {
 		$(".play-history-send-btn").click();
-});
-
-$(document).keydown(function(e) {
-	if (e.key == "p") {
-		if ($(".play-screen").attr("data-current-player") == "user")
-			$(".play-screen").attr("data-current-player", "bot");
-		else
-			$(".play-screen").attr("data-current-player", "user");
+	} else if (e.key == "p") {
+		let oldPlayer = $(".play-screen").attr("data-current-player");
+		let newPlayer = "bot";
+		if (oldPlayer == "bot") newPlayer = "user";
+		$(".play-screen").attr("data-current-player", newPlayer);
 	}
 });
 
 
 
-//* Bot play
-var botWorker = new Worker("../backend/js/bot.js");
+//* Play functionality
+function userPlay(play) {
+	// Backend
+	applyPlayBackend("user", play);
+	let numTilesDesired = play.tilesPlayed.length;
+	let numTilesAllowed = Math.min(numTilesDesired, tileBag.length);
+	drawTilesBackend("user", numTilesAllowed);
 
-botWorker.onmessage = e => {
-	let play = e.data;
+	// Frontend
+	applyPlayFrontend("user", play);
+	writeMessage("user", "play", play);
+	drawTilesFrontend("user", numTilesAllowed);
+	changePlayer("bot");
 
+	// Bot
+	botWorker.postMessage({
+		board: board,
+		tileSet: tileSet,
+		tileMap: tileMap,
+		rackTiles: botRackTiles,
+		wordTrie: wordTrie,
+		functions: "" +
+			uniquify +
+			transpose +
+			deepCopy +
+			findScoredWord +
+			testConnectivity +
+			calculateScore +
+			testPlay
+	});
+}
+
+function botPlay(play) {
 	// Backend
 	applyPlayBackend("bot", play);
 	let numTilesDesired = play.tilesPlayed.length;
@@ -437,12 +427,76 @@ botWorker.onmessage = e => {
 	drawTilesBackend("bot", numTilesAllowed);
 
 	// Frontend
-	botPlayTiles(play);
+	applyPlayFrontend("bot", play);
 	$(".bot-score-box").find(".player-score").html(botScore);
 	writeMessage("bot", "play", play);
-	changePlayer("user");
-
 	setTimeout(function() {
 		drawTilesFrontend("bot", numTilesAllowed);
 	}, tileMoveDuration + (numTilesAllowed - 1) * tileMoveDelay);
+	changePlayer("user");
+}
+
+$(".play-btn").click(function() {
+	let tilesPlayed = userRackTiles.filter(tile => tile.state === "placed-rack");
+	let firstRow = Math.min(...tilesPlayed.map(tile => tile.row));
+	let firstCol = Math.min(...tilesPlayed.map(tile => tile.col));
+	let sameRow = tilesPlayed.every(tile => tile.row == firstRow);
+	let sameCol = tilesPlayed.every(tile => tile.col == firstCol);
+
+	if (sameRow || sameCol) {
+		if (sameRow) {
+			direction = "row";
+			perpDirection = "col";
+			vectorIndex = firstRow;
+			paraVectors = tileMap;
+			perpVectors = transpose(tileMap);
+		} else {
+			direction = "col";
+			perpDirection = "row";
+			vectorIndex = firstCol;
+			paraVectors = transpose(tileMap);
+			perpVectors = tileMap;
+		}
+
+		let vectorBefore = paraVectors[vectorIndex];
+		let vectorAfter = deepCopy(vectorBefore);
+		let scoredWords = [];
+		let perpConnect = false;
+
+		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
+			let tile = tilesPlayed[t];
+			let indexAlongVector = tile.col;
+			if (sameCol) indexAlongVector = tile.row;
+
+			// Apply to parallel vector
+			vectorAfter[indexAlongVector] = tile;
+
+			// Perpendicular validity
+			let perpVectorBefore = perpVectors[indexAlongVector];
+			let perpVectorAfter = deepCopy(perpVectorBefore);
+			perpVectorAfter[vectorIndex] = tile;
+			if (!perpConnect) perpConnect = testConnectivity(perpVectorBefore, perpDirection, [tile]);
+			let perpWord = findScoredWord(perpVectorBefore, perpVectorAfter);
+			if (perpWord.string.length > 1) scoredWords.push(perpWord);
+		}
+
+		// Parallel validity
+		let paraConnect = testConnectivity(vectorBefore, direction, tilesPlayed);
+		let paraWord = findScoredWord(vectorBefore, vectorAfter);
+		if (paraWord.string.length > 1) scoredWords.push(paraWord);
+
+		let play = testPlay(tilesPlayed, paraConnect, perpConnect, scoredWords);
+		if (play.valid) userPlay(play.data);
+		else {
+			let errorMessage = errorMessages[play.error].format(play.data);
+			writeMessage("user", "other", errorMessage);
+		}
+	}
+	else writeMessage("user", "other", "Tiles are placed invalidly.");
+});
+
+var botWorker = new Worker("../backend/js/bot.js");
+botWorker.onmessage = e => {
+	let play = e.data;
+	botPlay(play.data);
 }

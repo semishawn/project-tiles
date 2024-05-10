@@ -299,12 +299,6 @@
 	border-left: 0;
 	border-right: 0;
 }
-.play-history-message[data-player="user"] {flex-direction: row-reverse;}
-.play-history-message[data-player="user"] .play-history-text {
-	text-align: end;
-	margin-left: 0;
-	margin-right: 0.5rem;
-}
 
 .play-history-message .player-icon {
 	--dimension: var(--small-tile-dimension);
@@ -316,7 +310,6 @@
 	display: block;
 	font-size: 0.45rem;
 	line-height: 1.3;
-	margin-left: 0.5rem;
 }
 
 .play-history-input-container {
@@ -341,6 +334,14 @@
 	height: 100%;
 }
 .play-history-send-btn svg {height: 0.5rem;}
+
+.play-history-message[data-player="user"] {flex-direction: row-reverse;}
+.play-history-message[data-player="user"] .play-history-text {
+	text-align: end;
+	margin-right: 0.4rem;
+}
+.play-history-message[data-player="bot"] {flex-direction: row;}
+.play-history-message[data-player="bot"] .play-history-text {margin-left: 0.4rem;}
 
 
 
@@ -549,6 +550,10 @@
 }
 
 .play-btn, .bot-play-btn {--inside-bg: var(--ui-color3);}
+.play-btn[disabled] {
+	--inside-bg: var(--ui-color1);
+	pointer-events: none;
+}
 
 
 

@@ -33,12 +33,13 @@ $("body").on("mousemove", function(e) {
 		//* Success
 		if ($(".cell:hover").length > 0) {
 			let hoveredCell = $(".cell:hover");
-			let cellOffsetLeft = hoveredCell.offset().left;
-			let cellOffsetTop = hoveredCell.offset().top;
 			let cellRow = hoveredCell.attr("data-row");
 			let cellCol = hoveredCell.attr("data-col");
+			let cellOffsetLeft = hoveredCell.offset().left;
+			let cellOffsetTop = hoveredCell.offset().top;
 
 			// Backend
+			userRackTiles[rackIndex].state = "placed-rack";
 			userRackTiles[rackIndex].row = cellRow;
 			userRackTiles[rackIndex].col = cellCol;
 
@@ -58,6 +59,7 @@ $("body").on("mousemove", function(e) {
 			let correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
 			// Backend
+			userRackTiles[rackIndex].state = "rack";
 			userRackTiles[rackIndex].row = null;
 			userRackTiles[rackIndex].col = null;
 
@@ -72,6 +74,14 @@ $("body").on("mousemove", function(e) {
 			}, tileMoveDurationQuick);
 		}
 
+		// Play button toggling
+		if ($(`.tile[data-player="user"][data-state="placed-rack"]`).length > 0) {
+			$(".play-btn").attr("disabled", false);
+		} else {
+			$(".play-btn").attr("disabled", true);
+		}
+
+		// Global
 		$("body").css("cursor", "default");
 		dragging = false;
 	}

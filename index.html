@@ -8,7 +8,6 @@
 
 	<!-- Plugins -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
 	<!-- Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -265,13 +264,15 @@
 					<div class="action-btn-container">	
 						<div class="btn action-btn skip-btn">Skip turn</div>
 						<div class="btn action-btn exchange-btn">Exchange tiles</div>
-						<div class="btn action-btn play-btn">Play</div>
+						<div class="btn action-btn play-btn" disabled="true">Play</div>
 					</div>
 
 					<div class="rack-tiles bot-rack-tiles"></div>
 				</div>
 			</div>
 		</div>
+
+		<div class="screen end-screen"></div>
 	</main>
 
 	<script src="backend/js/languages.js"></script>
