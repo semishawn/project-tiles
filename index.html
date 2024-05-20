@@ -34,8 +34,6 @@
 
 <body>
 	<main>
-		<div class="screen start-screen"></div>
-
 		<div class="screen title-screen">
 			<div class="title-logo-container">
 				<div class="logo-text1">
@@ -82,7 +80,7 @@
 				<div class="btn important-btn continue-btn" disabled>Continue</div>
 			</div>
 
-			<div class="lang-container"></div>
+			<div class="btn-grid lang-container"></div>
 		</div>
 	
 		<div class="screen edition-screen">
@@ -179,7 +177,7 @@
 
 		<div class="screen pre-screen"></div> -->
 	
-		<div class="screen play-screen">
+		<div class="screen play-screen" data-dialog="">
 			<div class="play-column1">
 				<div class="score-container">
 					<div class="score-box user-score-box">
@@ -253,7 +251,29 @@
 				<div class="board-number-container"></div>
 				
 				<div class="board-column">
-					<div class="board"></div>
+					<div class="board">
+						<div class="dialog-box skip-dialog">
+							<div class="dialog-text">Confirm skip?</div>
+							<div class="skip-dialog-btn-container">
+								<div class="btn confirm-skip-btn">Yes</div>
+								<div class="btn deny-skip-btn">No</div>
+							</div>
+						</div>
+
+						<div class="dialog-box exchange-dialog">
+							<div class="dialog-text">Click tiles to exchange:</div>
+							<div class="rack-tiles"></div>
+							<div class="exchange-dialog-btn-container">
+								<div class="btn confirm-exchange-btn">Confirm</div>
+								<div class="btn deny-exchange-btn">Cancel</div>
+							</div>
+						</div>
+
+						<div class="dialog-box blank-dialog">
+							<div class="dialog-text">Choose a substitute:</div>
+							<div class="btn-grid blank-option-container"></div>
+						</div>
+					</div>
 	
 					<div class="player-rack">
 						<div class="btn rack-btn shuffle-btn"></div>
@@ -277,8 +297,8 @@
 
 	<script src="backend/js/languages.js"></script>
 	<script src="backend/js/boards.js"></script>
+	<script src="backend/js/classes.js"></script>
 	<script src="backend/js/main.js"></script>
-	<script src="backend/js/trie.js"></script>
 
 	<script src="backend/wordLists/english.js"></script>
 

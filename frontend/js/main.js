@@ -2,7 +2,7 @@
 var standardCellDimension = parseInt($("html").css("font-size"));
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
 var bigTileDimension = $(".big-tile-sizer").outerWidth();
-var currentScreen;
+var currentScreen = null;
 
 
 
@@ -25,11 +25,12 @@ function camelize(str) {
 }
 
 $.fn.maxZ = function(selector) {
-	var topZ = 0;
+	let topZ = 0;
 
 	$(selector).each(function() {
-		var thisZ = parseInt($(this).css("z-index"));
-		if (thisZ > topZ) topZ = thisZ;
+		let $this = $(this);
+		let thisZ = parseInt($this.css("z-index"));
+		if (thisZ >= topZ) topZ = thisZ;
 	});
 
 	$(this).css("z-index", topZ + 1);
@@ -51,9 +52,9 @@ function newScreen(screen) {
 
 
 //* On load
-$.fn.btn = function() {
-	var oldHtml = this.html();
-	this.html(`
+$.fn.btnify = function() {
+	let oldHtml = $(this).html();
+	$(this).html(`
 		<div class="btn-stalk btn-stalk1"></div>
 		<div class="btn-stalk btn-stalk2"></div>
 		<div class="btn-inside">${oldHtml}</div>
@@ -62,10 +63,11 @@ $.fn.btn = function() {
 
 $(document).ready(function() {
 	$(".btn").each(function() {
-		$(this).btn();
+		$(this).btnify();
 	});
 
 	// newScreen("title");
-	newGame(17, 0);
+	Game.new(17, 0);
+	newGameFE();
 	newScreen("play");
 });

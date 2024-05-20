@@ -38,29 +38,14 @@
 }
 
 .lang-container {
-	position: relative;
-	display: grid;
-	grid-template-columns: repeat(8, auto);
+	--columns: 8;
 	width: 100%;
 	height: 100%;
-	padding: var(--input-border-width);
-	padding-bottom: 0;
-	padding-right: 0;
 }
 
 .lang-option .btn-inside {
-	width: calc(100% + var(--input-border-width));
-	height: calc(100% + var(--input-border-width));
 	font-size: 0.35rem;
 	line-height: 1.3;
-}
-.lang-option .btn-stalk1 {
-	top: calc(100% - var(--current-extend));
-	left: calc(-1 * var(--current-extend) - var(--input-border-width));
-}
-.lang-option .btn-stalk2 {
-	top: calc(-1 * var(--current-extend) - var(--input-border-width));
-	left: calc(100% - var(--current-extend));
 }
 
 .lang-exonym {font-weight: 700;}

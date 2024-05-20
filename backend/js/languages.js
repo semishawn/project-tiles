@@ -50,9 +50,11 @@ var languages = [
 					{id: 5, abbr: "TW", text: "triple word score"}
 				],
 				errorMessages: [
+					"Invalid tile alignment.",
 					"Invalid tile placement.",
 					"Insufficient tile placement.",
-					"Invalid word: {0}"
+					"Invalid word: <b>{0}</b>",
+					"Unset blank tile."
 				]
 			},
 			{

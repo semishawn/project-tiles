@@ -66,7 +66,7 @@ main {
 
 
 
-/* Button */
+/** Buttons */
 .btn {
 	--stalk-bg: var(--ui-color2);
 	--inside-bg: var(--ui-color1);
@@ -134,9 +134,7 @@ input:checked + .btn .btn-stalk
 	border-right-width: 0;
 }
 
-
-
-/* Important button */
+/* Important */
 .important-btn {
 	--inside-bg: var(--ui-color3);
 }
@@ -167,3 +165,26 @@ input:checked + .btn .btn-stalk
 .important-btn .important-btn-text2 {display: flex;}
 
 .important-btn svg {height: 1rem;}
+
+/* Grid buttons */
+.btn-grid {
+	--columns: 5;
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(var(--columns), auto);
+	padding: var(--input-border-width);
+	padding-bottom: 0;
+	padding-right: 0;
+}
+.btn-grid .btn-inside {
+	width: calc(100% + var(--input-border-width));
+	height: calc(100% + var(--input-border-width));
+}
+.btn-grid .btn-stalk1 {
+	top: calc(100% - var(--current-extend));
+	left: calc(-1 * var(--current-extend) - var(--input-border-width));
+}
+.btn-grid .btn-stalk2 {
+	top: calc(-1 * var(--current-extend) - var(--input-border-width));
+	left: calc(100% - var(--current-extend));
+}
