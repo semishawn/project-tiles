@@ -11,6 +11,7 @@ var languages = [
 				year: 2024,
 				region: "North America",
 				botName: "Mr. Robot",
+				botResponse: "Sorry, I'm not that kind of AI.",
 				boards: ["15-scr"],
 				rackSize: 7,
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],

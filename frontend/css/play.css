@@ -419,7 +419,7 @@
 }
 
 .cell-abbr {
-	font-size: 0.5rem;
+	font-size: 0.45rem;
 	font-weight: 700;
 	color: var(--ui-color3);
 	opacity: 0.5;
@@ -428,8 +428,8 @@
 
 .cell-indicator {
 	position: absolute;
-	width: calc(100% - var(--input-border-width));
-	height: calc(100% - var(--input-border-width));
+	width: calc(100% - 2 * var(--input-border-width));
+	height: calc(100% - 2 * var(--input-border-width));
 	pointer-events: none;
 	z-index: var(--z-below-tile) !important;
 }
@@ -527,21 +527,7 @@
 
 
 
-/* Player rack */
-.player-rack, .action-btn-container {width: 100%;}
-
-.player-rack {
-	flex-direction: row;
-	justify-content: center;
-	height: var(--big-tile-dimension);
-	margin: 0.5rem 0;
-}
-
-.rack-btn {font-size: calc(var(--big-tile-dimension) / 2);}
-
-
-
-/* Tiles */
+/** Tile racks */
 .rack-tiles {flex-direction: row;}
 .user-rack-tiles {margin: 0 0.5rem;}
 
@@ -561,6 +547,27 @@
 	border-radius: 50%;
 }
 
+.user-rack-container, .action-btn-container {width: 100%;}
+.user-rack-container {
+	flex-direction: row;
+	justify-content: center;
+	height: var(--big-tile-dimension);
+	margin: 0.5rem 0;
+}
+
+.rack-btn {font-size: calc(var(--big-tile-dimension) / 2);}
+
+.bot-rack-tiles {
+	position: absolute;
+	top: calc(-5rem);
+	right: 5.05rem;
+	/* top: 0;
+	right: 0; */
+}
+
+
+
+/** Tiles */
 .tile {
 	justify-content: center;
 	align-items: center;
@@ -575,32 +582,6 @@
 	z-index: var(--z-tile);
 }
 .tile, .tile * {transition: transform 0.05s;}
-
-.tile[data-state="bag"] {
-	--tile-dimension: calc(0.95 * var(--small-tile-dimension));
-	margin-top: calc(-1 * var(--input-border-width));
-	margin-left: calc(-1 * var(--input-border-width));
-}
-.tile[data-state="rack"] {
-	position: absolute;
-}
-.tile[data-state*="rack"]:hover {
-	transform: scale(1.1);
-	cursor: pointer;
-}
-.tile[data-state="dragging"] {
-	--tile-dimension: var(--big-tile-dimension);
-	position: absolute;
-	pointer-events: none;
-}
-.tile[data-state="placed-rack"] {
-	--tile-dimension: var(--small-tile-dimension);
-	position: absolute;
-}
-.tile[data-state="placed-board"] {
-	--tile-dimension: var(--small-tile-dimension);
-	position: absolute;
-}
 
 .tile-inside {
 	position: relative;
@@ -621,6 +602,33 @@
 	font-size: calc(var(--tile-dimension) / 5);
 	font-weight: 400;
 	color: var(--ui-color2);
+}
+
+.tile[data-state="bag"] {
+	--tile-dimension: calc(0.95 * var(--small-tile-dimension));
+	margin-top: calc(-1 * var(--input-border-width));
+	margin-left: calc(-1 * var(--input-border-width));
+}
+.tile[data-state="bag"] .tile-points {display: none;}
+.tile[data-state="rack"] {
+	position: absolute;
+}
+.tile[data-state*="rack"]:hover {
+	transform: scale(1.1);
+	cursor: pointer;
+}
+.tile[data-state="dragging"] {
+	--tile-dimension: var(--big-tile-dimension);
+	position: absolute;
+	pointer-events: none;
+}
+.tile[data-state="placed-rack"] {
+	--tile-dimension: var(--small-tile-dimension);
+	position: absolute;
+}
+.tile[data-state="placed-board"] {
+	--tile-dimension: var(--small-tile-dimension);
+	position: absolute;
 }
 
 .tile[data-blank="true"] .tile-inside {
@@ -645,7 +653,7 @@
 
 
 
-/* Board buttons */
+/** Board buttons */
 .action-btn-container {
 	flex-direction: row;
 	height: var(--big-tile-dimension);
@@ -670,16 +678,6 @@
 	pointer-events: none;
 }
 
-
-
-/* Bot elements */
-.bot-rack-tiles {
-	position: absolute;
-	top: calc(-5rem);
-	right: 5.05rem;
-	/* top: 0;
-	right: 0; */
-}
 
 
 

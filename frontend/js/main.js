@@ -66,8 +66,15 @@ $(document).ready(function() {
 		$(this).btnify();
 	});
 
-	// newScreen("title");
 	Game.new(17, 0);
 	newGameFE();
+	let screenTransition = parseFloat($("main").css("transition-duration")) * 1000;
+	setTimeout(function() {
+		Game.User.drawTiles(Game.rackSize);
+		Game.Bot.drawTiles(Game.rackSize);
+		drawTilesFE(Game.User, Game.rackSize);
+		drawTilesFE(Game.Bot, Game.rackSize);
+	}, 2 * screenTransition);
+
 	newScreen("play");
 });

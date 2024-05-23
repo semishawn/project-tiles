@@ -59,8 +59,8 @@ $("body").on("mousemove", function(e) {
 		//* Success
 		if ($(".cell:hover").length > 0) {
 			let hoveredCell = $(".cell:hover");
-			let cellRow = hoveredCell.attr("data-row");
-			let cellCol = hoveredCell.attr("data-col");
+			let cellRow = parseInt(hoveredCell.attr("data-row"));
+			let cellCol = parseInt(hoveredCell.attr("data-col"));
 			let cellOffsetLeft = hoveredCell.offset().left;
 			let cellOffsetTop = hoveredCell.offset().top;
 
@@ -97,14 +97,14 @@ $("body").on("mousemove", function(e) {
 				"data-row": "",
 				"data-col": ""
 			});
-			Drag.tile.moveTo(correspondingSlot, TileElement.moveDur);
+			Drag.tile.moveTo(correspondingSlot);
 		}
 
-		// Play button toggling
-		if ($(`.tile[data-player="user"][data-state="placed-rack"]`).length > 0)
-			$(".play-btn").attr("disabled", false);
-		else
-			$(".play-btn").attr("disabled", true);
+		let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
+		Game.User.testPlay(tilesPlayed);
+		$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
+		
+		console.log(Game.User.currentPlay);
 	}
 
 	Drag.reset();
@@ -150,6 +150,6 @@ $("body").on("click", `.tile[data-player="user"][data-state*="rack"]`, function(
 			$this.attr("data-exchange", "false");
 		}
 
-		$this.moveTo(correspondingSlot, TileElement.moveDur);
+		$this.moveTo(correspondingSlot, TileElement.moveDurFast);
 	}
 });
