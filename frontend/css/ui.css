@@ -266,7 +266,8 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	cursor: pointer;
 	transition: all var(--input-transition);
 }
-.player-intro-edit-icon:hover {transform: scale(1.1);}
+.player-intro-edit-icon:hover {transform: scale(1.15);}
+/* .player-intro-edit-icon:hover path {stroke-width: calc(2 * var(--input-border-width));} */
 
 [data-editing="true"] {cursor: default;}
 [data-editing="true"] .player-intro-name {

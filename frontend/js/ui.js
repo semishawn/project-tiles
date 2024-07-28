@@ -36,7 +36,7 @@ var tileIndex = 0;
 setInterval(function() {
 	if (currentScreen == "title") {
 		while (tileIndex == lastTileIndex) tileIndex = Math.floor(Math.random() * 5);
-		let letterIndex = Math.floor(Math.random() * logoLetters[tileIndex].length);
+		let letterIndex = Math.ceil(Math.random() * (logoLetters[tileIndex].length - 1));
 
 		// Going down
 		$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
@@ -50,14 +50,10 @@ setInterval(function() {
 
 		lastTileIndex = tileIndex;
 	}
-}, 400);
+}, 500);
 
 $(".title-play-btn").on("click", function() {
 	newScreen("lang");
-});
-
-$(".download-btn").on("click", function() {
-	newScreen("download");
 });
 
 
