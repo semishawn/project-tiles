@@ -8,8 +8,8 @@ onmessage = e => {
 
 
 
-	// Generating what move the bot will make; assume skip
-	var move = {
+	// Generating what ply the bot will make; assume skip
+	var ply = {
 		type: "skip",
 		data: null
 	}
@@ -30,12 +30,12 @@ onmessage = e => {
 	console.log(`Found ${Game.Bot.botValidPlays.length.toLocaleString()} valid plays...`);
 
 	if (Game.Bot.botValidPlays.length > 0) {
-		move.type = "play";
-		move.data = Game.Bot.chooseBotPlay();
+		ply.type = "play";
+		ply.data = Game.Bot.chooseBotPlay();
 	}
 
 
 
-	// Send move back to main thread
-	postMessage(move);
+	// Send ply back to main thread
+	postMessage(ply);
 };

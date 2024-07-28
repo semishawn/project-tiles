@@ -1,34 +1,36 @@
 var Game = {
-	board: [],
+	WordTrie: null,
+	board: null,
 	premiumCells: null,
-	alphabet: [],
+	alphabet: null,
+	plyCount: null,
 
-	tileMap: [],
-	tileSet: [],
-	tileBag: [],
-	maxTileCount: 0,
+	tileMap: null,
+	tileSet: null,
+	tileBag: null,
+	maxTileCount: null,
 
-	rackSize: 0,
+	rackSize: null,
 	User: null,
 	Bot: null,
-	botResponse: null,
 
-	currentBlankIndex: null,
+	firstPlayer: null,
 	currentPlayer: null,
 	currentDialog: null,
+	currentBlank: null,
 
-	langFont: "",
-	errorMessages: [],
+	langFont: null,
+	errorMessages: null,
 
 	new: function(lId, eId) {
 		let langExonym = languages[lId].exonym;
-		let wordArray = window[camelize(langExonym) + "List"];
-		this.WordTrie = new Trie(wordArray);
+		this.WordTrie = new Trie(wordLists[camelize(langExonym)]);
 
 		let boardId = languages[lId].editions[eId].boards[0];
 		this.board = boards[boardId];
 		this.premiumCells = languages[lId].editions[eId].premiumCells;
 		this.alphabet = languages[lId].editions[eId].alphabet;
+		this.plyCount = 0;
 
 		this.tileMap = newTileMap(this.board.length);
 		this.tileSet = languages[lId].editions[eId].tileSet;
@@ -36,10 +38,11 @@ var Game = {
 		this.maxTileCount = this.tileBag.length;
 
 		this.rackSize = languages[lId].editions[eId].rackSize;
-		this.User = new Player("user", "Shawn");
+		this.User = new Player("user", "You");
+		this.User.score = 0;
 		this.Bot = new Player("bot", languages[lId].editions[eId].botName);
-		this.botResponse = languages[lId].editions[eId].botResponse;
-		this.currentPlayer = this.User;
+		this.Bot.score = 0;
+		this.Bot.response = languages[lId].editions[eId].botResponse;
 
 		this.langFont = `"Noto Sans"`;
 		if (typeof languages[lId].font !== "undefined") this.langFont += `, "${languages[lId].font}"`;
@@ -47,6 +50,8 @@ var Game = {
 	},
 
 	generateTileBag: function() {
+		this.tileBag = [];
+
 		let bagIndex = 0;
 		for (let l = 0, ln = this.tileSet.length; l < ln; l++) {
 			for (let t = 0, tn = this.tileSet[l].freq; t < tn; t++) {
@@ -72,9 +77,10 @@ class Player {
 	botTilePerms = [];
 	botPlaysTested = 0;
 	botValidPlays = [];
+	response = null;
 
 	msElapsed = 0;
-	maxMs = 100 * 1000;
+	maxMs = 15 * 1000;
 
 	constructor(type, name) {
 		this.type = type;
@@ -90,7 +96,7 @@ class Player {
 				this.rackTiles[t].rackIndex = t;
 			else {
 				let bagIndex = Math.floor(Math.random() * Game.tileBag.length);
-				// let tileBagIndex = Game.tileBag.length - 1;
+				// let bagIndex = Game.tileBag.length - 1;
 				let tile = Game.tileBag.splice(bagIndex, 1)[0];
 				tile.state = "rack";
 				tile.rackIndex = t;
@@ -131,15 +137,10 @@ class Player {
 			return clumps;
 		}
 
-		let word = {
-			single: false,
-			string: null,
-			tiles: null,
-		}
 		let clumpsBefore = findTileClumps(vectorBefore);
 		let clumpsAfter = findTileClumps(vectorAfter);
 
-		let scoredWords = (clumpsAfter.filter(clumpAfter => {
+		let scoredClumps = (clumpsAfter.filter(clumpAfter => {
 			return !clumpsBefore.some(clumpBefore => {
 				return clumpBefore.length === clumpAfter.length && clumpBefore.every((obj, index) => {
 					let keys1 = Object.keys(obj).sort();
@@ -149,11 +150,10 @@ class Player {
 			});
 		}));
 
-		let isSingleClump = (scoredWords.length == 1);
-		if (isSingleClump) {
-			word.single = isSingleClump;
-			word.string = scoredWords[0].reduce((word, tile) => word + tile.letter, "");
-			word.tiles = scoredWords[0];
+		let word = {
+			single: (scoredClumps.length == 1),
+			string: scoredClumps[0].reduce((word, tile) => word + tile.letter, ""),
+			tiles: scoredClumps[0]
 		}
 
 		return word;
@@ -225,99 +225,87 @@ class Player {
 	testPlay(tiles) {
 		let play = {
 			valid: false,
-			error: 0,
+			error: null,
 			data: null
 		}
-
-		let firstRow = Math.min(...tiles.map(tile => tile.row));
-		let firstCol = Math.min(...tiles.map(tile => tile.col));
-		let sameRow = tiles.every(tile => tile.row == firstRow);
-		let sameCol = tiles.every(tile => tile.col == firstCol);
 	
-		if (tiles.length > 1 && (sameRow || sameCol)) {
-			let direction = "row";
-			let perpDirection = "col";
-			let vectorIndex = firstRow;
-			let paraVectors = Game.tileMap;
-			let perpVectors = transpose(Game.tileMap);
-			if (sameCol) {
-				direction = "col";
-				perpDirection = "row";
-				vectorIndex = firstCol;
-				paraVectors = transpose(Game.tileMap);
-				perpVectors = Game.tileMap;
-			}
-	
-			let vectorBefore = paraVectors[vectorIndex];
-			let vectorAfter = deepCopy(vectorBefore);
-			let scoredWords = [];
-			let perpConnect = false;
-			let includesCenter = false;
-	
-			for (let t = 0, tn = tiles.length; t < tn; t++) {
-				let tile = tiles[t];
-				let indexAlongVector = tile.col;
-				if (sameCol) indexAlongVector = tile.row;
-	
-				// Apply to parallel vector
-				vectorAfter[indexAlongVector] = tile;
-	
-				// Perpendicular validity
-				let perpVectorBefore = perpVectors[indexAlongVector];
-				let perpVectorAfter = deepCopy(perpVectorBefore);
-				perpVectorAfter[vectorIndex] = tile;
-				if (!perpConnect) perpConnect = this.testConnectivity(perpVectorBefore, perpDirection, [tile]);
-				let perpWord = this.findScoredWord(perpVectorBefore, perpVectorAfter);
-				if (perpWord.single && perpWord.string.length > 1) scoredWords.push(perpWord);
-
-				//? Does the play contain the center square?
-				if (!includesCenter) {
-					let isCenterRow = (tile.row == Math.floor(Game.board.length / 2));
-					let isCenterCol = (tile.col == Math.floor(Game.board[0].length / 2));
-					includesCenter = (isCenterRow && isCenterCol);
+		if (tiles.length > 0) {
+			let firstRow = Math.min(...tiles.map(tile => tile.row));
+			let firstCol = Math.min(...tiles.map(tile => tile.col));
+			let sameRow = tiles.every(tile => tile.row == firstRow);
+			let sameCol = tiles.every(tile => tile.col == firstCol);
+		
+			if (sameRow || sameCol) {
+				let paraDirection = sameRow ? "row" : "col";
+				let perpDirection = sameRow ? "col" : "row";
+				let vectorIndex = sameRow ? firstRow : firstCol;
+		
+				let paraVectors = sameRow ? Game.tileMap : transpose(Game.tileMap);
+				let perpVectors = sameRow ? transpose(Game.tileMap) : Game.tileMap;
+		
+				let vectorBefore = paraVectors[vectorIndex];
+				let vectorAfter = deepCopy(vectorBefore);
+				let scoredWords = [];
+				let perpConnect = false;
+				let includesCenter = false;
+		
+				let centerRow = Math.floor(Game.board.length / 2);
+				let centerCol = Math.floor(Game.board[0].length / 2);
+		
+				for (let t = 0, tn = tiles.length; t < tn; t++) {
+					let tile = tiles[t];
+					let indexAlongVector = sameRow ? tile.col : tile.row;
+		
+					vectorAfter[indexAlongVector] = tile;
+		
+					let perpVectorBefore = perpVectors[indexAlongVector];
+					let perpVectorAfter = deepCopy(perpVectorBefore);
+					perpVectorAfter[vectorIndex] = tile;
+					if (!perpConnect) perpConnect = this.testConnectivity(perpVectorBefore, perpDirection, [tile]);
+					let perpWord = this.findScoredWord(perpVectorBefore, perpVectorAfter);
+					if (perpWord.single && perpWord.string.length > 1) scoredWords.push(perpWord);
+		
+					if (!includesCenter) includesCenter = (tile.row == centerRow && tile.col == centerCol);
 				}
-			}
-	
-			// Parallel validity
-			let paraConnect = this.testConnectivity(vectorBefore, direction, tiles);
-			let paraWord = this.findScoredWord(vectorBefore, vectorAfter);
-			if (paraWord.single && paraWord.string.length > 1) scoredWords.push(paraWord);
+		
+				let paraConnect = this.testConnectivity(vectorBefore, paraDirection, tiles);
+				let paraWord = this.findScoredWord(vectorBefore, vectorAfter);
+				if (paraWord.single && paraWord.string.length > 1) scoredWords.push(paraWord);
+		
+				let isConnected = paraConnect || perpConnect;
+				let isValid = true;
+				let invalidWord = "";
 
-			//? Is the play connected parallely or perpendicularly?
-			let isConnected = (paraConnect || perpConnect);
-
-			//? Is the play logical?
-			let isLogical = (scoredWords.length > 0);
-
-			//? Are all the words played valid?
-			let isValid = true;
-			let invalidWord = "";
-			for (let w = 0, wn = scoredWords.length; w < wn; w++) {
-				if (!Game.WordTrie.search(scoredWords[w].string)) {
-					isValid = false;
-					invalidWord = scoredWords[w].string;
-					break;
-				}
-			}
-
-			if (includesCenter || isConnected) {
-				if (isLogical) {
-					if (isValid) {
-						play.valid = true;
-						play.data = {
-							tilesPlayed: tiles,
-							scoredWords: scoredWords,
-							score: this.calculateScore(scoredWords)
-						}
-					} else {
-						play.error = 3;
-						play.data = invalidWord;
+				for (let w = 0, wn = scoredWords.length; w < wn; w++) {
+					let wordString = scoredWords[w].string;
+					if (!Game.WordTrie.search(wordString)) {
+						isValid = false;
+						invalidWord = wordString;
+						break;
 					}
 				}
-				else play.error = 2;
+		
+				if (includesCenter || isConnected) {
+					if (scoredWords.length > 0) {
+						if (isValid) {
+							play.valid = true;
+							play.data = {
+								tilesPlayed: tiles,
+								scoredWords: scoredWords,
+								score: this.calculateScore(scoredWords)
+							}
+						} else {
+							play.error = "invalid word";
+							play.data = invalidWord;
+						}
+					}
+					else play.error = "chungus";
+				}
+				else play.error = "unconnected tiles";
 			}
-			else play.error = 1;
+			else play.error = "tiles in multiple vectors";
 		}
+		else play.error = "zero tiles";
 	
 		this.currentPlay = play;
 	}
@@ -340,7 +328,7 @@ class Player {
 			let output = [];
 		
 			let swap = (arrToSwap, indexA, indexB) => {
-				const temp = arrToSwap[indexA];
+				let temp = arrToSwap[indexA];
 				arrToSwap[indexA] = arrToSwap[indexB];
 				arrToSwap[indexB] = temp;
 			}
@@ -387,14 +375,11 @@ class Player {
 			}
 			this.botTilePerms.push(...comboPerms);
 		}
+
+		this.botTilePerms.shuffle();
 	}
 
 	generateBotPlays() {
-		let rows = Game.tileMap;
-		let cols = transpose(rows);
-		let startTime = performance.now();
-
-		//
 		let findOpenSquares = vector => {
 			let openSquares = [];
 			for (let i = 0, n = vector.length; i < n; i++) {
@@ -403,90 +388,72 @@ class Player {
 			return openSquares;
 		}
 
-		// Calculate all valid word plays for a single vector (row or column)
-		let generateVectorPlays = (vectorBefore, direction, vectorIndex) => {
-			let paraVectors = cols;
-			if (direction == "col") paraVectors = rows
+		let generateVectorPlays = (paraVectors, direction, vectorIndex) => {
+			let isVectorPopulated = index => {
+				let isPopulated = false;
+				if (0 <= index && index < vectorBefore.length)
+					isPopulated = findOpenSquares(paraVectors[index]).length < vectorBefore.length
+				return isPopulated;
+			}
 
-			let vectorLength = vectorBefore.length;
+			let vectorBefore = paraVectors[vectorIndex];
 			let openSquareIndexes = findOpenSquares(vectorBefore);
-			let lastVectorIndex = vectorIndex - 1;
-			let nextVectorIndex = vectorIndex + 1;
-			let isLastVectorPopulated = false;
-			let isThisVectorPopulated = openSquareIndexes.length < vectorLength;
-			let isNextVectorPopulated = false;
 
-			if (lastVectorIndex >= 0)
-				isLastVectorPopulated = findOpenSquares(paraVectors[lastVectorIndex]).length < vectorLength;
-			if (nextVectorIndex < vectorLength)
-				isNextVectorPopulated = findOpenSquares(paraVectors[nextVectorIndex]).length < vectorLength;
-
-			if (isLastVectorPopulated || isThisVectorPopulated || isNextVectorPopulated) {
-				// Trying each permutation of tiles along vector
+			if (
+				isVectorPopulated(vectorIndex - 1) ||
+				isVectorPopulated(vectorIndex) ||
+				isVectorPopulated(vectorIndex + 1)
+			) {
 				for (let p = 0, pn = this.botTilePerms.length; p < pn; p++) {
 					let tilePerm = this.botTilePerms[p];
-
-					// Iterate through each starting point for tile permutation
-					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length + 1; s < sn; s++) {
-						//* Time limiter
+					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length; s <= sn; s++) {
 						this.msElapsed = performance.now() - startTime;
 						if (this.msElapsed < this.maxMs) {
-							let tilesPlayed = [];
-							for (let l = 0, ln = tilePerm.length; l < ln; l++) {
-								let tile = deepCopy(tilePerm[l]);
-								let indexAlongVector = openSquareIndexes[s + l];
+							let tilesPlayed = deepCopy(tilePerm);
+							for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
+								let tile = tilesPlayed[t];
+								let indexAlongVector = openSquareIndexes[s + t];
 
 								tile.state = "placed-rack";
-								if (direction == "row") {
-									tile.row = vectorIndex;
-									tile.col = indexAlongVector;
-								} else {
-									tile.row = indexAlongVector;
-									tile.col = vectorIndex;
-								}
-
-								tilesPlayed.push(tile);
+								tile.row = (direction == "row") ? vectorIndex : indexAlongVector;
+								tile.col = (direction == "row") ? indexAlongVector : vectorIndex;
 							}
 
 							this.testPlay(tilesPlayed);
 							this.botPlaysTested++;
-							if (this.currentPlay.valid) this.botValidPlays.push(this.currentPlay.data);
+							if (this.currentPlay.valid) this.botValidPlays.push(this.currentPlay.data);	
 						}
 					}
 				}
 			}
 		}
 
-		// Test all plays for all rows
-		for (let i = 0, n = rows.length; i < n; i++) {
-			generateVectorPlays(rows[i], "row", i);
-		}
+		let rows = Game.tileMap;
+		let cols = transpose(rows);
+		let startTime = performance.now();
 
-		// Test all plays for all columns
-		for (let i = 0, n = cols.length; i < n; i++) {
-			generateVectorPlays(cols[i], "col", i);
-		}
+		for (let v = 0, vn = rows.length; v < vn; v++) generateVectorPlays(rows, "row", v);
+		for (let v = 0, vn = cols.length; v < vn; v++) generateVectorPlays(cols, "col", v);
 	}
 
 	chooseBotPlay() {
 		this.botValidPlays.sort((a, b) => b.score - a.score);
-		return this.botValidPlays[0];
+		let midPlayIndex = Math.floor(this.botValidPlays.length / 2);
+		return this.botValidPlays[midPlayIndex];
 	}
 
 	applyPlay(play) {
-		let tilesPlayed = play.tilesPlayed;
-		
 		// Update tile map
-		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-			let tile = tilesPlayed[t];
+		for (let t = 0, tn = play.tilesPlayed.length; t < tn; t++) {
+			let tile = play.tilesPlayed[t];
 			tile.state = "placed-board";
 			Game.tileMap[tile.row][tile.col] = tile;
 		}
 
 		// Update tile racks
-		for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-			let rackIndex = tilesPlayed[t].rackIndex;
-			this.rackTiles = $.grep(this.rackTiles, tile => tile.rackIndex != rackIndex);
+		for (let t = 0, tn = play.tilesPlayed.length; t < tn; t++) {
+			let rackIndex = play.tilesPlayed[t].rackIndex;
+			this.rackTiles = this.rackTiles.filter(tile => tile.rackIndex !== rackIndex);
 		}
 
 		// Update score

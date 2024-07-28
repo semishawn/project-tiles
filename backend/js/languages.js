@@ -16,6 +16,7 @@ var languages = [
 				rackSize: 7,
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
 				tileSet: [
+					{letter: "?", points:  0, freq:  2},
 					{letter: "A", points:  1, freq:  9},
 					{letter: "B", points:  3, freq:  2},
 					{letter: "C", points:  3, freq:  2},
@@ -41,8 +42,7 @@ var languages = [
 					{letter: "W", points:  4, freq:  2},
 					{letter: "X", points:  8, freq:  1},
 					{letter: "Y", points:  4, freq:  2},
-					{letter: "Z", points: 10, freq:  1},
-					{letter: "?", points:  0, freq:  2}
+					{letter: "Z", points: 10, freq:  1}
 				],
 				premiumCells: [
 					{id: 2, abbr: "DL", text: "double letter score"},

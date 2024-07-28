@@ -1,12 +1,13 @@
 .play-screen {
-	--z-below-tile: 1000;
-	--z-tile: 1001;
-	--z-above-tile: 1002;
-
 	flex-direction: row;
 	align-items: flex-end;
 	padding: 1rem;
 }
+.play-screen[data-dragging="true"] {cursor: grabbing;}
+.play-screen[data-dragging="true"] * {pointer-events: none !important;}
+.play-screen[data-dragging="true"] .cell,
+.play-screen[data-dragging="true"] .tile[data-state*="placed"]
+{pointer-events: all !important;}
 
 .play-column1 {
 	flex-grow: 1;
@@ -38,7 +39,6 @@
 	align-items: center;
 	min-width: var(--dimension);
 	height: var(--dimension);
-	background: var(--tile-color);
 }
 .player-icon svg {height: calc(0.6 * var(--dimension));}
 
@@ -183,7 +183,7 @@
 .tilebag-hover-text {
 	position: absolute;
 	opacity: 0;
-	font-size: 0.5rem;
+	font-size: 0.45rem;
 	font-style: italic;
 	line-height: 1.1;
 	margin-top: 0.4rem;
@@ -240,7 +240,7 @@
 	left: 0;
 	bottom: 0;
 	width: 100%;
-	height: calc(3 * var(--input-border-width));
+	height: var(--indicator-border-width);
 	z-index: var(--z-above-tile);
 }
 .tilebag-timer-bar {
@@ -263,15 +263,11 @@
 
 .play-history-title {
 	justify-content: center;
-	align-self: flex-start;
-	min-height: var(--big-tile-dimension);
+	align-items: center;
+	width: 100%;
+	height: var(--big-tile-dimension);
 	font-size: 0.45rem;
-	font-style: italic;
-	padding: 0 0.75rem;
-	margin-bottom: auto;
 	border: var(--input-border-width) solid var(--ui-color2);
-	border-left: 0;
-	z-index: var(--z-history-above-scroll);
 }
 
 .play-history-body {
@@ -279,6 +275,7 @@
 	flex-grow: 1;
 	padding: calc(-1 * var(--input-border-width)) 0;
 	border: var(--input-border-width) solid var(--ui-color2);
+	border-top: 0;
 	border-bottom: 0;
 	overflow: hidden;
 }
@@ -304,6 +301,7 @@
 	border-left: 0;
 	border-right: 0;
 }
+.play-history-message:nth-child(1) {margin-top: auto;}
 
 .play-history-message .player-icon {
 	--dimension: var(--small-tile-dimension);
@@ -335,10 +333,15 @@
 .play-history-textbox::placeholder {opacity: 0.4;}
 
 .play-history-send-btn {
+	--inside-bg: var(--ui-color3);
 	width: var(--big-tile-dimension);
 	height: 100%;
 }
 .play-history-send-btn svg {height: 0.5rem;}
+.play-history-send-btn[disabled] {
+	--inside-bg: var(--ui-color1);
+	pointer-events: none;
+}
 
 .play-history-message[data-player="user"] {flex-direction: row-reverse;}
 .play-history-message[data-player="user"] .play-history-text {
@@ -440,7 +443,10 @@
 
 
 /** Dialog boxes */
-.dialog-box {
+.show-dialog {pointer-events: none;}
+.show-dialog .btn:not(.dialog .btn) {--inside-bg: var(--ui-color1) !important;}
+
+.dialog {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -467,52 +473,31 @@
 	margin-bottom: 0.5rem;
 }
 
-/* Skip */
-.show-dialog[data-dialog="skip"] .player-rack,
-.show-dialog[data-dialog="skip"] .action-btn-container,
-.show-dialog[data-dialog="skip"] .tile
-{pointer-events: none !important;}
-
-.skip-dialog {z-index: var(--z-above-tile);}
-.skip-dialog-btn-container {
+.dialog-btn-container {
 	flex-direction: row;
 	width: 7rem;
 	height: var(--big-tile-dimension);
 }
-.skip-dialog .btn {
+.dialog-btn-container .btn {
 	width: 100%;
 	height: 100%;
 }
-.skip-dialog .btn-inside {font-size: 0.45rem;}
-.confirm-skip-btn {--inside-bg: var(--ui-color3);}
-.deny-skip-btn {margin-left: calc(-1 * var(--input-border-width));}
+.dialog-btn-container .btn-inside {font-size: 0.45rem;}
+.dialog-confirm-btn {--inside-bg: var(--ui-color3);}
+.dialog-deny-btn {margin-left: calc(-1 * var(--input-border-width));}
+
+/* Skip */
+.skip-dialog {z-index: var(--z-above-tile);}
 
 /* Exchange */
-.show-dialog[data-dialog="exchange"] .player-rack,
-.show-dialog[data-dialog="exchange"] .action-btn-container
-{pointer-events: none !important;}
+.show-dialog[data-dialog="exchange"] .user-rack-tiles,
+.show-dialog[data-dialog="exchange"] .tile[data-state="rack"]
+{pointer-events: all !important;}
 
 .exchange-dialog {z-index: var(--z-below-tile);}
-.exchange-dialog-btn-container {
-	flex-direction: row;
-	width: 7rem;
-	height: var(--big-tile-dimension);
-	margin-top: 0.5rem;
-}
-.exchange-dialog .btn {
-	width: 100%;
-	height: 100%;
-}
-.exchange-dialog .btn-inside {font-size: 0.45rem;}
-.confirm-exchange-btn {--inside-bg: var(--ui-color3);}
-.deny-exchange-btn {margin-left: calc(-1 * var(--input-border-width));}
+.exchange-dialog .rack-tiles {margin-bottom: 0.5rem;}
 
 /* Blank */
-.show-dialog[data-dialog="blank"] .player-rack,
-.show-dialog[data-dialog="blank"] .action-btn-container,
-.show-dialog[data-dialog="blank"] .tile
-{pointer-events: none !important;}
-
 .blank-dialog {z-index: var(--z-above-tile);}
 .blank-option {
 	--hover-extend: 0.15rem;
@@ -524,6 +509,12 @@
 	font-size: calc(0.6 * var(--big-tile-dimension));
 	font-weight: 800;
 }
+
+/* Start Over */
+.start-over-dialog {z-index: var(--z-above-tile);}
+
+/* Resign */
+.resign-dialog {z-index: var(--z-above-tile);}
 
 
 
@@ -567,106 +558,24 @@
 
 
 
-/** Tiles */
-.tile {
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	width: var(--tile-dimension);
-	height: var(--tile-dimension);
-	background: var(--tile-color);
-	color: var(--ui-color2);
-	border: var(--input-border-width) solid var(--ui-color2);
-	user-select: none;
-	transition: transform 0.1s;
-	z-index: var(--z-tile);
-}
-.tile, .tile * {transition: transform 0.05s;}
-
-.tile-inside {
-	position: relative;
-	flex-direction: row;
-	width: 100%;
-	height: 100%;
-	padding: calc(var(--tile-dimension) / 20);
-}
-
-.tile-letter {
-	flex-grow: 1;
-	font-size: calc(0.6 * var(--tile-dimension));
-	font-weight: 800;
-}
-
-.tile-points {
-	justify-content: flex-end;
-	font-size: calc(var(--tile-dimension) / 5);
-	font-weight: 400;
-	color: var(--ui-color2);
-}
-
-.tile[data-state="bag"] {
-	--tile-dimension: calc(0.95 * var(--small-tile-dimension));
-	margin-top: calc(-1 * var(--input-border-width));
-	margin-left: calc(-1 * var(--input-border-width));
-}
-.tile[data-state="bag"] .tile-points {display: none;}
-.tile[data-state="rack"] {
-	position: absolute;
-}
-.tile[data-state*="rack"]:hover {
-	transform: scale(1.1);
-	cursor: pointer;
-}
-.tile[data-state="dragging"] {
-	--tile-dimension: var(--big-tile-dimension);
-	position: absolute;
-	pointer-events: none;
-}
-.tile[data-state="placed-rack"] {
-	--tile-dimension: var(--small-tile-dimension);
-	position: absolute;
-}
-.tile[data-state="placed-board"] {
-	--tile-dimension: var(--small-tile-dimension);
-	position: absolute;
-}
-
-.tile[data-blank="true"] .tile-inside {
-	justify-content: center;
-	align-items: center;
-	padding: 0;
-}
-.tile[data-blank="true"] .tile-letter {
-	flex-grow: 0;
-	justify-content: center;
-	align-items: center;
-	opacity: 0.5;
-	width: calc(0.7 * var(--tile-dimension));
-	height: calc(0.7 * var(--tile-dimension));
-	font-size: calc(0.5 * var(--tile-dimension));
-	padding: 0;
-}
-.tile[data-blank="true"] .tile-points {display: none;}
-.tile[data-blank="true"]:not([data-letter=""]) .tile-letter {
-	border: var(--input-border-width) solid var(--ui-color2);
-}
-
-
-
 /** Board buttons */
 .action-btn-container {
 	flex-direction: row;
 	height: var(--big-tile-dimension);
 }
 
-.action-btn, .rack-btn {width: 100%;}
+.action-btn, .rack-btn {
+	--inside-bg: var(--ui-color3);
+	width: 100%;
+}
 .shuffle-btn svg {height: 0.7rem;}
 .recall-btn svg {height: 0.5rem;}
+
+.action-btn + .action-btn {margin-left: calc(-1 * var(--input-border-width));}
 .action-btn .btn-inside {
 	flex-direction: row;
 	font-size: 0.45rem;
 }
-.action-btn + .action-btn {margin-left: calc(-1 * var(--input-border-width));}
 .action-btn svg {
 	height: 0.4rem;
 	margin-right: 0.5em;
@@ -682,13 +591,21 @@
 
 
 /** Player states */
+/* User */
 [data-current-player="user"] .current-player-indicator-bg {top: 0;}
 [data-current-player="user"] .current-player-indicator-border
 {top: calc(-1 * var(--indicator-border-width) + var(--input-border-width));}
 
+/* Bot */
 [data-current-player="bot"] .current-player-indicator-bg {top: 50%;}
 [data-current-player="bot"] .current-player-indicator-border
 {top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
-[data-current-player="bot"] .action-btn-container {pointer-events: none;}
-[data-current-player="bot"] .play-btn {--inside-bg: var(--ui-color1);}
-[data-current-player="bot"] .tile[data-state="rack"] {pointer-events: none;}
+
+[data-current-player="bot"] .action-btn,
+[data-current-player="bot"] .recall-btn
+{--inside-bg: var(--ui-color1);}
+
+[data-current-player="bot"] .action-btn-container,
+[data-current-player="bot"] .recall-btn,
+[data-current-player="bot"] .tile[data-state="rack"]
+{pointer-events: none;}

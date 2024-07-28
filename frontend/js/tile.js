@@ -1,50 +1,50 @@
-//* Hover event
-$("body").on("mouseenter", `.tile[data-state*="rack"]`, function() {
-	$(this).maxZ(".tile");
-})
-.on("mouseleave", `.tile[data-state*="rack"]`, function() {
-	let zTile = parseInt($(".play-screen").css("--z-tile"));
-	$(this).css("z-index", zTile);
-});
-
-
-
-//* Drag events
-var Drag = {
+var TileDrag = {
+	selector: `.tile[data-player="user"][data-state*="rack"]`,
 	mousedown: false,
 	active: false,
-	tile: null,
+	element: null,
 	startX: 0,
 	startY: 0,
-	distance: 0,
 
 	reset: function() {
 		this.mousedown = false;
 		this.active = false;
-		this.tile = null;
+		this.element = null;
 		this.startX = 0;
 		this.startY = 0;
-		this.distance = 0;
 	}
 }
 
-$("body").on("mousedown", `.tile[data-state*="rack"]`, function(e) {
-	Drag.mousedown = true;
-	Drag.tile = $(this);
-	Drag.startX = e.clientX;
-	Drag.startY = e.clientY;
-	$("body").css("cursor", "grabbing");
+
+
+//* Hover
+$(".play-screen").on("mouseenter", TileDrag.selector, function() {
+	$(this).css("z-index", "var(--z-above-above-tile)");
+})
+.on("mouseleave", TileDrag.selector, function() {
+	$(this).css("z-index", "var(--z-tile)");
 });
 
-$("body").on("mousemove", function(e) {
-	if (Drag.mousedown) {
-		Drag.distance = Math.round(Math.sqrt(Math.pow(Drag.startY - e.clientY, 2) + Math.pow(Drag.startX - e.clientX, 2)));
-		Drag.active = (Drag.distance > 10);
 
-		if (Drag.active) {
-			// State change
-			Drag.tile.attr("data-state", "dragging");
-			Drag.tile.css({
+
+//* Drag
+$(".play-screen").on("mousedown", TileDrag.selector, function(e) {
+	TileDrag.mousedown = true;
+	TileDrag.element = $(this);
+	TileDrag.startX = e.clientX;
+	TileDrag.startY = e.clientY;
+});
+
+$(".play-screen").on("mousemove", function(e) {
+	if (TileDrag.mousedown) {
+		let distance = Math.round(Math.sqrt(Math.pow(TileDrag.startY - e.clientY, 2)
+			+ Math.pow(TileDrag.startX - e.clientX, 2)));
+
+		if (!TileDrag.active) TileDrag.active = (distance > 5);
+		else {
+			$(".play-screen").attr("data-dragging", true);
+			TileDrag.element.attr("data-state", "dragging");
+			TileDrag.element.css({
 				"left": e.clientX - (bigTileDimension / 2) + "px",
 				"top": e.clientY - (bigTileDimension / 4) + "px"
 			});
@@ -52,8 +52,8 @@ $("body").on("mousemove", function(e) {
 	}
 })
 .on("mouseup", function() {
-	if (Drag.active) {
-		let rackIndex = Drag.tile.attr("data-rack-index");
+	if (TileDrag.active) {
+		let rackIndex = TileDrag.element.attr("data-rack-index");
 		let tile = Game.User.rackTiles[rackIndex];
 
 		//* Success
@@ -61,8 +61,6 @@ $("body").on("mousemove", function(e) {
 			let hoveredCell = $(".cell:hover");
 			let cellRow = parseInt(hoveredCell.attr("data-row"));
 			let cellCol = parseInt(hoveredCell.attr("data-col"));
-			let cellOffsetLeft = hoveredCell.offset().left;
-			let cellOffsetTop = hoveredCell.offset().top;
 
 			// Backend
 			tile.state = "placed-rack";
@@ -70,16 +68,16 @@ $("body").on("mousemove", function(e) {
 			tile.col = cellCol;
 
 			// Frontend
-			Drag.tile.attr({
+			TileDrag.element.attr({
 				"data-state": "placed-rack",
 				"data-row": cellRow,
 				"data-col": cellCol
 			}).css({
-				"left": cellOffsetLeft,
-				"top": cellOffsetTop
+				"left": hoveredCell.offset().left,
+				"top": hoveredCell.offset().top
 			});
 
-			if (tile.letter == null) Drag.tile.changeLetter();
+			if (tile.letter == null) TileDrag.element.click();
 		}
 
 		//! Fail
@@ -92,64 +90,75 @@ $("body").on("mousemove", function(e) {
 			tile.col = null;
 
 			// Frontend
-			Drag.tile.attr({
+			TileDrag.element.attr({
 				"data-state": "rack",
 				"data-row": "",
 				"data-col": ""
-			});
-			Drag.tile.moveTo(correspondingSlot);
+			})
+			.moveTo(correspondingSlot);
 		}
 
 		let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
 		Game.User.testPlay(tilesPlayed);
 		$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
-		
+
 		console.log(Game.User.currentPlay);
 	}
 
-	Drag.reset();
-	$("body").css("cursor", "default");
+	TileDrag.reset();
+	$(".play-screen").attr("data-dragging", false);
 });
 
 
 
 //* Dialogs
 // Blank
-$("body").on("click", `.tile[data-player="user"][data-state*="rack"][data-blank="true"]`, function() {
+$(".play-screen").on("click", TileDrag.selector + `[data-blank="true"]`, function() {
 	let $this = $(this);
-	if (Game.currentDialog == null) $this.changeLetter();
+
+	if (Game.currentDialog == null) {
+		let rackIndex = $this.attr("data-rack-index");
+		let letter = $this.attr("data-letter");
+
+		Game.currentBlank = Game.User.rackTiles[rackIndex];
+
+		$(`[name="blank-option"]`).prop("checked", false);
+		if (letter != null) $(`#blank-option-${letter}`).prop("checked", true);
+		showDialog("blank");
+	}
 });
-$("body").on("click", ".blank-option", function() {
+$(".play-screen").on("click", ".blank-option", function() {
+	let rackIndex = Game.currentBlank.rackIndex;
 	let letter = $(this).attr("data-letter");
-	let correspondingTile = $(`.tile[data-player="user"][data-rack-index="${Game.currentBlankIndex}"]`);
+	let correspondingTile = $(`.tile[data-player="user"][data-state*="rack"][data-rack-index="${rackIndex}"]`);
 
-	Game.User.rackTiles[Game.currentBlankIndex].letter = letter;
-	correspondingTile.attr("data-letter", letter);
-	correspondingTile.find(".tile-letter").html(letter);
-	Game.currentBlankIndex = null;
+	Game.currentBlank.letter = letter;
+	Game.currentBlank = null;
 
+	correspondingTile.changeLetterFE(letter);
 	hideDialog();
+
+	// Test play
+	let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
+	Game.User.testPlay(tilesPlayed);
+	$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
 });
 
 // Exchange
-$("body").on("click", `.tile[data-player="user"][data-state*="rack"]`, function() {
+$(".play-screen").on("click", TileDrag.selector, function() {
 	let $this = $(this);
 
 	if (Game.currentDialog == "exchange") {
 		let rackIndex = $this.attr("data-rack-index");
 		let tile = Game.User.rackTiles[rackIndex];
 		let exchange = tile.exchange;
+		let correspondingSlot;
 
-		if (exchange == false) {
-			correspondingSlot = $(".exchange-dialog .tile-slot").eq(rackIndex);
-			tile.exchange = true;
-			$this.attr("data-exchange", "true");
-		} else {
-			correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
-			tile.exchange = false;
-			$this.attr("data-exchange", "false");
-		}
+		if (!exchange) correspondingSlot = $(".exchange-dialog .tile-slot").eq(rackIndex);
+		else correspondingSlot = $(`.user-rack-tiles .tile-slot`).eq(rackIndex);
 
-		$this.moveTo(correspondingSlot, TileElement.moveDurFast);
+		tile.exchange = !exchange;
+		$this.attr("data-exchange", !exchange);
+		$this.moveTo(correspondingSlot, TileFE.moveDurFast);
 	}
 });

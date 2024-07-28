@@ -7,6 +7,7 @@
 	<title>Project TILES</title>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+	<script src="https://kit.fontawesome.com/5978d27576.js" crossorigin="anonymous"></script>
 
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
@@ -17,15 +18,38 @@
 <body>
 	<div class="game-window">
 		<div class="game-window-tab">
-			Game Window
-			<div class="game-window-tab-corner"></div>
-			<!-- <div class="game-window-tab-corner"></div> -->
+			<div class="game-window-title">Game Window</div>
+
+			<input type="checkbox" id="game-window-audio" autocomplete="off">
+			<label class="game-window-audio-btn" for="game-window-audio">
+				<i class="fa-solid fa-volume-xmark"></i>
+				<i class="fa-solid fa-volume-high"></i>
+			</label>
 		</div>
 
 		<div class="main-wrapper">
 			<iframe src="index.html" frameborder="0"></iframe>
 		</div>
 	</div>
+
+	<script>
+		var musicAccessGranted = false;
+		var musicPlaying = false;
+
+		$(".game-window-audio-btn").on("click", function() {
+			let contents = $("iframe").contents();
+			let music = contents.find(".play-music")[0];
+
+			if (!musicAccessGranted) {
+				music.play();
+				contents.find("body").click();
+				musicAccessGranted = true;
+			}
+
+			music.volume = (musicPlaying) ? 0 : 0.2;
+			musicPlaying = !musicPlaying;
+		});
+	</script>
 </body>
 
 </html>

@@ -36,7 +36,7 @@ var i_box = `
 </svg>
 `;
 
-/* var i_globe = `
+var i_globe = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<path vector-effect="non-scaling-stroke" d="M 100,50 A 50,50 0 0 1 50,100 50,50 0 0 1 0,50 50,50 0 0 1 50,0 50,50 0 0 1 100,50 Z"/>
 	<path vector-effect="non-scaling-stroke" d="m 12.863404,16.581638 c 9.150047,5.013883 22.386093,8.166277 37.111802,8.166277 14.752904,0 28.009579,-3.164432 37.16139,-8.194463"/>
@@ -45,15 +45,15 @@ var i_box = `
 	<path vector-effect="non-scaling-stroke" d="M 87.136602,83.418293 C 77.986545,78.404407 64.75051,75.252016 50.024802,75.252015 35.2719,75.252014 22.015214,78.416464 12.863397,83.446472"/>
 	<path vector-effect="non-scaling-stroke" d="M 74.747984,50 A 24.747984,50 0 0 1 50,100 24.747984,50 0 0 1 25.252016,50 24.747984,50 0 0 1 50,0 24.747984,50 0 0 1 74.747984,50 Z"/>
 </svg>
-`; */
-var i_globe = `
+`;
+/* var i_globe = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<path vector-effect="non-scaling-stroke" d="M 100,50 A 50,50 0 0 1 50,100 50,50 0 0 1 0,50 50,50 0 0 1 50,0 50,50 0 0 1 100,50 Z"/>
 	<path vector-effect="non-scaling-stroke" d="M 0,50 H 100"/>
 	<path vector-effect="non-scaling-stroke" d="M 50,0 V 100"/>
 	<path vector-effect="non-scaling-stroke" d="M 74.747984,50 A 24.747984,50 0 0 1 50,100 24.747984,50 0 0 1 25.252016,50 24.747984,50 0 0 1 50,0 24.747984,50 0 0 1 74.747984,50 Z"/>
 </svg>
-`;
+`; */
 
 var i_bot = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -111,6 +111,7 @@ var i_flag = `
 
 var i_tilebag = `
 <svg viewBox="0 0 82.02623 91.807907" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<path id="tilebag-bg" d="m 32.980355,-6e-6 c -1.09687,-5.8e-4 -2.08247,0.29239 -2.8789,1.144531 -0.92139,0.985838 -1.08762,2.460301 -0.80079,4.148437 h -0.0039 c 0,0 -5.32336,-1.290254 -6.50781,1.875 -1.72788,4.6175 4.81469,7.532902 8.91015,12.210938 -1.7149,0 -3.0957,1.380808 -3.0957,3.095703 0,1.684444 1.33339,3.042003 3.00586,3.089843 -5.83738,2.596651 -15.37269,11.509847 -21.3457,21.396828 -5.12111,8.476824 -8.18055,21.099476 -5.95704,29.84375 h -0.00195 c -1.23594,2.352265 -5.81682,5.170385 -3.79883,9.214844 1.8486,3.704915 7.70406,1.740951 14.32618,2.332031 6.62211,0.591082 13.9819,3.455078 26.19921,3.455078 6.90447,0.03107 13.95654,-0.8242 20.00977,-2.662109 l 0.02539,-0.0039 c 10.92893,-2.513124 18.2931,1.460139 20.49023,-3.267579 1.83318,-3.944541 -2.20067,-6.969109 -3.5957,-8.865234 1.02452,-8.056589 0.41702,-19.156639 -6.16211,-30.046875 -5.97313,-9.887184 -15.50835,-18.800373 -21.3457,-21.396828 1.67273,-0.04755 3.00586,-1.405213 3.00586,-3.089843 0,-1.714894 -1.38081,-3.095703 -3.09571,-3.095703 4.09549,-4.678037 10.63805,-7.593438 8.91016,-12.210938 -1.18445,-3.165254 -6.50586,-1.875 -6.50586,-1.875 h -0.0059 c 0.28671,-1.688136 0.12061,-3.162599 -0.80078,-4.148437 -2.5486,-2.726871 -7.02664,0.277343 -10.92969,0.277343 -2.68332,0 -5.63766,-1.420614 -8.05078,-1.421874 z"/>
 	<path vector-effect="non-scaling-stroke" d="m 37.270228,25.57068 -2.988272,6.033744"/>
 	<path vector-effect="non-scaling-stroke" d="M 31.700043,19.379699 C 27.604552,14.70165 21.061847,11.785446 22.789728,7.1679383 c 1.18445,-3.16527 6.506899,-1.874075 6.506899,-1.874075"/>
 	<path vector-effect="non-scaling-stroke" d="m 41.031707,25.57068 h 9.331664 c 1.714902,0 3.095491,-1.380589 3.095491,-3.095491 0,-1.7149 -1.380589,-3.095489 -3.095491,-3.095489 h -9.331664 m 0,6.19098 h -9.331664 c -1.714902,0 -3.095491,-1.380589 -3.095491,-3.095491 0,-1.714901 1.380589,-3.09549 3.095491,-3.09549 h 9.331664"/>
@@ -169,22 +170,37 @@ var i_star = `
 </svg>
 `;
 
+var i_pencil = `
+<svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<path vector-effect="non-scaling-stroke" d="M 77.373047,0 8.2822266,69.09082 0,100 30.909668,91.718262 100,22.627441 Z"/>
+	<path vector-effect="non-scaling-stroke" d="M 30.905611,91.719125 C 27.945914,80.679629 19.323046,72.056761 8.2835504,69.097065"/>
+	<path vector-effect="non-scaling-stroke" d="M 63.938965,13.435547 86.564941,36.061524 Z" />
+</svg>
+`;
+
 
 
 $(`.btn[class*="back-btn"]`).prepend(i_arrowLong);
 $(`.btn[class*="continue-btn"]`).append(i_arrowLong);
 
+// Title screen
+$(".title-play-btn").append(i_arrowLong);
+
 // Edition screen
 $(".edition-icon-info-row").eq(0).prepend(i_cube);
 $(".edition-icon-info-row").eq(1).prepend(i_verified);
 $(".edition-icon-info-row").eq(2).prepend(i_globe);
-$(".edition-box").prepend(i_box);
-$(".edition-globe").prepend(i_globe);
+
+// Players screen
+$(".player-intro-tilebag").prepend(i_tilebag);
+$(".user-intro .player-icon").append(i_user);
+$(".user-intro .player-intro-edit-icon").append(i_pencil);
+$(".bot-intro .player-icon").append(i_bot);
 
 // Play screen
 $(".user-score-box .player-icon").append(i_user);
 $(".bot-score-box .player-icon").append(i_bot);
-$(".quit-btn").prepend(i_exit);
+$(".ditch-btn").prepend(i_exit);
 $(".start-over-btn").prepend(i_restart);
 $(".resign-btn").prepend(i_flag);
 $(".shuffle-btn").prepend(i_shuffle);

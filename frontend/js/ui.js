@@ -1,4 +1,20 @@
-//* UI Variables
+//* Button Variables
+var backBtnLang = $(".lang-screen .back-btn");
+var backBtnEdition = $(".edition-screen .back-btn");
+var backBtnPref = $(".pref-screen .back-btn");
+var backBtnPlayers = $(".players-screen .back-btn");
+
+var contBtnLang = $(".lang-screen .continue-btn");
+var contBtnEdition = $(".edition-screen .continue-btn");
+var contBtnPref = $(".pref-screen .continue-btn");
+var contBtnPlayers = $(".players-screen .continue-btn");
+
+var langId = null;
+var editionId = null;
+
+
+
+//* Title screen
 var logoLetters = [
 	["T", "ת", "ت", "ट", "た", "タ"],
 	["I", "Í", "И", "い", "イ"],
@@ -7,23 +23,6 @@ var logoLetters = [
 	["S", "С", "Σ", "サ", "さ"]
 ];
 
-var backBtnLang = $(".lang-screen .back-btn");
-var backBtnEdit = $(".edition-screen .back-btn");
-var backBtnPref = $(".pref-screen .back-btn");
-
-var contBtnLang = $(".lang-screen .continue-btn");
-var contBtnEdit = $(".edition-screen .continue-btn");
-var contBtnPref = $(".pref-screen .continue-btn");
-
-var editionRadioTemplate = $(`input[name="edition-option"]`);
-var editionOptionTemplate = $(".edition-option");
-
-var langId = 0;
-var editionId = 0;
-
-
-
-//* Visuals
 $(".logo-tile").each(function(t) {
 	let $this = $(this);
 	for (let l = 0; l < logoLetters[t].length; l++) {
@@ -53,6 +52,17 @@ setInterval(function() {
 	}
 }, 400);
 
+$(".title-play-btn").on("click", function() {
+	newScreen("lang");
+});
+
+$(".download-btn").on("click", function() {
+	newScreen("download");
+});
+
+
+
+//* Lang screen
 languages.sort(function(a, b) {
 	return a.exonym.localeCompare(b.exonym);
 });
@@ -75,39 +85,6 @@ for (let i = 0; i < languages.length; i++) {
 	$(".lang-container").append(langOption);
 }
 
-/* for (let i = 0, n = botIconOptions.length + userIconOptions.length; i < n; i++) {
-	let index = i % (n / 2);
-	let player = "bot";
-	let icon = botIconOptions[i];
-	if ((i + 1) > (n / 2)) {
-		player = "user";
-		icon = userIconOptions[i];
-	}
-
-	$(`.${player}-icon-option-container`).append(`
-		<input type="radio" name="${player}-icon" id="${player}-icon-option${index}">
-		<label for="${player}-icon-option${index}" class="btn icon-option">
-			<div class="player-icon">
-				<i class="fa-solid fa-${icon}"></i>
-			</div>
-		</label>
-	`);
-} */
-
-
-
-//* Buttons
-// Title screen
-$(".title-play-btn").on("click", function() {
-	newScreen("lang");
-});
-
-$(".download-btn").on("click", function() {
-	newScreen("download");
-});
-
-
-// Language screen
 $(".lang-container").on("click", ".lang-option", function() {
 	let checkedOption = $("input:checked + .lang-option");
 	if (checkedOption.length == 0)
@@ -133,9 +110,6 @@ contBtnLang.on("click", function() {
 	$(".edition-options-container").empty();
 	let editions = languages[langId].editions;
 	for (let i = 0, n = editions.length; i < n; i++) {
-		let editionRadio = editionRadioTemplate.clone();
-		let editionOption = editionOptionTemplate.clone();
-
 		let editionTitle = editions[i].title;
 		let editionExonym = editions[i].langExonym;
 		let editionEndonym = editions[i].langEndonym;
@@ -144,62 +118,198 @@ contBtnLang.on("click", function() {
 		let editionRegion = editions[i].region;
 		let editionRelease = `${editionYear} ${editionMfr}`;
 
+		let newEditionInput = editionInputTemplate.clone();
+		let newEditionLabel = editionLabelTemplate.clone();
+
+		newEditionLabel.btnify();
+		newEditionLabel.find(".edition-verified-icon").prepend(i_verified);
+		newEditionLabel.find(".edition-box").prepend(i_box);
+		newEditionLabel.find(".edition-globe").prepend(i_globe);
+
 		if (editionMfr == "Mattel" || editionMfr == "Hasbro") {
-			editionOption.attr("data-verified", true);
+			newEditionLabel.attr("data-verified", true);
 			editionRelease = editionRegion + ", " + editionRelease;
 		}
 
-		if (typeof editionRegion !== "undefined")
-			editionOption.attr("data-sold", true);
+		if (typeof editionRegion !== "undefined") {
+			newEditionLabel.attr("data-sold", true);
+		}
 
-		editionOption.find(".edition-title").html(editionTitle).css("font-family", langFont);;
-		editionRadio.attr("id", "edition-option" + i);
-		editionOption.attr("for", "edition-option" + i);
-		editionOption.find(".edition-exonym").html(editionExonym);
-		editionOption.find(".edition-endonym").html(editionEndonym);
-		editionOption.find(".edition-endonym").css("font-family", langFont);
-		editionOption.find(".edition-release").html(editionRelease);
+		newEditionInput.attr("id", "edition-option" + i);
+		newEditionLabel.attr("for", "edition-option" + i);
 
-		$(".edition-screen .edition-options-container").append([editionRadio, editionOption]);
+		newEditionLabel.find(".edition-title").html(editionTitle).css("font-family", langFont);;
+		newEditionLabel.find(".edition-exonym").html(editionExonym);
+		newEditionLabel.find(".edition-endonym").html(editionEndonym);
+		newEditionLabel.find(".edition-endonym").css("font-family", langFont);
+		newEditionLabel.find(".edition-release").html(editionRelease);
+
+		$(".edition-screen .edition-options-container").append([newEditionInput, newEditionLabel]);
 	}
 
-	contBtnEdit.attr("disabled", true);
+	contBtnEdition.attr("disabled", true);
 	newScreen("edition");
 });
 
 
-// Edition screen
-backBtnEdit.on("click", function() {
+
+//* Edition screen
+backBtnEdition.on("click", function() {
 	newScreen("lang");
 });
 
-contBtnEdit.on("click", function() {
+contBtnEdition.on("click", function() {
 	editionId = $(`input[name="edition-option"]:checked`).attr("id");
 	editionId = parseInt(editionId.replace("edition-option", ""));
 
-	newGame(langId, editionId);
-	setTimeout(function() {
-		newScreen("play");
-	}, 500);
+	Game.new(langId, editionId);
+
+	$(".players-screen").attr("data-goes-first", "");
+	$(".user-intro .player-intro-name").html(Game.User.name);
+	$(".player-intro-current-chars").html(Game.User.name.length);
+	$(".bot-intro .player-intro-name").html(Game.Bot.name);
+	$(".player-intro-tilebag").attr("data-clicked", false);
+	drawPlayOrderTiles();
+
+	newScreen("players");
 });
 
 $("body").on("click", ".edition-option", function() {
 	if (!$(`input[name="edition-option"]`).is(":checked"))
-		contBtnEdit.removeAttr("disabled");
+		contBtnEdition.removeAttr("disabled");
 });
 
 
-// Preferences screen
-/* backBtnPref.on("click", function() {
+
+//* Players screen
+let usernameTextbox = $(".user-intro .player-intro-name");
+let usernameCharLimit = 10;
+let lastValidName = "";
+let choseValidName = false;
+let choseGoesFirst = false;
+
+backBtnPlayers.on("click", function() {
 	newScreen("edition");
 });
 
-contBtnPref.on("click", function() {
-	editionId = $(`input[name="edition-option"]:checked`).attr("id");
-	editionId = parseInt(editionId.replace("edition-option", ""));
+contBtnPlayers.on("click", function() {
+	Game.User.name = $(".user-intro .player-intro-name").text();
+	changePlayerTo(Game.firstPlayer);
+	setTimeout(() => initiateGame(), screenTransition);
 
-	newGame(langId, editionId);
+	newGameFE();
+	newScreen("play");
+});
+
+function checkContinueEnable() {
+	if (choseValidName && choseGoesFirst) contBtnPlayers.removeAttr("disabled");
+	else contBtnPlayers.attr("disabled", true);
+}
+
+function setEndOfContenteditable(contentEditableElement) {
+	var range, selection;
+
+	// Firefox, Chrome, Opera, Safari, IE 9+ 
+	if (document.createRange) {
+		range = document.createRange(); // Create a range (a range is a like the selection but invisible)
+		range.selectNodeContents(contentEditableElement); // Select the entire contents of the element with the range
+		range.collapse(false); // collapse the range to the end point. false means collapse to end rather than the start
+		selection = window.getSelection(); // get the selection object (allows you to change selection)
+		selection.removeAllRanges(); // remove any selections already made
+		selection.addRange(range); // make the range you have just created the visible selection
+	}
+
+	// IE 8 and lower
+	else if (document.selection) { 
+		range = document.body.createTextRange(); // Create a range (a range is a like the selection but invisible)
+		range.moveToElementText(contentEditableElement); // Select the entire contents of the element with the range
+		range.collapse(false); // collapse the range to the end point. false means collapse to end rather than the start
+		range.select(); // Select the range (make it the visible selection
+	}
+}
+
+usernameTextbox.on("propertychange input", function() {
+	let currentValue = usernameTextbox.text();
+
+	if (currentValue.length > 0) {
+		if (currentValue.length <= usernameCharLimit) {
+			choseValidName = true;
+			lastValidName = currentValue;
+		} else {
+			usernameTextbox.html(lastValidName);
+			setEndOfContenteditable(usernameTextbox[0]);
+		}
+		$(".user-intro .player-intro-descriptor").removeClass("invalid-chars");
+	} else {
+		choseValidName = false;
+		$(".user-intro .player-intro-descriptor").addClass("invalid-chars");
+	}
+
+	$(".player-intro-current-chars").html(usernameTextbox.text().length);
+	checkContinueEnable();
+})
+.on("cut copy paste", function(e) {
+	e.preventDefault();
+})
+.keydown(function(e) {
+	if (e.key == "Enter") {
+		e.preventDefault();
+		usernameTextbox.blur();
+	}
+})
+.on("focusout", function() {
+	$(".player-intro-name-edit-container").attr("data-editing", false);
+});
+
+$(".player-intro-edit-icon").on("click", function() {
+	$(".player-intro-name-edit-container").attr("data-editing", true);
+	usernameTextbox.focus();
+	setEndOfContenteditable(usernameTextbox[0]);
+});
+
+$(".player-intro-char-limit").html(usernameCharLimit);
+
+$(".player-intro-tilebag").on("click", function() {
+	let t = 0;
+	$(`.tile[data-state="play-order"]`).each(function() {
+		let player = $(this).attr("data-player");
+		let correspondingSlot = $(`.${player}-intro .player-intro-tile-slot`);
+		setTimeout(() => $(this).moveTo(correspondingSlot), t * TileFE.moveDelay);
+		t++;
+	});
+
+	$(this).attr("data-clicked", true);
+
 	setTimeout(function() {
-		newScreen("play");
-	}, 500);
-}); */
+		let player = Game.firstPlayer.type;
+		$(".players-screen").attr("data-goes-first", player);
+		choseGoesFirst = true;
+		checkContinueEnable();
+	}, 2 * TileFE.moveDur);
+});
+
+function drawPlayOrderTiles() {
+	let players = [
+		{type: "user", tile: null},
+		{type: "bot", tile: null}
+	];
+
+	$(`.tile[data-state="play-order"]`).remove();
+	for (let i = 0; i < players.length; i++) {
+		let randomIndex = Math.floor(Math.random() * Game.tileBag.length);
+		players[i].tile = Game.tileBag.splice(randomIndex, 1)[0];
+		let newTileElement = generateTileFE(players[i].tile);
+
+		newTileElement.attr({
+			"data-state": "play-order",
+			"data-player": players[i].type
+		});
+
+		$(".players-screen").append(newTileElement);
+	}
+
+	for (let i = 0; i < players.length; i++) Game.tileBag.push(players[i].tile);
+	Game.sortTileBag();
+
+	Game.firstPlayer = (players[0].tile.bagIndex < players[1].tile.bagIndex) ? Game.User : Game.Bot;
+}

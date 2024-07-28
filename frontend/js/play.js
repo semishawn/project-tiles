@@ -1,36 +1,14 @@
 //* Visual functionality
-var TileElement = {
-	moveDur: 500,
-	moveDurFast: 250,
-	moveDelay: 150,
-	html: $(`
-		<div class="tile">
-			<div class="tile-inside">
-				<div class="tile-letter"></div>
-				<div class="tile-points"></div>
-			</div>
-		</div>
-	`)
-}
-
-var tileBagContainer = $(".tilebag-tiles-container");
-
-$.fn.moveTo = function(element, duration = TileElement.moveDur) {
+$.fn.moveTo = function(element, duration = TileFE.moveDur) {
 	$(this).animate({
 		"top": $(element).offset().top,
 		"left": $(element).offset().left
 	}, duration);
 }
 
-$.fn.changeLetter = function() {
-	let rackIndex = $(this).attr("data-rack-index");
-	let letter = $(this).attr("data-letter");
-
-	Game.currentBlankIndex = rackIndex;
-	$(`[name="blank-option"]`).prop("checked", false);
-	if (letter != null) $(`#blank-option-${letter}`).prop("checked", true);
-
-	showDialog("blank");
+$.fn.changeLetterFE = function(letter) {
+	$(this).attr("data-letter", letter);
+	$(this).find(".tile-letter").html(letter);
 }
 
 $.fn.stripFE = function() {
@@ -50,26 +28,10 @@ function generateTileBagFE() {
 
 	tileBagContainer.empty();
 	for (let t = 0, tn = Game.tileBag.length; t < tn; t++) {
-		let letter = Game.tileBag[t].letter;
-		let blank = Game.tileBag[t].blank;
-		let points = Game.tileBag[t].points;
-		let newTileElement = TileElement.html.clone();
-
-		Object.keys(Game.tileBag[t]).forEach(key => {
-			let kebabKey = camelToKebab(key);
-			let value = Game.tileBag[t][key];
-			if (value == null) value = "";
-			newTileElement.attr(`data-${kebabKey}`, value);
-		});
-
-		if (!blank) {
-			newTileElement.attr("data-letter", letter)
-			newTileElement.find(".tile-letter").html(letter);
-			newTileElement.find(".tile-points").html(points);
-		}
-
+		let newTileElement = generateTileFE(Game.tileBag[t]);
 		let rotLimit = 8;
 		let randomRot = Math.random() * 2 * rotLimit - rotLimit;
+
 		newTileElement.css("transform", `rotate(${randomRot}deg)`);
 		tileBagContainer.append(newTileElement);
 	}
@@ -84,6 +46,8 @@ function sortTileBagFE() {
 }
 
 function generateBoardFE() {
+	$(".board-letter-container").empty();
+	$(".board-number-container").empty();
 	for (let i = 0; i < Game.board.length; i++) {
 		let letter = Game.alphabet[i];
 		if (i >= Game.alphabet.length) {
@@ -97,6 +61,7 @@ function generateBoardFE() {
 		$(".board-number-container").append(`<div class="board-number">${i + 1}</div>`);
 	}
 
+	$(".cell").remove();
 	for (let r = 0; r < Game.board.length; r++) {
 		for (let c = 0; c < Game.board[r].length; c++) {
 			let id = Game.board[r][c];
@@ -132,7 +97,8 @@ function generateRacksFE() {
 
 function generateBlankOptionsFE() {
 	$(".blank-option-container").empty();
-	for (let l = 0, ln = Game.tileSet.length - 1; l < ln; l++) {
+	for (let l = 0, ln = Game.tileSet.length; l < ln; l++) {
+		if (Game.tileSet[l].letter == "?") continue;
 		let letter = Game.tileSet[l].letter;
 		let optionInput = $(`<input type="radio" id="blank-option-${letter}" name="blank-option">`);
 		let optionLabel = $(`<label class="btn blank-option" for="blank-option-${letter}" data-letter="${letter}">${letter}</label>`);
@@ -155,7 +121,7 @@ function drawTilesFE(player, numTiles) {
 		if (t < numTilesLeft) {
 			let tile = $(`.tile[data-player="${player.type}"][data-state="rack"]`).eq(t);
 			tile.attr("data-rack-index", t);
-			tile.moveTo(correspondingSlot, TileElement.moveDurFast);
+			tile.moveTo(correspondingSlot, TileFE.moveDurFast);
 		} else {
 			let bagIndex = player.rackTiles[t].bagIndex;
 			let tile = $(`.tile[data-state="bag"][data-bag-index="${bagIndex}"]`);
@@ -173,7 +139,7 @@ function drawTilesFE(player, numTiles) {
 			});
 			setTimeout(function() {
 				tile.moveTo(correspondingSlot);
-			}, (t - numTilesLeft) * TileElement.moveDelay);
+			}, (t - numTilesLeft + 1) * TileFE.moveDelay);
 		}
 	}
 
@@ -203,13 +169,16 @@ function applyPlayFE(player, play) {
 		for (let t = 0; t < play.tilesPlayed.length; t++) {
 			let tile = play.tilesPlayed[t];
 			let rackIndex = tile.rackIndex;
+			let blank = tile.blank;
 			let correspondingTile = $(`.tile[data-player="bot"][data-state="rack"][data-rack-index="${rackIndex}"]`);
 			let correspondingCell = $(`.cell[data-row="${tile.row}"][data-col="${tile.col}"]`);
 
+			correspondingTile.attr("data-state", "placed-rack");
+			if (blank) correspondingTile.changeLetterFE(tile.letter);
+
 			setTimeout(function() {
-				correspondingTile.attr("data-state", "placed-board");
 				correspondingTile.moveTo(correspondingCell);
-			}, t * TileElement.moveDelay);
+			}, t * TileFE.moveDelay);
 		}
 	}
 
@@ -245,26 +214,26 @@ function addToHistory(player, type, content = "") {
 			messageString = `${player.name} played ${wordsString} and scored <b>${content.score}</b> points.`;
 			break;
 		case "skip":
-			messageString = `${player.name} skipped their turn.`;
+			messageString = `<i>${player.name} skipped their turn.</i>`;
 			break;
 		case "exchange":
-			let plural = (content > 1 ? "s" : "");
-			messageString = `${player.name} has exchanged <b>${content}</b> tile${plural}.`;
+			let plural = (content > 1) ? "s" : "";
+			messageString = `${player.name} exchanged <b>${content}</b> tile${plural}.`;
 			break;
 		case "other":
 			messageString = `<i>${content}</i>`;
 			break;
 	}
 
-	$(".play-history-scroll-container").append(`
+	historyContainer.append(`
 		<div class="play-history-message" data-player="${player.type}">
 			<div class="player-icon">${icon}</div>
 			<div class="play-history-text">${messageString}</div>
 		</div>
-	`);
-
-	let scrollContainer = $(".play-history-scroll-container")[0];
-	scrollContainer.scrollTo(0, scrollContainer.scrollHeight);
+	`)
+	.animate({
+		scrollTop: historyContainer.prop("scrollHeight")
+	}, TileFE.moveDurFast);
 }
 
 function showDialog(dialog) {
@@ -278,7 +247,7 @@ function hideDialog() {
 	Game.currentDialog = null;
 	$(".play-screen").removeClass("show-dialog");
 	$(".play-screen").attr("data-dialog", "");
-	$(".dialog-box").removeClass("current-dialog");
+	$(".dialog").removeClass("current-dialog");
 }
 
 
@@ -290,11 +259,15 @@ function newGameFE() {
 		"--cell-dimension": (standardCellDimension * 15) / Game.board.length + "px"
 	});
 	$(".play-screen").css("font-family", Game.langFont);
-	$(".user-score-box").find(".player-name").html(Game.User.name);
-	$(".bot-score-box").find(".player-name").html(Game.Bot.name);
-	$(".tilebag-count").html(Game.tileBag.length);
+	$(".user-score-box .player-name").html(Game.User.name);
+	$(".user-score-box .player-score").html(Game.User.score);
+	$(".bot-score-box .player-name").html(Game.Bot.name);
+	$(".bot-score-box .player-score").html(Game.Bot.score);
 	$(".play-history-textbox").attr("placeholder", `Chat with ${Game.Bot.name}...`);
 	$(".blank-option-container").css("--columns", Game.rackSize);
+
+	$(".play-screen .tile").remove();
+	historyContainer.empty();
 
 	generateTileBagFE();
 	generateBoardFE();
@@ -302,6 +275,16 @@ function newGameFE() {
 	generateBlankOptionsFE();
 
 	changePlayerTo(Game.User);
+}
+
+function initiateGame() {
+	Game.User.drawTiles(Game.rackSize);
+	Game.Bot.drawTiles(Game.rackSize);
+
+	drawTilesFE(Game.User, Game.rackSize);
+	drawTilesFE(Game.Bot, Game.rackSize);
+
+	if (Game.firstPlayer.type == "bot") postBotPlay();
 }
 
 function onValidPlay(player, play) {
@@ -325,31 +308,55 @@ function postBotPlay() {
 }
 
 BotWorker.onmessage = e => {
-	let move = e.data;
-	console.log(move);
+	let ply = e.data;
+	console.log(ply);
 
-	switch(move.type) {
+	switch(ply.type) {
 		case "play":
-			onValidPlay(Game.Bot, move.data);
+			onValidPlay(Game.Bot, ply.data);
 			break;
 		case "skip":
 			addToHistory(Game.Bot, "skip");
 			break;
 	}
 
+	Game.plyCount++;
 	changePlayerTo(Game.User);
 }
 
 
 
 //* Button functionality
-// Play functions
-$(".quit-btn").on("click", function() {
+$(".ditch-btn").on("click", function() {
 	newScreen("lang");
 });
+
+// Start Over
 $(".start-over-btn").on("click", function() {
+	showDialog("start-over");
 });
+$(".start-over-dialog .dialog-confirm-btn").on("click", function() {
+	Game.new(langId, editionId);
+	newGameFE();
+	
+	changePlayerTo(Game.firstPlayer);
+	initiateGame();
+
+	hideDialog();
+});
+$(".start-over-dialog .dialog-deny-btn").on("click", function() {
+	hideDialog();
+});
+
+// Resign
 $(".resign-btn").on("click", function() {
+	showDialog("resign");
+});
+$(".resign-dialog .dialog-confirm-btn").on("click", function() {
+	hideDialog();
+});
+$(".resign-dialog .dialog-deny-btn").on("click", function() {
+	hideDialog();
 });
 
 $(".tilebag-icon").on("click", function() {
@@ -362,30 +369,25 @@ $(".tilebag-icon").on("click", function() {
 });
 
 // Play history
+$(".play-history-textbox").on("propertychange input", function() {
+	let $this = $(this);
+	let isValidMessage = ($this.val() && $this.val().replace(/\s/g, "").length);
+	$(".play-history-send-btn").attr("disabled", !isValidMessage);
+});
 $(".play-history-send-btn").on("click", function() {
 	let textboxVal = $(".play-history-textbox").val();
-	// let messageContainer = $(".play-history-scroll-container")[0];
 
-	if (textboxVal.length > 0) {
-		addToHistory(Game.User, "talk", textboxVal);
-		$(".play-history-textbox").val("");
+	addToHistory(Game.User, "talk", textboxVal);
+	$(".play-history-textbox").val("");
+	$(".play-history-send-btn").attr("disabled", true);
 
-		setTimeout(function() {
-			addToHistory(Game.Bot, "talk", Game.botResponse);
-		}, 2000);
-	}
-
-	// messageContainer.scrollTo(0, messageContainer.scrollHeight);
+	setTimeout(() => addToHistory(Game.Bot, "talk", Game.Bot.response), 1500);
 });
 $(document).keydown(function(e) {
-	if (e.code == "Enter" && $(".play-history-textbox").is(":focus")) {
-		$(".play-history-send-btn").click();
-	} else if (e.key == "p") {
-		let oldPlayerType = Game.currentPlayer.type;
-		let newPlayer = Game.Bot;
-		if (oldPlayerType == "bot") newPlayer = Game.User;
-		changePlayerTo(newPlayer);
-	}
+	let isEnter = (e.code == "Enter");
+	let isFocused = $(".play-history-textbox").is(":focus");
+	let isDisabled = $(".play-history-send-btn").attr("disabled");
+	if (isEnter && isFocused && !isDisabled) $(".play-history-send-btn").click();
 });
 
 // Rack
@@ -413,19 +415,20 @@ $(".shuffle-btn").on("click", function() {
 		let correspondingSlot = $(".user-rack-tiles .tile-slot").eq(rackIndex);
 
 		$(".play-screen").append(tile);
-		if (state == "rack") $(tile).moveTo(correspondingSlot, TileElement.moveDurFast);
+		if (state == "rack") $(tile).moveTo(correspondingSlot, TileFE.moveDurFast);
 	});
 });
 $(".recall-btn").on("click", function() {
 	Game.User.recallTiles();
 	recallTilesFE(Game.User);
+	$(".play-btn").attr("disabled", true);
 });
 
 // Skip
 $(".skip-btn").on("click", function() {
 	showDialog("skip");
 });
-$(".confirm-skip-btn").on("click", function() {
+$(".skip-dialog .dialog-confirm-btn").on("click", function() {
 	Game.User.recallTiles();
 	recallTilesFE(Game.User);
 
@@ -434,7 +437,7 @@ $(".confirm-skip-btn").on("click", function() {
 	changePlayerTo(Game.Bot);
 	postBotPlay();
 });
-$(".deny-skip-btn").on("click", function() {
+$(".skip-dialog .dialog-deny-btn").on("click", function() {
 	hideDialog();
 });
 
@@ -444,7 +447,7 @@ $(".exchange-btn").on("click", function() {
 	// recallTilesFE(Game.User);
 	showDialog("exchange");
 });
-$(".confirm-exchange-btn").on("click", function() {
+$(".exchange-dialog .dialog-confirm-btn").on("click", function() {
 	let numTilesExchanged = Game.User.rackTiles.filter(tile => tile.exchange === true).length;
 
 	Game.User.exchangeTiles();
@@ -457,7 +460,7 @@ $(".confirm-exchange-btn").on("click", function() {
 	changePlayerTo(Game.Bot);
 	postBotPlay();
 });
-$(".deny-exchange-btn").on("click", function() {
+$(".exchange-dialog .dialog-deny-btn").on("click", function() {
 	hideDialog();
 	$(`.tile[data-exchange="true"]`).each(function() {
 		let rackIndex = $(this).attr("data-rack-index");
@@ -473,6 +476,7 @@ $(".play-btn").on("click", function() {
 	Game.User.currentPlay = null;
 	$(".play-btn").attr("disabled", true);
 
+	Game.plyCount++;
 	changePlayerTo(Game.Bot);
 	postBotPlay();
 });

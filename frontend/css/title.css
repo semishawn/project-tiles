@@ -25,7 +25,7 @@
 .logo-top-text {position: relative;}
 .logo-top-text div:nth-child(1) {
 	position: absolute;
-	color: var(--tile-color);
+	color: var(--tile-rack-color);
 	-webkit-text-stroke-width: calc(2 * var(--border-width));
 	-webkit-text-stroke-color: var(--border-color);
 	z-index: 11;
@@ -73,7 +73,7 @@
 	font-weight: 900;
 	pointer-events: none;
 }
-.logo-tile .btn-inside {background: var(--tile-color);}
+.logo-tile .btn-inside {background: var(--tile-rack-color);}
 .logo-tile + .logo-tile {margin-left: calc(-1 * var(--input-border-width));}
 .logo-tile.logo-tile-hover {--current-extend: 0.25rem;}
 
@@ -90,25 +90,27 @@
 
 /* Bottom container */
 .title-bottom-container {
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: flex-end;
-	width: 100%;
+	align-self: center;
+}
+
+.title-bottom-container > * {
+	width: 10rem;
+	height: 3rem;
 }
 
 .semipedia-text {
+	justify-content: center;
 	align-items: center;
-	font-size: 1rem;
+	width: 100%;
+	font-size: 0.85rem;
 	opacity: 0.3;
-	padding: 0.5rem 1rem;
 	border: var(--input-border-width) solid var(--ui-color2);
+	border-bottom: 0;
 }
 .semipedia-text div:nth-child(1) {
-	font-family: var(--font2);
-	font-size: 0.75em;
-	font-weight: 100;
+	font-size: 0.5em;
 	font-style: italic;
-	margin-bottom: 0.1em;
+	margin-bottom: 0.5em;
 }
 .semipedia-text div:nth-child(2) {
 	font-family: "Doyle";
@@ -117,8 +119,4 @@
 	line-height: 1;
 }
 
-.title-btn-container .btn {
-	width: 10rem;
-	height: 3rem;
-}
-.title-download-btn {margin-top: calc(-1 * var(--input-border-width));}
+.title-play-btn svg {margin-left: 0.3rem;}

@@ -12,7 +12,9 @@
 	--dw-color: #005599;
 	--tl-color: #f8b290;
 	--tw-color: #f26522;
-	--tile-color: wheat;
+
+	--tile-rack-color: wheat;
+	--tile-placed-color: #EFC881;
 
 	--aspect-ratio: calc(4 / 3);
 	--screen-width: 720px;
@@ -23,4 +25,11 @@
 	--small-tile-dimension: calc(1rem + 2 * var(--input-border-width));
 	--big-tile-dimension: 1.4rem;
 	--tile-dimension: var(--big-tile-dimension);
+
+	--z-below-tile: 1000;
+	--z-tile: 1001;
+	--z-above-tile: 1002;
+	--z-above-above-tile: 1003;
+
+	--input-transition: 0.1s;
 }

@@ -24,33 +24,39 @@ div, label {
 	flex-direction: column;
 }
 
-input[type="radio"] {display: none;}
+[type="radio"], [type="checkbox"] {display: none;}
 
 .game-window {
 	--border-width: 4px;
 	--border-radius: 10px;
-	--border-color: var(--tile-color);
+	--border-color: var(--tile-rack-color);
 	position: relative;
 	justify-content: flex-start;
 	align-content: flex-start;
 }
 
 .game-window-tab {
+	--padding: 10px;
 	--overlap: 50px;
 	position: relative;
-	width: min-content;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
 	font-size: 13px;
 	font-weight: 700;
 	font-style: italic;
-	padding: calc(2 * var(--border-width)) 40px;
+	padding-left: calc(2 * var(--padding));
+	padding-right: calc(2 * var(--padding));
+	padding-top: var(--padding);
 	padding-bottom: calc(var(--overlap) + var(--border-width));
 	margin-bottom: calc(-1 * var(--overlap));
 	background: var(--border-color);
 	border-radius: var(--border-radius);
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
-	white-space: nowrap;
 }
+
 .game-window-tab-corner {
 	position: absolute;
 	bottom: var(--overlap);
@@ -69,6 +75,14 @@ input[type="radio"] {display: none;}
 	border-bottom-left-radius: 100%;
 	background: var(--body-color);
 }
+
+.game-window-audio-btn {
+	font-size: 15px;
+	cursor: pointer;
+}
+.fa-volume-high {display: none;}
+input:checked + .game-window-audio-btn .fa-volume-xmark {display: none;}
+input:checked + .game-window-audio-btn .fa-volume-high {display: inline;}
 
 .main-wrapper {
 	padding: var(--border-width);

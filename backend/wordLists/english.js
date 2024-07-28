@@ -1,4 +1,4 @@
-var englishList = [
+wordLists.english = [
 	"AA",
 	"AB",
 	"AD",

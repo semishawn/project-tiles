@@ -27,7 +27,7 @@
 	<link rel="stylesheet" href="frontend/css/variables.css">
 	<link rel="stylesheet" href="frontend/css/main.css">
 	<link rel="stylesheet" href="frontend/css/title.css">
-	<link rel="stylesheet" href="frontend/css/options.css">
+	<link rel="stylesheet" href="frontend/css/ui.css">
 	<link rel="stylesheet" href="frontend/css/play.css">
 	<link rel="stylesheet" href="https://semipedia.cool/fonts/fonts.css">
 </head>
@@ -66,10 +66,7 @@
 					<div>Semipedia</div>
 				</div>
 
-				<div class="title-btn-container">
-					<div class="btn important-btn title-play-btn">Begin</div>
-					<div class="btn important-btn title-download-btn">Download</div>
-				</div>
+				<div class="btn important-btn title-play-btn">Begin</div>
 			</div>
 		</div>
 
@@ -111,85 +108,64 @@
 				</div>
 			</div>
 	
-			<div class="edition-options-container">
-				<input type="radio" id="" name="edition-option" autocomplete="off">
-				<label class="edition-option btn" for="" data-sold="false">
-					<div class="edition-verified-icon"></div>
-	
-					<div class="edition-box">
-						<div class="edition-title-isometric">
-							<div class="edition-title-rotate">
-								<div class="edition-title"></div>
-							</div>
-						</div>
-					</div>
-	
-					<div class="edition-globe">
-						<div class="edition-title-border">
-							<div class="edition-title"></div>
-						</div>
-					</div>
-	
-					<div class="edition-lang">
-						<div class="edition-exonym"></div>
-						<div class="edition-endonym"></div>
-					</div>
-	
-					<div class="edition-release"></div>
-				</label>
-			</div>
+			<div class="edition-options-container"></div>
 		</div>
 	
-		<!-- <div class="screen pref-screen">
+		<div class="screen players-screen" data-goes-first="">
 			<div class="header-container">
 				<div class="btn important-btn back-btn">Back</div>
-				<div class="header">Game Preferences</div>
-				<div class="btn important-btn continue-btn" disabled>Play</div>
+				<div class="header">Meet Your Opponent</div>
+				<div class="btn important-btn continue-btn" disabled>Continue</div>
 			</div>
-	
-			<div class="pref-column-container">
-				<div class="pref-column board-pref-column">
-					<div class="pref-instructions">Select a board layout :</div>
-					<div class="board-option-container">
-						<input type="radio" name="board-option" id="board-option1">
-						<label for="board-option1" class="btn icon-option"></label>
 
-						<input type="radio" name="board-option" id="board-option2">
-						<label for="board-option2" class="btn icon-option"></label>
-
-						<input type="radio" name="board-option" id="board-option3">
-						<label for="board-option3" class="btn icon-option"></label>
-
-						<input type="radio" name="board-option" id="board-option4">
-						<label for="board-option4" class="btn icon-option"></label>
+			<div class="player-intro-container">
+				<div class="player-intro user-intro">
+					<div class="player-icon"></div>
+					<div class="player-intro-name-wrapper">
+						<div class="player-intro-name-edit-container" data-editing="false">
+							<span class="player-intro-name" contenteditable="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></span>
+							<div class="player-intro-edit-icon"></div>
+						</div>
+						<div class="player-intro-descriptor">
+							<span class="player-intro-current-chars">0</span>/<span class="player-intro-char-limit">0</span>
+							characters
+						</div>
 					</div>
+					<div class="player-intro-goes-first">goes first!</div>
+					<div class="player-intro-tile-slot"></div>
+				</div>
+				
+				<div class="player-intro bot-intro">
+					<div class="player-icon"></div>
+					<div class="player-intro-name-wrapper">
+						<div class="player-intro-name"></div>
+						<div class="player-intro-descriptor"><b>Medium</b> difficulty</div>
+					</div>
+					<div class="player-intro-goes-first">goes first!</div>
+					<div class="player-intro-tile-slot"></div>
 				</div>
 
-				<div class="pref-column player-pref-column">
-					<div class="pref-instructions">Select an opponent icon :</div>
-					<div class="icon-option-container bot-icon-option-container"></div>
+				<div class="player-intro-goes-first-indicator"></div>
+			</div>
 
-					<div class="pref-instructions">Select your icon :</div>
-					<div class="icon-option-container user-icon-option-container"></div>
-				</div>
+			<div class="player-intro-tilebag" data-clicked="false">
+				<div class="player-intro-tilebag-text">Click to<br>draw tiles</div>
 			</div>
 		</div>
 
-		<div class="screen pre-screen"></div> -->
-	
 		<div class="screen play-screen" data-dialog="">
 			<div class="play-column1">
 				<div class="score-container">
 					<div class="score-box user-score-box">
 						<div class="player-icon"></div>
 						<div class="player-name"></div>
-						<div class="player-score">0</div>
+						<div class="player-score"></div>
 					</div>
 
 					<div class="score-box bot-score-box">
 						<div class="player-icon"></div>
 						<div class="player-name"></div>
-						<div class="player-score">0</div>
+						<div class="player-score"></div>
 					</div>
 
 					<div class="current-player-indicator-bg"></div>
@@ -198,7 +174,7 @@
 	
 				<div class="play-function-container">
 					<div class="done-btns-container">
-						<div class="btn done-btn quit-btn">Ditch this game</div>
+						<div class="btn done-btn ditch-btn">Ditch this game</div>
 						<div class="btn done-btn start-over-btn">Start over</div>
 						<div class="btn done-btn resign-btn">Resign</div>
 					</div>
@@ -229,15 +205,15 @@
 				</div>
 	
 				<div class="play-history-container">
+					<div class="play-history-title">Play History</div>
+
 					<div class="play-history-body">
-						<div class="play-history-scroll-container hide-scrollbar">
-							<div class="play-history-title">Play History</div>
-						</div>
+						<div class="play-history-scroll-container hide-scrollbar"></div>
 					</div>
 	
 					<div class="play-history-input-container">
 						<input class="play-history-textbox" type="text" placeholder="" autocomplete="off">
-						<div class="btn play-history-send-btn"></div>
+						<div class="btn play-history-send-btn" disabled="true"></div>
 					</div>
 				</div>
 			</div>
@@ -252,26 +228,42 @@
 				
 				<div class="board-column">
 					<div class="board">
-						<div class="dialog-box skip-dialog">
-							<div class="dialog-text">Confirm skip?</div>
-							<div class="skip-dialog-btn-container">
-								<div class="btn confirm-skip-btn">Yes</div>
-								<div class="btn deny-skip-btn">No</div>
+						<div class="dialog skip-dialog">
+							<div class="dialog-text">Skip your turn?</div>
+							<div class="dialog-btn-container">
+								<div class="btn dialog-confirm-btn">Confirm</div>
+								<div class="btn dialog-deny-btn">Cancel</div>
 							</div>
 						</div>
 
-						<div class="dialog-box exchange-dialog">
+						<div class="dialog exchange-dialog">
 							<div class="dialog-text">Click tiles to exchange:</div>
 							<div class="rack-tiles"></div>
-							<div class="exchange-dialog-btn-container">
-								<div class="btn confirm-exchange-btn">Confirm</div>
-								<div class="btn deny-exchange-btn">Cancel</div>
+							<div class="dialog-btn-container">
+								<div class="btn dialog-confirm-btn">Confirm</div>
+								<div class="btn dialog-deny-btn">Cancel</div>
 							</div>
 						</div>
 
-						<div class="dialog-box blank-dialog">
+						<div class="dialog blank-dialog">
 							<div class="dialog-text">Choose a substitute:</div>
 							<div class="btn-grid blank-option-container"></div>
+						</div>
+
+						<div class="dialog start-over-dialog">
+							<div class="dialog-text">Start this game over?</div>
+							<div class="dialog-btn-container">
+								<div class="btn dialog-confirm-btn">Confirm</div>
+								<div class="btn dialog-deny-btn">Cancel</div>
+							</div>
+						</div>
+
+						<div class="dialog resign-dialog">
+							<div class="dialog-text">Resign this game?</div>
+							<div class="dialog-btn-container">
+								<div class="btn dialog-confirm-btn">Confirm</div>
+								<div class="btn dialog-deny-btn">Cancel</div>
+							</div>
 						</div>
 					</div>
 	
@@ -281,9 +273,9 @@
 						<div class="btn rack-btn recall-btn"></div>
 					</div>
 	
-					<div class="action-btn-container">	
-						<div class="btn action-btn skip-btn">Skip turn</div>
+					<div class="action-btn-container">
 						<div class="btn action-btn exchange-btn">Exchange tiles</div>
+						<div class="btn action-btn skip-btn">Skip turn</div>
 						<div class="btn action-btn play-btn" disabled="true">Play</div>
 					</div>
 
@@ -295,15 +287,17 @@
 		<div class="screen end-screen"></div>
 	</main>
 
+	<audio class="play-music" src="frontend/audio/PlayMusic.mp3" loop></audio>
+
+	<script src="backend/js/main.js"></script>
 	<script src="backend/js/languages.js"></script>
 	<script src="backend/js/boards.js"></script>
 	<script src="backend/js/classes.js"></script>
-	<script src="backend/js/main.js"></script>
 
 	<script src="backend/wordLists/english.js"></script>
 
-	<script src="frontend/js/icons.js"></script>
 	<script src="frontend/js/main.js"></script>
+	<script src="frontend/js/icons.js"></script>
 	<script src="frontend/js/ui.js"></script>
 	<script src="frontend/js/play.js"></script>
 	<script src="frontend/js/tile.js"></script>
