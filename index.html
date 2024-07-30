@@ -165,6 +165,10 @@
 					<div class="score-box bot-score-box">
 						<div class="player-icon"></div>
 						<div class="player-name"></div>
+						<div class="player-think">
+							<span>&nbsp;is thinking...</span>
+							<div class="player-timer"></div>
+						</div>
 						<div class="player-score"></div>
 					</div>
 
@@ -284,7 +288,49 @@
 			</div>
 		</div>
 
-		<div class="screen end-screen"></div>
+		<div class="screen end-screen" data-winner="">
+			<div class="end-player-container">
+				<div class="winner-indicator"></div>
+
+				<div class="end-player user-end">
+					<div class="player-ordinal"></div>
+
+					<div class="player-end-info">
+						<span class="player-end-name"></span>
+						<div class="player-icon"></div>
+					</div>
+
+					<div class="player-final-score"></div>
+
+					<div class="player-avg-score-container">
+						<span>Average per turn</span>
+						<div class="player-avg-score"></div>
+					</div>
+				</div>
+
+				<div class="end-player bot-end">
+					<div class="player-ordinal"></div>
+
+					<div class="player-end-info">
+						<span class="player-end-name"></span>
+						<div class="player-icon"></div>
+					</div>
+
+					<div class="player-final-score"></div>
+
+					<div class="player-avg-score-container">
+						<span>Average per turn</span>
+						<div class="player-avg-score"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="end-btn-container">
+				<div class="btn important-btn end-btn rematch-btn">Rematch</div>
+				<div class="btn important-btn end-btn new-edition-btn">New Edition</div>
+				<div class="btn important-btn end-btn save-results-btn">Save Results</div>
+			</div>
+		</div>
 	</main>
 
 	<audio class="play-music" src="frontend/audio/PlayMusic.mp3" loop></audio>
@@ -294,10 +340,13 @@
 	<script src="backend/js/boards.js"></script>
 	<script src="backend/js/classes.js"></script>
 
-	<script src="backend/wordLists/english.js"></script>
+	<script src="backend/word-lists/nwl2023.js"></script>
+	<script src="backend/word-lists/rae.js"></script>
+	<script src="backend/word-lists/ods8.js"></script>
 
 	<script src="frontend/js/main.js"></script>
 	<script src="frontend/js/icons.js"></script>
+	<script src="frontend/js/fruit.js"></script>
 	<script src="frontend/js/ui.js"></script>
 	<script src="frontend/js/play.js"></script>
 	<script src="frontend/js/tile.js"></script>

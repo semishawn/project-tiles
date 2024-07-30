@@ -224,7 +224,6 @@ input:checked + .btn .btn-stalk
 	justify-content: center;
 	align-items: center;
 	align-self: flex-end;
-	width: 1.3ch;
 	height: 2ch;
 	font-size: calc(var(--tile-dimension) / 5);
 	font-weight: 400;

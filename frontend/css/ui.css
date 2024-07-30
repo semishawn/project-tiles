@@ -349,3 +349,101 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 [data-goes-first="bot"] .bot-intro .player-intro-goes-first {opacity: 1;}
 [data-goes-first="bot"] .player-intro-goes-first-indicator
 {bottom: calc(-1 * var(--indicator-border-width) + var(--input-border-width));}
+
+
+
+/** End */
+.end-player-container {
+	--z-winner-bg: 100;
+	--z-player-end: 101;
+	position: relative;
+	flex-grow: 1;
+	flex-direction: row;
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+.winner-indicator {
+	position: absolute;
+	top: 0;
+	width: 50%;
+	height: 100%;
+	background: var(--tile-rack-color);
+	z-index: var(--z-winner-bg);
+}
+
+.end-player {
+	width: 100%;
+	border: var(--input-border-width) solid var(--ui-color2);
+	z-index: var(--z-player-end);
+}
+.end-player + .end-player {margin-left: calc(-1 * var(--input-border-width));}
+
+.player-ordinal {
+	text-align: center;
+	width: 100%;
+	font-size: 2rem;
+	font-weight: 900;
+	padding: 0.1rem 0;
+	border-bottom: var(--input-border-width) solid var(--ui-color2);
+}
+
+.player-end-info {
+	flex-grow: 1;
+	justify-content: center;
+	align-items: center;
+	border-bottom: var(--input-border-width) solid var(--ui-color2);
+}
+.player-end-name {
+	font-size: 1rem;
+	font-weight: 700;
+	margin-top: -0.1em;
+	margin-bottom: 0.2rem;
+}
+.player-end-info .player-icon {
+	--dimension: 4rem;
+	border: var(--input-border-width) solid var(--ui-color2);
+}
+
+.player-final-score {
+	text-align: center;
+	width: 100%;
+	font-family: var(--font2);
+	font-size: 3rem;
+	font-weight: 700;
+	padding: 0.1rem 0;
+	border-bottom: var(--input-border-width) solid var(--ui-color2);
+}
+
+.player-avg-score-container {
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	font-size: 0.75rem;
+	font-style: italic;
+	padding: 0.5rem 1rem;
+}
+.player-avg-score {
+	font-family: var(--font2);
+	font-size: 1rem;
+	font-weight: 100;
+	font-style: normal;
+}
+
+[data-winner="user"] .winner-indicator {left: 0;}
+[data-winner="user"] .user-end .player-ordinal {background: var(--tile-placed-color);}
+[data-winner="bot"] .winner-indicator {right: 0;}
+[data-winner="bot"] .bot-end .player-ordinal {background: var(--tile-placed-color);}
+
+.end-btn-container {
+	flex-direction: row;
+	width: 100%;
+}
+
+.end-btn {
+	height: calc(2 * var(--big-tile-dimension));
+	width: 100%;
+}
+.end-btn + .end-btn {margin-left: calc(-1 * var(--input-border-width));}
+.end-btn svg {margin-right: 0.5rem;}

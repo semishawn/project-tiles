@@ -262,6 +262,7 @@ function newGameFE() {
 	$(".user-score-box .player-name").html(Game.User.name);
 	$(".user-score-box .player-score").html(Game.User.score);
 	$(".bot-score-box .player-name").html(Game.Bot.name);
+	$(".player-timer").css("--duration", (Game.Bot.maxMs / 1000 + 0.5) + "s");
 	$(".bot-score-box .player-score").html(Game.Bot.score);
 	$(".play-history-textbox").attr("placeholder", `Chat with ${Game.Bot.name}...`);
 	$(".blank-option-container").css("--columns", Game.rackSize);
@@ -273,8 +274,6 @@ function newGameFE() {
 	generateBoardFE();
 	generateRacksFE();
 	generateBlankOptionsFE();
-
-	changePlayerTo(Game.User);
 }
 
 function initiateGame() {
@@ -311,17 +310,20 @@ BotWorker.onmessage = e => {
 	let ply = e.data;
 	console.log(ply);
 
+	Game.Bot.plyCount++;
 	switch(ply.type) {
 		case "play":
+			Game.Bot.consecutivePasses = 0;
 			onValidPlay(Game.Bot, ply.data);
 			break;
 		case "skip":
+			Game.Bot.consecutivePasses++;
 			addToHistory(Game.Bot, "skip");
 			break;
 	}
 
-	Game.plyCount++;
-	changePlayerTo(Game.User);
+	if (Game.isGameOver()) gameOverFE();
+	else changePlayerTo(Game.User);
 }
 
 
@@ -354,6 +356,7 @@ $(".resign-btn").on("click", function() {
 });
 $(".resign-dialog .dialog-confirm-btn").on("click", function() {
 	hideDialog();
+	gameOverFE();
 });
 $(".resign-dialog .dialog-deny-btn").on("click", function() {
 	hideDialog();
@@ -431,6 +434,8 @@ $(".skip-btn").on("click", function() {
 $(".skip-dialog .dialog-confirm-btn").on("click", function() {
 	Game.User.recallTiles();
 	recallTilesFE(Game.User);
+	Game.User.plyCount++;
+	Game.User.consecutivePasses++;
 
 	hideDialog();
 	addToHistory(Game.User, "skip");
@@ -474,9 +479,14 @@ $(".exchange-dialog .dialog-deny-btn").on("click", function() {
 $(".play-btn").on("click", function() {
 	onValidPlay(Game.User, Game.User.currentPlay.data);
 	Game.User.currentPlay = null;
-	$(".play-btn").attr("disabled", true);
+	Game.User.plyCount++;
+	Game.User.consecutivePasses = 0;
 
-	Game.plyCount++;
-	changePlayerTo(Game.Bot);
-	postBotPlay();
+	if (Game.isGameOver()) gameOverFE();
+	else {
+		changePlayerTo(Game.Bot);
+		postBotPlay();
+	}
+
+	$(".play-btn").attr("disabled", true);
 });

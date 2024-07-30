@@ -3,7 +3,6 @@ var Game = {
 	board: null,
 	premiumCells: null,
 	alphabet: null,
-	plyCount: null,
 
 	tileMap: null,
 	tileSet: null,
@@ -18,19 +17,19 @@ var Game = {
 	currentPlayer: null,
 	currentDialog: null,
 	currentBlank: null,
+	ordinals: null,
 
 	langFont: null,
 	errorMessages: null,
 
 	new: function(lId, eId) {
-		let langExonym = languages[lId].exonym;
-		this.WordTrie = new Trie(wordLists[camelize(langExonym)]);
+		let wordList = languages[lId].editions[eId].wordList;
+		this.WordTrie = new Trie(wordLists[wordList]);
 
-		let boardId = languages[lId].editions[eId].boards[0];
+		let boardId = languages[lId].editions[eId].board;
 		this.board = boards[boardId];
 		this.premiumCells = languages[lId].editions[eId].premiumCells;
 		this.alphabet = languages[lId].editions[eId].alphabet;
-		this.plyCount = 0;
 
 		this.tileMap = newTileMap(this.board.length);
 		this.tileSet = languages[lId].editions[eId].tileSet;
@@ -43,6 +42,7 @@ var Game = {
 		this.Bot = new Player("bot", languages[lId].editions[eId].botName);
 		this.Bot.score = 0;
 		this.Bot.response = languages[lId].editions[eId].botResponse;
+		this.ordinals = [this.Bot, this.User];
 
 		this.langFont = `"Noto Sans"`;
 		if (typeof languages[lId].font !== "undefined") this.langFont += `, "${languages[lId].font}"`;
@@ -64,6 +64,22 @@ var Game = {
 
 	sortTileBag: function() {
 		this.tileBag.sort((a, b) => a.bagIndex - b.bagIndex);
+	},
+
+	isGameOver: function() {
+		let isTileBagEmpty = (this.tileBag.length == 0);
+		let isUserPlayedOut = (this.User.rackTiles.length == 0);
+		let isBotPlayedOut = (this.Bot.rackTiles.length == 0);
+		let isUserPassedOut = (this.User.consecutivePasses == 2);
+		let isBotPassedOut = (this.Bot.consecutivePasses == 2);
+		if (
+			isTileBagEmpty &&
+			(isUserPlayedOut || isBotPlayedOut || isUserPassedOut || isBotPassedOut)
+		) {
+			this.ordinals.sort((a, b) => a.score - b.score);
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -73,6 +89,9 @@ class Player {
 	rackTiles = [];
 	score = 0;
 	currentPlay = null;
+
+	plyCount = 0;
+	consecutivePasses = 0;
 
 	botTilePerms = [];
 	botPlaysTested = 0;
@@ -263,31 +282,32 @@ class Player {
 					perpVectorAfter[vectorIndex] = tile;
 					if (!perpConnect) perpConnect = this.testConnectivity(perpVectorBefore, perpDirection, [tile]);
 					let perpWord = this.findScoredWord(perpVectorBefore, perpVectorAfter);
-					if (perpWord.single && perpWord.string.length > 1) scoredWords.push(perpWord);
+					if (perpWord.string.length > 1) scoredWords.push(perpWord);
 		
 					if (!includesCenter) includesCenter = (tile.row == centerRow && tile.col == centerCol);
 				}
 		
 				let paraConnect = this.testConnectivity(vectorBefore, paraDirection, tiles);
 				let paraWord = this.findScoredWord(vectorBefore, vectorAfter);
-				if (paraWord.single && paraWord.string.length > 1) scoredWords.push(paraWord);
+				if (paraWord.string.length > 1) scoredWords.push(paraWord);
 		
 				let isConnected = paraConnect || perpConnect;
-				let isValid = true;
+				let isSingleValidWord = true;
 				let invalidWord = "";
 
 				for (let w = 0, wn = scoredWords.length; w < wn; w++) {
-					let wordString = scoredWords[w].string;
-					if (!Game.WordTrie.search(wordString)) {
-						isValid = false;
-						invalidWord = wordString;
+					let single = scoredWords[w].single;
+					let string = scoredWords[w].string;
+					if (!single || !Game.WordTrie.search(string)) {
+						isSingleValidWord = false;
+						invalidWord = string || invalidWord;
 						break;
 					}
 				}
 		
 				if (includesCenter || isConnected) {
 					if (scoredWords.length > 0) {
-						if (isValid) {
+						if (isSingleValidWord) {
 							play.valid = true;
 							play.data = {
 								tilesPlayed: tiles,
@@ -295,13 +315,13 @@ class Player {
 								score: this.calculateScore(scoredWords)
 							}
 						} else {
-							play.error = "invalid word";
+							play.error = "invalid word(s)";
 							play.data = invalidWord;
 						}
 					}
-					else play.error = "chungus";
+					else play.error = "some tiles unconnected";
 				}
-				else play.error = "unconnected tiles";
+				else play.error = "unconnected anchor tile";
 			}
 			else play.error = "tiles in multiple vectors";
 		}
@@ -402,7 +422,8 @@ class Player {
 			if (
 				isVectorPopulated(vectorIndex - 1) ||
 				isVectorPopulated(vectorIndex) ||
-				isVectorPopulated(vectorIndex + 1)
+				isVectorPopulated(vectorIndex + 1) ||
+				(Game.User.plyCount + Game.Bot.plyCount == 0 && vectorIndex == Math.floor(Game.tileMap.length / 2))
 			) {
 				for (let p = 0, pn = this.botTilePerms.length; p < pn; p++) {
 					let tilePerm = this.botTilePerms[p];

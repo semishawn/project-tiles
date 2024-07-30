@@ -10,10 +10,11 @@ var languages = [
 				mfr: "Hasbro",
 				year: 2024,
 				region: "North America",
+				board: "15-scr",
+				rackSize: 7,
+				wordList: "nwl2023",
 				botName: "Mr. Robot",
 				botResponse: "Sorry, I'm not that kind of AI.",
-				boards: ["15-scr"],
-				rackSize: 7,
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
 				tileSet: [
 					{letter: "?", points:  0, freq:  2},
@@ -49,13 +50,6 @@ var languages = [
 					{id: 3, abbr: "DW", text: "double word score"},
 					{id: 4, abbr: "TL", text: "triple letter score"},
 					{id: 5, abbr: "TW", text: "triple word score"}
-				],
-				errorMessages: [
-					"Invalid tile alignment.",
-					"Invalid tile placement.",
-					"Insufficient tile placement.",
-					"Invalid word: <b>{0}</b>",
-					"Unset blank tile."
 				]
 			},
 			{
@@ -86,45 +80,48 @@ var languages = [
 				mfr: "Mattel",
 				year: 2024,
 				region: "Worldwide",
-
-				boards: ["15-scr"],
+				board: "15-scr",
+				rackSize: 7,
+				wordList: "rae",
+				botName: "Sr. Robot",
+				botResponse: "Lo siento, no soy ese tipo de IA.",
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-				tileSet: {
-					"A":  {points:  1, freq: 12},
-					"B":  {points:  3, freq:  2},
-					"C":  {points:  3, freq:  4},
-					"CH": {points:  5, freq:  1},
-					"D":  {points:  2, freq:  5},
-					"E":  {points:  1, freq: 12},
-					"F":  {points:  4, freq:  1},
-					"G":  {points:  2, freq:  2},
-					"H":  {points:  4, freq:  2},
-					"I":  {points:  1, freq:  6},
-					"J":  {points:  8, freq:  1},
-					"L":  {points:  1, freq:  4},
-					"LL": {points:  8, freq:  1},
-					"M":  {points:  3, freq:  2},
-					"N":  {points:  1, freq:  5},
-					"O":  {points:  1, freq:  9},
-					"P":  {points:  3, freq:  2},
-					"Q":  {points:  5, freq:  1},
-					"R":  {points:  1, freq:  5},
-					"RR": {points:  8, freq:  1},
-					"S":  {points:  1, freq:  6},
-					"T":  {points:  1, freq:  4},
-					"U":  {points:  1, freq:  5},
-					"V":  {points:  4, freq:  1},
-					"X":  {points:  8, freq:  1},
-					"Y":  {points:  4, freq:  1},
-					"Z":  {points: 10, freq:  1},
-					"Ñ":  {points:  8, freq:  1},
-					"?":  {freq: 2}
-				},
+				tileSet: [
+					{letter: "?",  points:  1, freq:  2},
+					{letter: "A",  points:  1, freq: 12},
+					{letter: "B",  points:  3, freq:  2},
+					{letter: "C",  points:  3, freq:  4},
+					{letter: "CH", points:  5, freq:  1},
+					{letter: "D",  points:  2, freq:  5},
+					{letter: "E",  points:  1, freq: 12},
+					{letter: "F",  points:  4, freq:  1},
+					{letter: "G",  points:  2, freq:  2},
+					{letter: "H",  points:  4, freq:  2},
+					{letter: "I",  points:  1, freq:  6},
+					{letter: "J",  points:  8, freq:  1},
+					{letter: "L",  points:  1, freq:  4},
+					{letter: "LL", points:  8, freq:  1},
+					{letter: "M",  points:  3, freq:  2},
+					{letter: "N",  points:  1, freq:  5},
+					{letter: "O",  points:  1, freq:  9},
+					{letter: "P",  points:  3, freq:  2},
+					{letter: "Q",  points:  5, freq:  1},
+					{letter: "R",  points:  1, freq:  5},
+					{letter: "RR", points:  8, freq:  1},
+					{letter: "S",  points:  1, freq:  6},
+					{letter: "T",  points:  1, freq:  4},
+					{letter: "U",  points:  1, freq:  5},
+					{letter: "V",  points:  4, freq:  1},
+					{letter: "X",  points:  8, freq:  1},
+					{letter: "Y",  points:  4, freq:  1},
+					{letter: "Z",  points: 10, freq:  1},
+					{letter: "Ñ",  points:  8, freq:  1}
+				],
 				premiumCells: [
-					{id: 2, text: "doble tanto de letra"},
-					{id: 3, text: "doble tanto de palabra"},
-					{id: 4, text: "triple tanto de letra"},
-					{id: 5, text: "triple tanto de palabra"}
+					{id: 2, abbr: "DL", text: "doble tanto de letra"},
+					{id: 3, abbr: "DP", text: "doble tanto de palabra"},
+					{id: 4, abbr: "TL", text: "triple tanto de letra"},
+					{id: 5, abbr: "TP", text: "triple tanto de palabra"}
 				]
 			},
 			{
@@ -135,7 +132,7 @@ var languages = [
 				year: 2024,
 				region: "North America",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
 				tileSet: {
 					"A":  {points:  1, freq: 11},
@@ -184,7 +181,7 @@ var languages = [
 				year: 2024,
 				region: "Latin America",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -238,43 +235,46 @@ var languages = [
 				mfr: "Mattel",
 				year: 2024,
 				region: "Europe",
-
-				boards: ["15-scr"],
-				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
-				tileSet: {
-					"A": {points:  1, freq:  9},
-					"B": {points:  3, freq:  2},
-					"C": {points:  3, freq:  2},
-					"D": {points:  2, freq:  3},
-					"E": {points:  1, freq: 15},
-					"F": {points:  4, freq:  2},
-					"G": {points:  2, freq:  2},
-					"H": {points:  4, freq:  2},
-					"I": {points:  1, freq:  8},
-					"J": {points:  8, freq:  1},
-					"K": {points: 10, freq:  1},
-					"L": {points:  1, freq:  5},
-					"M": {points:  2, freq:  3},
-					"N": {points:  1, freq:  6},
-					"O": {points:  1, freq:  6},
-					"P": {points:  3, freq:  2},
-					"Q": {points:  8, freq:  1},
-					"R": {points:  1, freq:  6},
-					"S": {points:  1, freq:  6},
-					"T": {points:  1, freq:  6},
-					"U": {points:  1, freq:  6},
-					"V": {points:  4, freq:  2},
-					"W": {points: 10, freq:  1},
-					"X": {points: 10, freq:  1},
-					"Y": {points: 10, freq:  1},
-					"Z": {points: 10, freq:  1},
-					"?": {freq: 2}
-				},
+				board: "15-scr",
+				rackSize: 7,
+				wordList: "ods8",
+				botName: "M. Robot",
+				botResponse: "Désolé, je ne suis pas ce genre d'IA.",
+				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
+				tileSet: [
+					{letter: "?", points:  0, freq:  2},
+					{letter: "A", points:  1, freq:  9},
+					{letter: "B", points:  3, freq:  2},
+					{letter: "C", points:  3, freq:  2},
+					{letter: "D", points:  2, freq:  3},
+					{letter: "E", points:  1, freq: 15},
+					{letter: "F", points:  4, freq:  2},
+					{letter: "G", points:  2, freq:  2},
+					{letter: "H", points:  4, freq:  2},
+					{letter: "I", points:  1, freq:  8},
+					{letter: "J", points:  8, freq:  1},
+					{letter: "K", points: 10, freq:  1},
+					{letter: "L", points:  1, freq:  5},
+					{letter: "M", points:  2, freq:  3},
+					{letter: "N", points:  1, freq:  6},
+					{letter: "O", points:  1, freq:  6},
+					{letter: "P", points:  3, freq:  2},
+					{letter: "Q", points:  8, freq:  1},
+					{letter: "R", points:  1, freq:  6},
+					{letter: "S", points:  1, freq:  6},
+					{letter: "T", points:  1, freq:  6},
+					{letter: "U", points:  1, freq:  6},
+					{letter: "V", points:  4, freq:  2},
+					{letter: "W", points: 10, freq:  1},
+					{letter: "X", points: 10, freq:  1},
+					{letter: "Y", points: 10, freq:  1},
+					{letter: "Z", points: 10, freq:  1}
+				],
 				premiumCells: [
-					{id: 2, text: "lettre compte double"},
-					{id: 3, text: "mot compte double"},
-					{id: 4, text: "lettre compte triple"},
-					{id: 5, text: "mot compte triple"}
+					{id: 2, abbr: "DL", text: "lettre compte double"},
+					{id: 3, abbr: "DW", text: "mot compte double"},
+					{id: 4, abbr: "TL", text: "lettre compte triple"},
+					{id: 5, abbr: "TW", text: "mot compte triple"}
 				]
 			}
 		]
@@ -292,7 +292,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Ä", "Ö", "Ü", "ẞ"],
 				tileSet: {
 					"A": {points:  1, freq:  5},
@@ -349,7 +349,7 @@ var languages = [
 				year: 2024,
 				region: "South Africa",
 				
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "Y"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -407,7 +407,7 @@ var languages = [
 				year: 2024,
 				region: "Middle East",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["ﺍ", "ﺏ", "ﺕ", "ﺙ", "ﺝ", "ﺡ", "ﺥ", "ﺩ", "ﺫ", "ﺭ", "ﺯ", "ﺱ", "ﺵ", "ﺹ", "ﺽ", "ﻁ", "ﻅ", "ﻉ", "ﻍ", "ﻑ", "ﻕ", "ﻙ", "ﻝ", "ﻡ", "ﻥ", "ﻩ", "ﻭ", "ي", "ء"],
 				tileSet: {
 					"ي": {points:  1, freq:  3},
@@ -467,7 +467,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ь", "Ю", "Я"],
 				tileSet: {
 					"А": {points:  1, freq:  9},
@@ -524,7 +524,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "Y", "Z"],
 				tileSet: {
 					"A": {points:  1, freq: 12},
@@ -577,7 +577,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C", "Ć", "Č", "D", "Dž", "Đ", "E", "F", "G", "H", "I", "J", "K", "L", "Lj", "M", "N", "Nj", "O", "P", "R", "S", "Š", "T", "U", "V", "Z", "Ž"],
 				tileSet: {
 					"A": {points:  1, freq: 11},
@@ -634,7 +634,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","X","Y","Z","Á","É","Í","Ó","Ú","Ý","Č","Ď","Ě","Ň","Ř","Š","Ť","Ů","Ž"],
 				tileSet: {
 					"A": {points:  1, freq:  5},
@@ -700,7 +700,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","X","Y","Z","Å","Æ","Ø"],
 				tileSet: {
 					"A": {points:  1, freq:  7},
@@ -754,7 +754,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
 				tileSet: {
 					"A": {points:  1, freq:  6},
@@ -807,7 +807,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Z","Ä","Õ","Ö","Ü","Š","Ž"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -862,7 +862,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Y","Á","Æ","Í","Ð","Ó","Ø","Ú","Ý"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -919,7 +919,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","Y","Ä","Ö"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -973,7 +973,7 @@ var languages = [
 				region: "Europe",
 				botName: "Κύριε Ρομπότ",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"],
 				tileSet: [
 					{letter: "Α", points:  1, freq: 12},
@@ -1026,7 +1026,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ", "ק", "ר", "ש", "ת"],
 				tileSet: {
 					"א": {points:  2, freq:  6},
@@ -1075,7 +1075,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","CS","D","E","F","G","GY","H","I","J","K","L","LY","M","N","NY","O","P","R","S","SZ","T","TY","U","V","Z","ZS","Á","É","Í","Ó","Ö","Ú","Ü","Ő","Ű"],
 				tileSet: {
 					"A": {points:  1, freq:  6},
@@ -1140,7 +1140,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","X","Y","Á","Æ","É","Í","Ð","Ó","Ö","Ú","Ý","Þ"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -1199,7 +1199,7 @@ var languages = [
 				year: 2024,
 				region: "Southeast Asia",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","Y","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 19},
@@ -1243,7 +1243,7 @@ var languages = [
 				year: 2024,
 				region: "Southeast Asia",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","W","Y","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 19},
@@ -1293,7 +1293,7 @@ var languages = [
 				year: 2024,
 				region: "Ireland",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","L","M","N","O","P","R","S","T","U","Á","É","Í","Ó","Ú"],
 				tileSet: {
 					"A": {points:  1, freq: 13},
@@ -1343,7 +1343,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","L","M","N","O","P","Q","R","S","T","U","V","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 14},
@@ -1384,7 +1384,7 @@ var languages = [
 				year: 2024,
 				region: "Italy",
 
-				boards: ["17"],
+				board: ["17"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","L","M","N","O","P","Q","R","S","T","U","V","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 12},
@@ -1433,7 +1433,7 @@ var languages = [
 				year: 2024,
 				region: "Worldwide",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","L","M","N","O","P","Q","R","S","T","U","V","X"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -1481,7 +1481,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Z","Ā","Č","Ē","Ģ","Ī","Ķ","Ļ","Ņ","Š","Ū","Ž"],
 				tileSet: {
 					"A": {points:  1, freq: 11},
@@ -1541,7 +1541,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Y","Z","Ą","Č","Ė","Ę","Į","Š","Ū","Ų","Ž"],
 				tileSet: {
 					"A": {points:  1, freq: 12},
@@ -1593,7 +1593,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Y","Z","Ą","Č","Ė","Ę","Į","Š","Ū","Ų","Ž"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -1652,7 +1652,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","V","Y","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 20},
@@ -1700,7 +1700,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","Y","Å","Æ","Ø"],
 				tileSet: {
 					"A": {points:  1, freq:  7},
@@ -1753,7 +1753,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","W","Y","Z","Ó","Ą","Ć","Ę","Ł","Ń","Ś","Ź","Ż"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -1812,7 +1812,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","L","M","N","O","P","Q","R","S","T","U","V","X","Z","Ç"],
 				tileSet: {
 					"A": {points:  1, freq: 14},
@@ -1863,7 +1863,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","L","M","N","O","P","R","S","T","U","V","X","Z"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -1913,7 +1913,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я"],
 				tileSet: {
 					"А": {points:  1, freq:  8},
@@ -1981,7 +1981,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","X","Y","Z","Á","Ä","É","Í","Ó","Ô","Ú","Ý","Č","Ď","Ĺ","Ľ","Ň","Ŕ","Š","Ť","Ž"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -2049,7 +2049,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Z","Č","Š","Ž"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -2101,7 +2101,7 @@ var languages = [
 				year: 2024,
 				region: "Scandinavia",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","X","Y","Z","Ä","Å","Ö"],
 				tileSet: {
 					"A": {points:  1, freq:  8},
@@ -2148,7 +2148,7 @@ var languages = [
 				year: 2024,
 				region: "Sweden",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","X","Y","Z","Ä","Å","Ö"],
 				tileSet: {
 					"A": {points:  1, freq:  9},
@@ -2203,7 +2203,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","Y","Z","Ç","Ö","Ü","Ğ","İ","Ş"],
 				tileSet: {
 					"A": {points:  1, freq: 12},
@@ -2260,7 +2260,7 @@ var languages = [
 				year: 2024,
 				region: "Europe",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["А", "Б", "В", "Г", "Ґ", "Д", "Е", "Є", "Ж", "З", "И", "І", "Ї", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ь", "Ю", "Я"],
 				tileSet: {
 					"'": {points: 10, freq:  1},
@@ -2321,7 +2321,7 @@ var languages = [
 				year: 2024,
 				region: "United Kingdom",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A","B","C","CH","D","DD","E","F","FF","G","H","I","J","L","LL","M","N","NG","O","P","R","RH","S","T","TH","U","W","Y"],
 				tileSet: {
 					"A": {points:  1, freq: 10},
@@ -2390,7 +2390,7 @@ var languages = [
 				mfr: "The Guy Who Made This App",
 				year: 2024,
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["A", "E", "I", "J", "K", "L", "M", "N", "O", "P", "S", "T", "U", "W"],
 				tileSet: {
 					"A": {points:  0, freq: 16},
@@ -2775,7 +2775,7 @@ var languages = [
 				year: 2024,
 				region: "",
 
-				boards: ["40"],
+				board: ["40"],
 				alphabet: ["அ", "ஆ", "இ", "ஈ", "உ", "ஊ", "எ", "ஏ", "ஐ", "ஒ", "ஓ", "ஔ", "க", "ங", "ச", "ஞ", "ட", "ண", "த", "ந", "ன", "ப", "ம", "ய", "ர", "ற", "ல", "ள", "ழ", "வ"],
 				tileSet: {
 					"ஃ": {points: 10, freq:  1},
@@ -2908,7 +2908,7 @@ var languages = [
 				year: 2024,
 				region: "",
 
-				boards: ["40"],
+				board: ["40"],
 				alphabet: ["அ", "ஆ", "இ", "ஈ", "உ", "ஊ", "எ", "ஏ", "ஐ", "ஒ", "ஓ", "ஔ", "க", "ங", "ச", "ஞ", "ட", "ண", "த", "ந", "ன", "ப", "ம", "ய", "ர", "ற", "ல", "ள", "ழ", "வ"],
 				tileSet: {
 					"ஃ": {points: 13, freq:  1},
@@ -3176,7 +3176,7 @@ var languages = [
 				year: 2024,
 				botName: "རིབ་མི་ཀོཔ་ཏིང་པ།",
 
-				boards: ["15-scr"],
+				board: ["15-scr"],
 				alphabet: ["ཀ", "ཁ", "ག", "ང", "ཅ", "ཆ", "ཇ", "ཉ", "ཏ", "ཐ", "ད", "ན", "པ", "ཕ", "བ", "མ", "ཙ", "ཚ", "ཛ", "ཝ", "ཞ", "ཟ", "འ", "ཡ", "ར", "ལ", "ཤ", "ས", "ཧ", "ཨ"],
 				tileSet: [
 					{letter: "ཀ", points:  8, freq:  3},

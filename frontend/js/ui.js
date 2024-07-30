@@ -33,26 +33,28 @@ $(".logo-tile").each(function(t) {
 
 var lastTileIndex = 0;
 var tileIndex = 0;
-setInterval(function() {
-	if (currentScreen == "title") {
-		while (tileIndex == lastTileIndex) tileIndex = Math.floor(Math.random() * 5);
-		let letterIndex = Math.ceil(Math.random() * (logoLetters[tileIndex].length - 1));
+var titleAnimInterval;
+function titleAnim() {
+	while (tileIndex == lastTileIndex) tileIndex = Math.floor(Math.random() * 5);
+	let letterIndex = Math.ceil(Math.random() * (logoLetters[tileIndex].length - 1));
 
-		// Going down
-		$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
-		$(".logo-tile-hover .logo-tile-letter").eq(0).css("opacity", 1);
-		$(".logo-tile-hover").removeClass("logo-tile-hover");
+	// Going down
+	$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
+	$(".logo-tile-hover .logo-tile-letter").eq(0).css("opacity", 1);
+	$(".logo-tile-hover").removeClass("logo-tile-hover");
 
-		// Going up
-		$(".logo-tile").eq(tileIndex).addClass("logo-tile-hover");
-		$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
-		$(".logo-tile-hover .logo-tile-letter").eq(letterIndex).css("opacity", 1);
+	// Going up
+	$(".logo-tile").eq(tileIndex).addClass("logo-tile-hover");
+	$(".logo-tile-hover .logo-tile-letter").css("opacity", 0);
+	$(".logo-tile-hover .logo-tile-letter").eq(letterIndex).css("opacity", 1);
 
-		lastTileIndex = tileIndex;
-	}
-}, 500);
+	lastTileIndex = tileIndex;
+}
+function titleAnimStart() {titleAnimInterval = setInterval(titleAnim, 500);}
+function titleAnimStop() {clearInterval(titleAnimInterval)};
 
 $(".title-play-btn").on("click", function() {
+	titleAnimStop();
 	newScreen("lang");
 });
 
@@ -88,6 +90,7 @@ $(".lang-container").on("click", ".lang-option", function() {
 });
 
 backBtnLang.on("click", function() {
+	titleAnimStart();
 	newScreen("title");
 });
 
@@ -167,6 +170,7 @@ contBtnEdition.on("click", function() {
 	$(".player-intro-tilebag").attr("data-clicked", false);
 	drawPlayOrderTiles();
 
+	generateUserIcon();
 	newScreen("players");
 });
 
@@ -181,7 +185,7 @@ $("body").on("click", ".edition-option", function() {
 let usernameTextbox = $(".user-intro .player-intro-name");
 let usernameCharLimit = 10;
 let lastValidName = "";
-let choseValidName = false;
+let choseValidName = true;
 let choseGoesFirst = false;
 
 backBtnPlayers.on("click", function() {
@@ -309,3 +313,42 @@ function drawPlayOrderTiles() {
 
 	Game.firstPlayer = (players[0].tile.bagIndex < players[1].tile.bagIndex) ? Game.User : Game.Bot;
 }
+
+
+
+//* End screen
+function gameOverFE() {
+	let userAvg = Math.round(Game.User.score / Game.User.plyCount);
+	let botAvg = Math.round(Game.Bot.score / Game.Bot.plyCount);
+
+	$(".end-screen").attr("data-winner", Game.ordinals[0].type);
+
+	$(".user-end .player-end-name").html(Game.User.name);
+	$(".user-end .player-final-score").html(Game.User.score);
+	$(".user-end .player-avg-score").html(userAvg);
+	$(".bot-end .player-end-name").html(Game.Bot.name);
+	$(".bot-end .player-final-score").html(Game.Bot.score);
+	$(".bot-end .player-avg-score").html(botAvg);
+
+	$(`.${Game.ordinals[0].type}-end .player-ordinal`).html("WINNER!");
+	$(`.${Game.ordinals[1].type}-end .player-ordinal`).html("2nd");
+
+	newScreen("end");
+}
+
+$(".rematch-btn").on("click", function() {
+	Game.new(langId, editionId);
+	newGameFE();
+	
+	changePlayerTo(Game.firstPlayer);
+	initiateGame();
+
+	newScreen("play");
+});
+
+$(".new-edition-btn").on("click", function() {
+	newScreen("lang");
+});
+
+$(".save-results-btn").on("click", function() {
+});

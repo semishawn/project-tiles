@@ -100,10 +100,18 @@ function newScreen(screen) {
 	$("main").css("margin-left", -100 * screenId + "vw");
 }
 
+function generateUserIcon() {
+	i_user = fruit[Math.floor(Math.random() * fruit.length)];
+	$(".user-intro .player-icon").html(i_user);
+	$(".user-score-box .player-icon").html(i_user);
+	$(".user-end .player-icon").html(i_user);
+}
+
 $(document).ready(function() {
 	$(".btn").each(function() {
 		$(this).btnify()
 	});
 
+	titleAnimStart();
 	newScreen("title");
 });

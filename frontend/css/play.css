@@ -66,18 +66,48 @@
 }
 .score-box + .score-box {margin-top: calc(-1 * var(--input-border-width));}
 
-.score-box .player-icon {border-right: var(--input-border-width) solid var(--ui-color2);}
+.score-box .player-icon {
+	margin-right: 0.4rem;
+	border-right: var(--input-border-width) solid var(--ui-color2);
+}
 
-.player-name {
-	flex-grow: 1;
+.player-name {font-size: 0.45rem;}
+
+.player-think {
+	display: none;
+	flex-direction: row;
+	align-items: center;
+}
+
+.player-think span {
 	font-size: 0.45rem;
-	padding-left: 0.3rem;
+	font-style: italic;
+	margin-right: 0.3rem;
+}
+
+@property --percentage {
+	initial-value: 0%;
+	inherits: false;
+	syntax: "<percentage>";
+}
+.player-timer {
+	--dimension: 0.5rem;
+	width: var(--dimension);
+	height: var(--dimension);
+	background: conic-gradient(transparent var(--percentage), var(--ui-color2) 0);
+	border-radius: 50%;
+	animation: timer var(--duration) linear;
+	animation-fill-mode: forwards;
+}
+@keyframes timer {
+	to {--percentage: 100%;}
 }
 
 .player-score {
 	font-family: var(--font2);
 	font-size: 0.8rem;
 	font-weight: 200;
+	margin-left: auto;
 }
 
 .current-player-indicator-bg,
@@ -600,6 +630,7 @@
 [data-current-player="bot"] .current-player-indicator-bg {top: 50%;}
 [data-current-player="bot"] .current-player-indicator-border
 {top: calc(50% - var(--indicator-border-width) + var(--input-border-width) / 2);}
+[data-current-player="bot"] .player-think {display: flex;}
 
 [data-current-player="bot"] .action-btn,
 [data-current-player="bot"] .recall-btn
