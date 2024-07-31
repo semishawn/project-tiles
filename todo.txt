@@ -1,2 +1,3 @@
 - display current play score somewhere
 - add other language dictionaries
+- resolve dom-to-image font issue
