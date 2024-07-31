@@ -282,14 +282,14 @@ class Player {
 					perpVectorAfter[vectorIndex] = tile;
 					if (!perpConnect) perpConnect = this.testConnectivity(perpVectorBefore, perpDirection, [tile]);
 					let perpWord = this.findScoredWord(perpVectorBefore, perpVectorAfter);
-					if (perpWord.string.length > 1) scoredWords.push(perpWord);
+					if (perpWord.tiles.length > 1) scoredWords.push(perpWord);
 		
 					if (!includesCenter) includesCenter = (tile.row == centerRow && tile.col == centerCol);
 				}
 		
 				let paraConnect = this.testConnectivity(vectorBefore, paraDirection, tiles);
 				let paraWord = this.findScoredWord(vectorBefore, vectorAfter);
-				if (paraWord.string.length > 1) scoredWords.push(paraWord);
+				if (paraWord.tiles.length > 1) scoredWords.push(paraWord);
 		
 				let isConnected = paraConnect || perpConnect;
 				let isSingleValidWord = true;

@@ -17,16 +17,6 @@ var TileDrag = {
 
 
 
-//* Hover
-$(".play-screen").on("mouseenter", TileDrag.selector, function() {
-	$(this).css("z-index", "var(--z-tile-above)");
-})
-.on("mouseleave", TileDrag.selector, function() {
-	$(this).css("z-index", "var(--z-tile-rack)");
-});
-
-
-
 //* Drag
 $(".play-screen").on("mousedown", TileDrag.selector, function(e) {
 	TileDrag.mousedown = true;

@@ -64,6 +64,12 @@ $(".title-play-btn").on("click", function() {
 languages.sort(function(a, b) {
 	return a.exonym.localeCompare(b.exonym);
 });
+languages = languages.filter(function(parent) {
+	if (!parent.editions || !Array.isArray(parent.editions)) return false;
+	for (var i = 0; i < parent.editions.length; i++)
+		if (parent.editions[i].hasOwnProperty("wordList")) return true;
+	return false;
+});
 
 for (let i = 0; i < languages.length; i++) {
 	let langExonym = languages[i].exonym;

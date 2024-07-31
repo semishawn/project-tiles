@@ -202,7 +202,6 @@ input:checked + .btn .btn-stalk
 	color: var(--ui-color2);
 	border: var(--input-border-width) solid var(--ui-color2);
 	user-select: none;
-	z-index: var(--z-tile-rack);
 }
 .tile, .tile * {transition: transform 0.05s;}
 
@@ -238,23 +237,28 @@ input:checked + .btn .btn-stalk
 	margin-top: calc(-1 * var(--input-border-width));
 	margin-left: calc(-1 * var(--input-border-width));
 }
+.tile[data-state="bag"] .tile-letter {justify-content: center;}
 .tile[data-state="bag"] .tile-points {display: none;}
 .tile[data-state="rack"] {
 	--tile-dimension: var(--big-tile-dimension);
 	position: absolute;
+	z-index: var(--z-tile-rack);
 }
 .tile[data-state*="rack"]:hover {
 	transform: scale(1.1);
 	cursor: pointer;
+	z-index: var(--z-tile-above);
 }
 .tile[data-state="dragging"] {
 	--tile-dimension: var(--big-tile-dimension);
 	position: absolute;
 	pointer-events: none;
+	z-index: var(--z-tile-rack);
 }
 .tile[data-state="placed-rack"] {
 	--tile-dimension: var(--small-tile-dimension);
 	position: absolute;
+	z-index: var(--z-tile-placed);
 }
 .tile[data-state="placed-board"] {
 	--tile-dimension: var(--small-tile-dimension);

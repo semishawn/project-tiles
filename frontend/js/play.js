@@ -215,7 +215,8 @@ function addToHistory(player, type, content = "") {
 			messageString = `${player.name} played ${wordsString} and scored <b>${content.score}</b> points.`;
 			break;
 		case "skip":
-			messageString = `<i>${player.name} skipped their turn.</i>`;
+			let pronoun = Game.User.name == "You" ? "your" : "their";
+			messageString = `<i>${player.name} skipped ${pronoun} turn.</i>`;
 			break;
 		case "exchange":
 			let plural = (content > 1) ? "s" : "";
