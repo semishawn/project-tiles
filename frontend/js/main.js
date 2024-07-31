@@ -76,9 +76,14 @@ $.fn.btnify = function() {
 	`);
 }
 
+$.fn.charCount = function(letter) {
+	$(this).attr("data-char-count", letter.length);
+}
+
 function generateTileFE(tile) {
 	let newTileElement = TileFE.template.clone();
 
+	newTileElement.find(".tile-letter").attr("data-char-count", 0);
 	for (let prop in tile) {
 		let kebabProp = camelToKebab(prop);
 		let value = (tile[prop] == null) ? "" : tile[prop];
@@ -88,6 +93,7 @@ function generateTileFE(tile) {
 	if (!tile.blank) {
 		newTileElement.attr("data-letter", tile.letter);
 		newTileElement.find(".tile-letter").html(tile.letter);
+		newTileElement.find(".tile-letter").charCount(tile.letter);
 		newTileElement.find(".tile-points").html(tile.points);
 	}
 

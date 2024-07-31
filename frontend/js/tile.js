@@ -19,10 +19,10 @@ var TileDrag = {
 
 //* Hover
 $(".play-screen").on("mouseenter", TileDrag.selector, function() {
-	$(this).css("z-index", "var(--z-above-above-tile)");
+	$(this).css("z-index", "var(--z-tile-above)");
 })
 .on("mouseleave", TileDrag.selector, function() {
-	$(this).css("z-index", "var(--z-tile)");
+	$(this).css("z-index", "var(--z-tile-rack)");
 });
 
 
@@ -135,6 +135,7 @@ $(".play-screen").on("click", ".blank-option", function() {
 	Game.currentBlank.letter = letter;
 	Game.currentBlank = null;
 
+	correspondingTile.find(".tile-letter").charCount(letter);
 	correspondingTile.changeLetterFE(letter);
 	hideDialog();
 

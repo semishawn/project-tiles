@@ -101,7 +101,8 @@ function generateBlankOptionsFE() {
 		if (Game.tileSet[l].letter == "?") continue;
 		let letter = Game.tileSet[l].letter;
 		let optionInput = $(`<input type="radio" id="blank-option-${letter}" name="blank-option">`);
-		let optionLabel = $(`<label class="btn blank-option" for="blank-option-${letter}" data-letter="${letter}">${letter}</label>`);
+		let optionLabel = $(`<label class="btn blank-option" for="blank-option-${letter}" data-letter="${letter}" data-char-count="${letter.length}">${letter}</label>
+		`);
 		optionLabel.btnify();
 		$(".blank-option-container").append(optionInput, optionLabel);
 	}
@@ -326,6 +327,29 @@ BotWorker.onmessage = e => {
 	else changePlayerTo(Game.User);
 }
 
+function gameOverFE() {
+	let userAvg = Math.round(Game.User.score / Game.User.plyCount);
+	let botAvg = Math.round(Game.Bot.score / Game.Bot.plyCount);
+
+	$(".end-screen").attr("data-winner", Game.ordinals[0].type);
+
+	$(".user-end .player-end-name").html(Game.User.name);
+	$(".user-end .player-final-score").html(Game.User.score);
+	$(".user-end .player-avg-score").html(userAvg);
+	$(".bot-end .player-end-name").html(Game.Bot.name);
+	$(".bot-end .player-final-score").html(Game.Bot.score);
+	$(".bot-end .player-avg-score").html(botAvg);
+
+	$(`.${Game.ordinals[0].type}-end .player-ordinal`).html("WINNER!");
+	$(`.${Game.ordinals[1].type}-end .player-ordinal`).html("2nd");
+
+	newScreen("end");
+}
+
+$(document).keydown(function(e) {
+	if (e.code == "Tab") gameOverFE();
+});
+
 
 
 //* Button functionality
@@ -466,13 +490,17 @@ $(".exchange-dialog .dialog-confirm-btn").on("click", function() {
 	postBotPlay();
 });
 $(".exchange-dialog .dialog-deny-btn").on("click", function() {
-	hideDialog();
 	$(`.tile[data-exchange="true"]`).each(function() {
 		let rackIndex = $(this).attr("data-rack-index");
 		let correspondingSlot = $(".user-rack-tiles .tile-slot").eq(rackIndex);
+
+		Game.User.rackTiles[rackIndex].exchange = false;
+
 		$(this).attr("data-exchange", "false");
-		$(this).moveTo(correspondingSlot);
+		$(this).moveTo(correspondingSlot, TileFE.moveDurFast);
 	});
+
+	hideDialog();
 });
 
 // Play

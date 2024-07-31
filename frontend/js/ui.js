@@ -317,25 +317,6 @@ function drawPlayOrderTiles() {
 
 
 //* End screen
-function gameOverFE() {
-	let userAvg = Math.round(Game.User.score / Game.User.plyCount);
-	let botAvg = Math.round(Game.Bot.score / Game.Bot.plyCount);
-
-	$(".end-screen").attr("data-winner", Game.ordinals[0].type);
-
-	$(".user-end .player-end-name").html(Game.User.name);
-	$(".user-end .player-final-score").html(Game.User.score);
-	$(".user-end .player-avg-score").html(userAvg);
-	$(".bot-end .player-end-name").html(Game.Bot.name);
-	$(".bot-end .player-final-score").html(Game.Bot.score);
-	$(".bot-end .player-avg-score").html(botAvg);
-
-	$(`.${Game.ordinals[0].type}-end .player-ordinal`).html("WINNER!");
-	$(`.${Game.ordinals[1].type}-end .player-ordinal`).html("2nd");
-
-	newScreen("end");
-}
-
 $(".rematch-btn").on("click", function() {
 	Game.new(langId, editionId);
 	newGameFE();
@@ -351,4 +332,10 @@ $(".new-edition-btn").on("click", function() {
 });
 
 $(".save-results-btn").on("click", function() {
+	let time = new Date().toLocaleString();
+		time = time.replaceAll("/", "-").replaceAll(",", "").replaceAll(" ", "_").replaceAll(":", "-");
+	let filename = `PT_${time}.png`;
+	domtoimage.toBlob($(".play-screen")[0]).then(function(blob) {
+		window.saveAs(blob, filename);
+	});
 });

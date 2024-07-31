@@ -188,7 +188,7 @@
 	background: var(--ui-color1);
 	transition: all 0.2s;
 	cursor: pointer;
-	z-index: var(--z-above-tile);
+	z-index: var(--z-tile-above);
 }
 
 .tilebag-text {
@@ -232,7 +232,7 @@
 	width: 100%;
 	border: var(--input-border-width) solid var(--ui-color2);
 	overflow: hidden;
-	z-index: var(--z-below-tile);
+	z-index: var(--z-tile-below);
 }
 
 .tilebag-scroll-container {
@@ -271,7 +271,7 @@
 	bottom: 0;
 	width: 100%;
 	height: var(--indicator-border-width);
-	z-index: var(--z-above-tile);
+	z-index: var(--z-tile-above);
 }
 .tilebag-timer-bar {
 	width: 0%;
@@ -464,7 +464,7 @@
 	width: calc(100% - 2 * var(--input-border-width));
 	height: calc(100% - 2 * var(--input-border-width));
 	pointer-events: none;
-	z-index: var(--z-below-tile) !important;
+	z-index: var(--z-tile-below) !important;
 }
 .cell:hover .cell-indicator {
 	outline: var(--indicator-border-width) solid var(--ui-color2);
@@ -517,18 +517,18 @@
 .dialog-deny-btn {margin-left: calc(-1 * var(--input-border-width));}
 
 /* Skip */
-.skip-dialog {z-index: var(--z-above-tile);}
+.skip-dialog {z-index: var(--z-tile-above);}
 
 /* Exchange */
 .show-dialog[data-dialog="exchange"] .user-rack-tiles,
 .show-dialog[data-dialog="exchange"] .tile[data-state="rack"]
 {pointer-events: all !important;}
 
-.exchange-dialog {z-index: var(--z-below-tile);}
+.exchange-dialog {z-index: var(--z-tile-between);}
 .exchange-dialog .rack-tiles {margin-bottom: 0.5rem;}
 
 /* Blank */
-.blank-dialog {z-index: var(--z-above-tile);}
+.blank-dialog {z-index: var(--z-tile-above);}
 .blank-option {
 	--hover-extend: 0.15rem;
 	--checked-extend: 0.15rem;
@@ -536,15 +536,16 @@
 	height: var(--big-tile-dimension);
 }
 .blank-option .btn-inside {
-	font-size: calc(0.6 * var(--big-tile-dimension));
+	font-size: calc(0.65 * var(--big-tile-dimension));
 	font-weight: 800;
 }
+.blank-option[data-char-count="2"] .btn-inside {font-size: calc(0.55 * var(--big-tile-dimension));}
 
 /* Start Over */
-.start-over-dialog {z-index: var(--z-above-tile);}
+.start-over-dialog {z-index: var(--z-tile-above);}
 
 /* Resign */
-.resign-dialog {z-index: var(--z-above-tile);}
+.resign-dialog {z-index: var(--z-tile-above);}
 
 
 
@@ -616,7 +617,6 @@
 	--inside-bg: var(--ui-color1);
 	pointer-events: none;
 }
-
 
 
 

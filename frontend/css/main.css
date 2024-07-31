@@ -202,32 +202,35 @@ input:checked + .btn .btn-stalk
 	color: var(--ui-color2);
 	border: var(--input-border-width) solid var(--ui-color2);
 	user-select: none;
-	z-index: var(--z-tile);
+	z-index: var(--z-tile-rack);
 }
 .tile, .tile * {transition: transform 0.05s;}
 
 .tile-inside {
 	position: relative;
-	flex-direction: row;
 	width: 100%;
 	height: 100%;
-	padding: calc(var(--tile-dimension) / 20);
 }
 
 .tile-letter {
 	flex-grow: 1;
+	justify-content: flex-end;
+	align-items: center;
 	font-size: calc(0.6 * var(--tile-dimension));
 	font-weight: 800;
+	line-height: 0.8;
+	/* background: pink; */
 }
+[data-char-count="2"] {font-size: calc(0.5 * var(--tile-dimension));}
 
 .tile-points {
-	justify-content: center;
-	align-items: center;
-	align-self: flex-end;
-	height: 2ch;
 	font-size: calc(var(--tile-dimension) / 5);
 	font-weight: 400;
-	color: var(--ui-color2);
+	line-height: 1;
+	padding: calc(var(--tile-dimension) / 15);
+	padding-top: 0;
+	margin-left: auto;
+	/* background: lightblue; */
 }
 
 .tile[data-state="bag"] {
@@ -257,6 +260,7 @@ input:checked + .btn .btn-stalk
 	--tile-dimension: var(--small-tile-dimension);
 	position: absolute;
 	background: var(--tile-placed-color);
+	z-index: var(--z-tile-placed);
 }
 .tile[data-state="play-order"] {
 	--tile-dimension: var(--play-order-tile-dimension);
@@ -266,6 +270,7 @@ input:checked + .btn .btn-stalk
 }
 
 .tile[data-blank="true"] .tile-inside {
+	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding: 0;
@@ -278,8 +283,8 @@ input:checked + .btn .btn-stalk
 	width: calc(0.7 * var(--tile-dimension));
 	height: calc(0.7 * var(--tile-dimension));
 	font-size: calc(0.5 * var(--tile-dimension));
-	padding: 0;
 }
+.tile[data-blank="true"] .tile-letter[data-char-count="2"] {font-size: calc(0.4 * var(--tile-dimension));}
 .tile[data-blank="true"] .tile-points {display: none;}
 .tile[data-blank="true"]:not([data-letter=""]) .tile-letter {
 	border: var(--input-border-width) solid var(--ui-color2);

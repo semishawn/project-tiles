@@ -70,8 +70,8 @@ var Game = {
 		let isTileBagEmpty = (this.tileBag.length == 0);
 		let isUserPlayedOut = (this.User.rackTiles.length == 0);
 		let isBotPlayedOut = (this.Bot.rackTiles.length == 0);
-		let isUserPassedOut = (this.User.consecutivePasses == 2);
-		let isBotPassedOut = (this.Bot.consecutivePasses == 2);
+		let isUserPassedOut = (this.User.consecutivePasses >= 2);
+		let isBotPassedOut = (this.Bot.consecutivePasses >= 2);
 		if (
 			isTileBagEmpty &&
 			(isUserPlayedOut || isBotPlayedOut || isUserPassedOut || isBotPassedOut)
@@ -423,7 +423,7 @@ class Player {
 				isVectorPopulated(vectorIndex - 1) ||
 				isVectorPopulated(vectorIndex) ||
 				isVectorPopulated(vectorIndex + 1) ||
-				(Game.User.plyCount + Game.Bot.plyCount == 0 && vectorIndex == Math.floor(Game.tileMap.length / 2))
+				(Game.Bot.plyCount == 0 && vectorIndex == Math.floor(Game.tileMap.length / 2))
 			) {
 				for (let p = 0, pn = this.botTilePerms.length; p < pn; p++) {
 					let tilePerm = this.botTilePerms[p];

@@ -320,7 +320,7 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	width: 9rem;
 	transform: translate(-50%, 25%);
 	cursor: pointer;
-	z-index: var(--z-above-tile);
+	z-index: var(--z-tile-above);
 }
 .player-intro-tilebag path {transition: all var(--input-transition);}
 .player-intro-tilebag:hover path {stroke-width: var(--indicator-border-width);}
@@ -439,11 +439,12 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 .end-btn-container {
 	flex-direction: row;
 	width: 100%;
+	height: 3rem;
 }
 
 .end-btn {
-	height: calc(2 * var(--big-tile-dimension));
 	width: 100%;
+	height: 100%;
 }
 .end-btn + .end-btn {margin-left: calc(-1 * var(--input-border-width));}
 .end-btn svg {margin-right: 0.5rem;}

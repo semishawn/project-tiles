@@ -26,10 +26,11 @@
 	--big-tile-dimension: 1.4rem;
 	--tile-dimension: var(--big-tile-dimension);
 
-	--z-below-tile: 1000;
-	--z-tile: 1001;
-	--z-above-tile: 1002;
-	--z-above-above-tile: 1003;
+	--z-tile-below:   1000;
+	--z-tile-placed:  1001;
+	--z-tile-between: 1002;
+	--z-tile-rack:    1003;
+	--z-tile-above:   1004;
 
 	--input-transition: 0.1s;
 }
