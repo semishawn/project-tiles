@@ -28,4 +28,5 @@ Temporary Items
 # Repository specific
 frontend/img/
 backend/test/
+backend/word-lists/txt
 todo.txt
