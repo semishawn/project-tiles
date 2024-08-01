@@ -57,7 +57,6 @@ main {
 	display: flex;
 	flex-direction: row;
 	height: 100%;
-	background: pink;
 	transition: margin 0.5s;
 	-webkit-transition: margin 0.5s;
 	will-change: margin;
@@ -266,7 +265,8 @@ input:checked + .btn .btn-stalk
 .tile[data-state="dragging"] {
 	--tile-dimension: var(--big-tile-dimension);
 	position: absolute;
-	z-index: var(--z-tile-rack);
+	z-index: var(--z-tile-above);
+	pointer-events: none;
 }
 .tile[data-state="placed-rack"] {
 	--tile-dimension: var(--small-tile-dimension);

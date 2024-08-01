@@ -306,8 +306,8 @@ function onValidPlay(player, play) {
 }
 
 var url = "https://semishawn.github.io/project-tiles/";
-var BotWorker = new Worker(url + "backend/js/bot.js");
-// var BotWorker = new Worker("./backend/js/bot.js");
+// var BotWorker = new Worker(url + "backend/js/bot.js");
+var BotWorker = new Worker("./backend/js/bot.js");
 
 function postBotPlay() {
 	BotWorker.postMessage(JSON.stringify(Game));

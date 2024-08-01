@@ -4,10 +4,9 @@
 	padding: 1rem;
 }
 .play-screen[data-dragging="true"] {cursor: grabbing;}
-.play-screen[data-dragging="true"] * {pointer-events: none !important;}
+.play-screen[data-dragging="true"] * {pointer-events: none;}
 .play-screen[data-dragging="true"] .cell,
-.play-screen[data-dragging="true"] .tile[data-state*="placed"]
-{pointer-events: all !important;}
+.play-screen[data-dragging="true"] .tile[data-state*="placed"] {pointer-events: all;}
 
 .play-column1 {
 	flex-grow: 1;
@@ -384,7 +383,7 @@
 
 
 /** Play column 2 */
-.board-letter, .board-number, .cell, .cell-content {
+.board-letter, .board-number, .cell {
 	width: 1rem;
 	height: 1rem;
 }
@@ -463,11 +462,10 @@
 	position: absolute;
 	width: calc(100% - 2 * var(--input-border-width));
 	height: calc(100% - 2 * var(--input-border-width));
-	z-index: var(--z-tile-below) !important;
+	z-index: var(--z-tile-below);
+	pointer-events: none;
 }
-.cell:hover .cell-indicator {
-	outline: var(--indicator-border-width) solid var(--ui-color2);
-}
+.cell-hover .cell-indicator {outline: var(--indicator-border-width) solid var(--ui-color2);}
 
 
 

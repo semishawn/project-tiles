@@ -18,6 +18,9 @@ var TileDrag = {
 
 
 //* Drag
+$(".play-screen").on("mouseenter", ".cell", function() {$(this).addClass("cell-hover")})
+				 .on("mouseleave", ".cell", function() {$(this).removeClass("cell-hover")});
+
 $(".play-screen").on("mousedown", TileDrag.selector, function(e) {
 	TileDrag.mousedown = true;
 	TileDrag.element = $(this);
@@ -41,14 +44,14 @@ $(".play-screen").on("mousemove", function(e) {
 		}
 	}
 })
-.on("mouseup", function() {
+.on("mouseup", function(e) {
 	if (TileDrag.active) {
 		let rackIndex = TileDrag.element.attr("data-rack-index");
 		let tile = Game.User.rackTiles[rackIndex];
+		let hoveredCell = $(e.target);
 
 		//* Success
-		if ($(".cell:hover").length > 0) {
-			let hoveredCell = $(".cell:hover");
+		if (hoveredCell.hasClass("cell")) {
 			let cellRow = parseInt(hoveredCell.attr("data-row"));
 			let cellCol = parseInt(hoveredCell.attr("data-col"));
 
