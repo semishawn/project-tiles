@@ -32,7 +32,10 @@ function generateTileBagFE() {
 		let rotLimit = 8;
 		let randomRot = Math.random() * 2 * rotLimit - rotLimit;
 
-		newTileElement.css("transform", `rotate(${randomRot}deg)`);
+		newTileElement.css({
+			"transform": `rotate(${randomRot}deg)`,
+			"-webkit-transform": `rotate(${randomRot}deg)`
+		});
 		tileBagContainer.append(newTileElement);
 	}
 }

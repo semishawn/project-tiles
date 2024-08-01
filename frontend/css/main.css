@@ -59,6 +59,8 @@ main {
 	height: 100%;
 	background: pink;
 	transition: margin 0.5s;
+	-webkit-transition: margin 0.5s;
+	will-change: margin;
 }
 
 .screen {
@@ -96,7 +98,7 @@ main {
 
 .btn * {
 	transition: all var(--input-transition);
-	/* transition-timing-function: steps(3); */
+	-webkit-transition: all var(--input-transition);
 }
 
 .btn:hover .btn-inside,
@@ -211,7 +213,11 @@ input:checked + .btn .btn-stalk
 	color: var(--ui-color2);
 	border: var(--input-border-width) solid var(--ui-color2);
 }
-.tile, .tile * {transition: transform 0.05s;}
+.tile, .tile * {
+	transition: transform 0.05s;
+	-webkit-transition: transform 0.05s;
+	will-change: top, bottom, left, right, transform;
+}
 
 .tile-inside {
 	position: relative;

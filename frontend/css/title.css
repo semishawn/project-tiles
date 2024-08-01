@@ -83,6 +83,7 @@
 	height: 100%;
 	opacity: 0;
 	transition: none;
+	-webkit-transition: none;
 }
 .logo-tile-letter:nth-child(1) {opacity: 1;}
 .logo-tile:nth-child(1) .logo-tile-letter:nth-child(3) {transform: translateY(-25%);}

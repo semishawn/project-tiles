@@ -234,6 +234,7 @@
 	font-size: 1.2rem;
 	border: var(--input-border-width) solid var(--ui-color2);
 	transition: background var(--input-transition);
+	-webkit-transition: background var(--input-transition);
 }
 .player-intro ~ .player-intro {margin-top: calc(-1 * var(--input-border-width));}
 input:checked + .player-intro {background: var(--ui-color3);}
@@ -249,13 +250,18 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 .player-intro-name-edit-container {
 	flex-direction: row;
 	align-items: center;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 .player-intro-name {
 	font-weight: 700;
 	white-space: pre-wrap;
 }
-.user-intro .player-intro-name {outline: none;}
+.user-intro .player-intro-name {
+	outline: none;
+	pointer-events: none;
+}
 
 .player-intro-edit-icon {
 	opacity: 1;
@@ -263,22 +269,24 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	height: 0.75rem;
 	margin-left: 0.5rem;
 	transition: all var(--input-transition);
-}
-.player-intro-edit-icon, .player-intro-edit-icon * {
+	-webkit-transition: all var(--input-transition);
 	cursor: pointer;
-	pointer-events: all;
+	will-change: transform;
 }
-.player-intro-edit-icon:hover {transform: scale(1.15);}
+.player-intro-edit-icon:hover {
+	transform: scale(1.15);
+	-webkit-transform: scale(1.15);
+}
 
-[data-editing="true"] {pointer-events: all;}
 [data-editing="true"] .player-intro-name {
-	-webkit-touch-callout: all;
-	  -webkit-user-select: all;
-	   -khtml-user-select: all;
-	     -moz-user-select: all;
-		  -ms-user-select: all;
-	          user-select: all;
+	-webkit-touch-callout: text;
+	  -webkit-user-select: text;
+	   -khtml-user-select: text;
+	     -moz-user-select: text;
+		  -ms-user-select: text;
+	          user-select: text;
 	cursor: text;
+	pointer-events: all;
 }
 [data-editing="true"] .player-intro-edit-icon {
 	opacity: 0;
@@ -315,6 +323,8 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	height: calc(var(--player-height) + 2 * var(--indicator-border-width) - 2 * var(--input-border-width));
 	border: var(--indicator-border-width) solid var(--ui-color2);
 	transition: opacity var(--input-transition);
+	-webkit-transition: opacity var(--input-transition);
+	pointer-events: none;
 }
 
 .player-intro-tilebag {
@@ -341,6 +351,7 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-style: italic;
 	line-height: 1;
 	transition: all var(--input-transition);
+	-webkit-transition: all var(--input-transition);
 }
 .player-intro-tilebag[data-clicked="true"] {pointer-events: none;}
 .player-intro-tilebag[data-clicked="true"] .player-intro-tilebag-text {opacity: 0;}

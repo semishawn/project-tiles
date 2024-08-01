@@ -114,6 +114,7 @@
 .current-player-indicator-border {
 	position: absolute;
 	transition: all 0.3s;
+	-webkit-transition: all 0.3s;
 }
 .current-player-indicator-bg {
 	left: 0;
@@ -187,6 +188,7 @@
 	height: 100%;
 	background: var(--ui-color1);
 	transition: all 0.2s;
+	-webkit-transition: all 0.2s;
 	cursor: pointer;
 	z-index: var(--z-tile-above);
 }
@@ -485,6 +487,7 @@
 	background: var(--ui-color1);
 	border: var(--input-border-width) solid var(--ui-color2);
 	transition: all 0.2s;
+	-webkit-transition: all 0.2s;
 	pointer-events: none;
 }
 .show-dialog .current-dialog {

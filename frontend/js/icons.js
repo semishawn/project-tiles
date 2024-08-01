@@ -203,7 +203,7 @@ $(".edition-icon-info-row").eq(2).prepend(i_globe);
 
 // Players screen
 $(".player-intro-tilebag").prepend(i_tilebag);
-$(".user-intro .player-intro-edit-icon").append(i_pencil);
+$(".player-intro-edit-icon").append(i_pencil);
 $(".bot-intro .player-icon").append(i_bot);
 
 // Play screen
