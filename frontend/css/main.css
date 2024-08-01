@@ -19,6 +19,8 @@ body {
 div, label {
 	display: flex;
 	flex-direction: column;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 input[type="radio"] {display: none;}
@@ -201,7 +203,6 @@ input:checked + .btn .btn-stalk
 	background: var(--tile-rack-color);
 	color: var(--ui-color2);
 	border: var(--input-border-width) solid var(--ui-color2);
-	user-select: none;
 }
 .tile, .tile * {transition: transform 0.05s;}
 

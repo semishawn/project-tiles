@@ -1,6 +1,4 @@
 //* Variables
-var url = "https://semishawn.github.io/project-tiles/";
-
 var currentScreen = null;
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
 var standardCellDimension = parseInt($("html").css("font-size"));

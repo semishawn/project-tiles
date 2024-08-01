@@ -358,7 +358,9 @@
 	background: transparent;
 	border: var(--input-border-width) solid var(--ui-color2);
 	border-right: 0;
+	border-radius: 0;
 	outline: none;
+	-webkit-appearance: none;
 }
 .play-history-textbox::placeholder {opacity: 0.4;}
 

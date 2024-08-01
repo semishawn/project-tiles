@@ -302,7 +302,9 @@ function onValidPlay(player, play) {
 	$(`.${player.type}-score-box`).find(".player-score").html(player.score);
 }
 
-var BotWorker = new Worker(url + "backend/js/bot.js");
+var url = "https://semishawn.github.io/project-tiles/";
+// var url = "https://localhost:8000/";
+var BotWorker = new Worker("../backend/js/bot.js");
 
 function postBotPlay() {
 	BotWorker.postMessage(JSON.stringify(Game));
