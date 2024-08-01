@@ -1,4 +1,7 @@
-//* Visual variables
+//* Variables
+// var url = "https://semishawn.github.io/project-tiles/";
+var url = "http://localhost:8000/";
+
 var currentScreen = null;
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
 var standardCellDimension = parseInt($("html").css("font-size"));
@@ -120,4 +123,23 @@ $(document).ready(function() {
 
 	titleAnimStart();
 	newScreen("title");
+});
+
+
+
+//* Audio
+let music = $(".play-music")[0];
+var musicAccessGranted = false;
+var musicPlaying = false;
+window.addEventListener("message", function(e) {
+	if (e.data == "toggleAudio") {
+		if (!musicAccessGranted) {
+			music.play();
+			$("body").click();
+			musicAccessGranted = true;
+		}
+
+		music.volume = (musicPlaying) ? 0 : 0.2;
+		musicPlaying = !musicPlaying;
+	}
 });

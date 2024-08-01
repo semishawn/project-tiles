@@ -169,14 +169,20 @@ contBtnEdition.on("click", function() {
 
 	Game.new(langId, editionId);
 
+	// Continue button
+	choseValidName = true;
+	choseGoesFirst = false;
+	checkContinueEnable();
+
+	// Player intros
 	$(".players-screen").attr("data-goes-first", "");
 	$(".user-intro .player-intro-name").html(Game.User.name);
 	$(".player-intro-current-chars").html(Game.User.name.length);
 	$(".bot-intro .player-intro-name").html(Game.Bot.name);
 	$(".player-intro-tilebag").attr("data-clicked", false);
 	drawPlayOrderTiles();
-
 	generateUserIcon();
+	
 	newScreen("players");
 });
 
@@ -188,11 +194,11 @@ $("body").on("click", ".edition-option", function() {
 
 
 //* Players screen
-let usernameTextbox = $(".user-intro .player-intro-name");
-let usernameCharLimit = 10;
-let lastValidName = "";
-let choseValidName = true;
-let choseGoesFirst = false;
+var usernameTextbox = $(".user-intro .player-intro-name");
+var usernameCharLimit = 10;
+var lastValidName = "";
+var choseValidName = true;
+var choseGoesFirst = false;
 
 backBtnPlayers.on("click", function() {
 	newScreen("edition");

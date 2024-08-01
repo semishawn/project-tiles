@@ -33,21 +33,9 @@
 	</div>
 
 	<script>
-		var musicAccessGranted = false;
-		var musicPlaying = false;
-
 		$(".game-window-audio-btn").on("click", function() {
-			let contents = $("iframe").contents();
-			let music = contents.find(".play-music")[0];
-
-			if (!musicAccessGranted) {
-				music.play();
-				contents.find("body").click();
-				musicAccessGranted = true;
-			}
-
-			music.volume = (musicPlaying) ? 0 : 0.2;
-			musicPlaying = !musicPlaying;
+			let iframe = $("iframe")[0];
+			iframe.contentWindow.postMessage("toggleAudio", iframe.src);
 		});
 	</script>
 </body>
