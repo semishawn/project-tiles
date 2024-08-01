@@ -1,6 +1,5 @@
 //* Variables
 var url = "https://semishawn.github.io/project-tiles/";
-// var url = "http://localhost:8000/";
 
 var currentScreen = null;
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
