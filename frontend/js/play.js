@@ -303,8 +303,8 @@ function onValidPlay(player, play) {
 }
 
 var url = "https://semishawn.github.io/project-tiles/";
-// var url = "https://localhost:8000/";
 var BotWorker = new Worker(url + "backend/js/bot.js");
+// var BotWorker = new Worker("./backend/js/bot.js");
 
 function postBotPlay() {
 	BotWorker.postMessage(JSON.stringify(Game));
@@ -349,9 +349,9 @@ function gameOverFE() {
 	newScreen("end");
 }
 
-$(document).keydown(function(e) {
+/* $(document).keydown(function(e) {
 	if (e.code == "Tab") gameOverFE();
-});
+}); */
 
 
 

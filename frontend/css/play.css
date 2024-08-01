@@ -370,10 +370,6 @@
 	height: 100%;
 }
 .play-history-send-btn svg {height: 0.5rem;}
-.play-history-send-btn[disabled] {
-	--inside-bg: var(--ui-color1);
-	pointer-events: none;
-}
 
 .play-history-message[data-player="user"] {flex-direction: row-reverse;}
 .play-history-message[data-player="user"] .play-history-text {
@@ -465,7 +461,6 @@
 	position: absolute;
 	width: calc(100% - 2 * var(--input-border-width));
 	height: calc(100% - 2 * var(--input-border-width));
-	pointer-events: none;
 	z-index: var(--z-tile-below) !important;
 }
 .cell:hover .cell-indicator {
@@ -489,8 +484,8 @@
 	height: 100%;
 	background: var(--ui-color1);
 	border: var(--input-border-width) solid var(--ui-color2);
-	pointer-events: none;
 	transition: all 0.2s;
+	pointer-events: none;
 }
 .show-dialog .current-dialog {
 	opacity: 1;
@@ -524,7 +519,7 @@
 /* Exchange */
 .show-dialog[data-dialog="exchange"] .user-rack-tiles,
 .show-dialog[data-dialog="exchange"] .tile[data-state="rack"]
-{pointer-events: all !important;}
+{pointer-events: all;}
 
 .exchange-dialog {z-index: var(--z-tile-between);}
 .exchange-dialog .rack-tiles {margin-bottom: 0.5rem;}
@@ -615,10 +610,6 @@
 }
 
 .play-btn, .bot-play-btn {--inside-bg: var(--ui-color3);}
-.play-btn[disabled] {
-	--inside-bg: var(--ui-color1);
-	pointer-events: none;
-}
 
 
 

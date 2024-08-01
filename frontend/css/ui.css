@@ -254,7 +254,6 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 .player-intro-name {
 	font-weight: 700;
 	white-space: pre-wrap;
-	pointer-events: none;
 }
 .user-intro .player-intro-name {outline: none;}
 
@@ -263,16 +262,23 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	width: 0.75rem;
 	height: 0.75rem;
 	margin-left: 0.5rem;
-	cursor: pointer;
 	transition: all var(--input-transition);
 }
-.player-intro-edit-icon:hover {transform: scale(1.15);}
-/* .player-intro-edit-icon:hover path {stroke-width: calc(2 * var(--input-border-width));} */
-
-[data-editing="true"] {cursor: default;}
-[data-editing="true"] .player-intro-name {
-	cursor: text;
+.player-intro-edit-icon, .player-intro-edit-icon * {
+	cursor: pointer;
 	pointer-events: all;
+}
+.player-intro-edit-icon:hover {transform: scale(1.15);}
+
+[data-editing="true"] {pointer-events: all;}
+[data-editing="true"] .player-intro-name {
+	-webkit-touch-callout: all;
+	  -webkit-user-select: all;
+	   -khtml-user-select: all;
+	     -moz-user-select: all;
+		  -ms-user-select: all;
+	          user-select: all;
+	cursor: text;
 }
 [data-editing="true"] .player-intro-edit-icon {
 	opacity: 0;
@@ -293,7 +299,6 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-weight: 100;
 	font-style: italic;
 	margin-left: 0.75rem;
-	pointer-events: none;
 }
 
 .player-intro-tile-slot {
@@ -310,7 +315,6 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	height: calc(var(--player-height) + 2 * var(--indicator-border-width) - 2 * var(--input-border-width));
 	border: var(--indicator-border-width) solid var(--ui-color2);
 	transition: opacity var(--input-transition);
-	pointer-events: none;
 }
 
 .player-intro-tilebag {
@@ -319,8 +323,9 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	bottom: 0;
 	width: 9rem;
 	transform: translate(-50%, 25%);
-	cursor: pointer;
 	z-index: var(--z-tile-above);
+	cursor: pointer;
+	pointer-events: all;
 }
 .player-intro-tilebag path {transition: all var(--input-transition);}
 .player-intro-tilebag:hover path {stroke-width: var(--indicator-border-width);}

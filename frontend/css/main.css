@@ -14,13 +14,19 @@ body {
 	background: var(--ui-color1);
 }
 
-* {box-sizing: border-box;}
+* {
+	-webkit-touch-callout: none;
+	  -webkit-user-select: none;
+	   -khtml-user-select: none;
+	     -moz-user-select: none;
+	      -ms-user-select: none;
+	          user-select: none;
+	box-sizing: border-box;
+}
 
 div, label {
 	display: flex;
 	flex-direction: column;
-	user-select: none;
-	-webkit-user-select: none;
 }
 
 input[type="radio"] {display: none;}
@@ -136,6 +142,11 @@ input:checked + .btn .btn-stalk
 	border-right-width: 0;
 }
 
+.btn[disabled] {
+	--inside-bg: var(--ui-color1);
+	pointer-events: none;
+}
+
 /* Important buttons */
 .important-btn {
 	--inside-bg: var(--ui-color3);
@@ -153,10 +164,6 @@ input:checked + .btn .btn-stalk
 	cursor: pointer;
 }
 
-.important-btn[disabled] {
-	--inside-bg: var(--ui-color1);
-	pointer-events: none;
-}
 .important-btn[disabled] .btn-inside,
 .important-btn[disabled] .btn-stalk {--current-extend: 0rem;}
 /* .important-btn[disabled] .btn-inside {background: var(--ui-color1);} */
@@ -253,7 +260,6 @@ input:checked + .btn .btn-stalk
 .tile[data-state="dragging"] {
 	--tile-dimension: var(--big-tile-dimension);
 	position: absolute;
-	pointer-events: none;
 	z-index: var(--z-tile-rack);
 }
 .tile[data-state="placed-rack"] {
@@ -295,7 +301,6 @@ input:checked + .btn .btn-stalk
 	border: var(--input-border-width) solid var(--ui-color2);
 }
 
-.tile[data-player="bot"][data-state="rack"] {pointer-events: none;}
 .tile[data-player="bot"][data-state="rack"] .tile-inside {display: none;}
 
 
