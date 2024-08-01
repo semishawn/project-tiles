@@ -91,9 +91,7 @@
 
 
 /* Bottom container */
-.title-bottom-container {
-	align-self: center;
-}
+.title-bottom-container {align-self: center;}
 
 .title-bottom-container > * {
 	width: 10rem;
@@ -109,10 +107,18 @@
 	border: var(--input-border-width) solid var(--ui-color2);
 	border-bottom: 0;
 }
+
 .semipedia-text div:nth-child(1) {
 	font-size: 0.5em;
 	font-style: italic;
 	margin-bottom: 0.5em;
+}
+
+@font-face {
+	font-family: "Doyle";
+	font-weight: 900;
+	font-style: normal;
+	src: url("https://semishawn.github.io/semipedia/fonts/doyle/Doyle-Black.woff2");
 }
 .semipedia-text div:nth-child(2) {
 	font-family: "Doyle";
