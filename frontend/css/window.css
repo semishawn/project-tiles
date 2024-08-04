@@ -7,7 +7,7 @@ html, body {
 }
 
 body {
-	--body-color: var(--ui-color2);
+	--body-color: black;
 	position: relative;
 	display: flex;
 	justify-content: center;
@@ -29,10 +29,11 @@ div, label {
 .game-window {
 	--border-width: 4px;
 	--border-radius: 10px;
-	--border-color: var(--tile-rack-color);
+	--border-color: var(--tile-color);
 	position: relative;
 	justify-content: flex-start;
 	align-content: flex-start;
+	filter: saturate(90%);
 }
 
 .game-window-tab {

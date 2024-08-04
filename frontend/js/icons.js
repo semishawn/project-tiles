@@ -12,15 +12,6 @@ var i_arrowShort = `
 </svg>
 `;
 
-var i_cube = `
-<svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-	<path vector-effect="non-scaling-stroke" transform="matrix(1.980203,0,0,1.980203,-4.1643466,-13.42321)" d="M 27.352927,57.278578 5.4858397,44.65361 5.485839,19.403673 27.352926,6.7787037 49.220013,19.403672 l 10e-7,25.249937 z"/>
-	<path vector-effect="non-scaling-stroke" d="M 6.6987282,25 50,50"/>
-	<path vector-effect="non-scaling-stroke" d="M 50,100 50,50"/>
-	<path vector-effect="non-scaling-stroke" d="M 93.301267,25 50,50"/>
-</svg>
-`;
-
 var i_verified = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<path vector-effect="non-scaling-stroke" transform="matrix(1.1682754,0,0,1.1682754,25.420082,25.420082)" d="M -21.758636,21.039488 -11.523258,10.459212 -13.584921,-4.1166193 0.91460463,-6.6600372 7.8141433,-19.663948 21.039489,-13.199009 34.26484,-19.663946 41.164374,-6.6600379 55.663902,-4.1166161 53.602237,10.459211 63.837616,21.039492 53.602237,31.619767 55.6639,46.195599 41.164375,48.739017 34.264836,61.742927 21.03949,55.277988 7.8141395,61.742926 0.91460568,48.739017 -13.584923,46.195596 -11.523257,31.619768 Z"/>
@@ -36,7 +27,7 @@ var i_box = `
 </svg>
 `;
 
-var i_globe = `
+/* var i_globe = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<path vector-effect="non-scaling-stroke" d="M 100,50 A 50,50 0 0 1 50,100 50,50 0 0 1 0,50 50,50 0 0 1 50,0 50,50 0 0 1 100,50 Z"/>
 	<path vector-effect="non-scaling-stroke" d="m 12.863404,16.581638 c 9.150047,5.013883 22.386093,8.166277 37.111802,8.166277 14.752904,0 28.009579,-3.164432 37.16139,-8.194463"/>
@@ -45,15 +36,15 @@ var i_globe = `
 	<path vector-effect="non-scaling-stroke" d="M 87.136602,83.418293 C 77.986545,78.404407 64.75051,75.252016 50.024802,75.252015 35.2719,75.252014 22.015214,78.416464 12.863397,83.446472"/>
 	<path vector-effect="non-scaling-stroke" d="M 74.747984,50 A 24.747984,50 0 0 1 50,100 24.747984,50 0 0 1 25.252016,50 24.747984,50 0 0 1 50,0 24.747984,50 0 0 1 74.747984,50 Z"/>
 </svg>
-`;
-/* var i_globe = `
+`; */
+var i_globe = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<path vector-effect="non-scaling-stroke" d="M 100,50 A 50,50 0 0 1 50,100 50,50 0 0 1 0,50 50,50 0 0 1 50,0 50,50 0 0 1 100,50 Z"/>
 	<path vector-effect="non-scaling-stroke" d="M 0,50 H 100"/>
 	<path vector-effect="non-scaling-stroke" d="M 50,0 V 100"/>
 	<path vector-effect="non-scaling-stroke" d="M 74.747984,50 A 24.747984,50 0 0 1 50,100 24.747984,50 0 0 1 25.252016,50 24.747984,50 0 0 1 50,0 24.747984,50 0 0 1 74.747984,50 Z"/>
 </svg>
-`; */
+`;
 
 var i_bot = `
 <svg viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -197,7 +188,7 @@ $(`.btn[class*="continue-btn"]`).append(i_arrowLong);
 $(".title-play-btn").append(i_arrowLong);
 
 // Edition screen
-$(".edition-icon-info-row").eq(0).prepend(i_cube);
+$(".edition-icon-info-row").eq(0).prepend(i_box);
 $(".edition-icon-info-row").eq(1).prepend(i_verified);
 $(".edition-icon-info-row").eq(2).prepend(i_globe);
 
@@ -223,5 +214,5 @@ $(".play-history-send-btn").append(i_arrowShort);
 // End screen
 $(".bot-end .player-icon").append(i_bot);
 $(".rematch-btn").prepend(i_arrowCircle);
-$(".new-edition-btn").prepend(i_cube);
+$(".new-edition-btn").prepend(i_box);
 $(".save-results-btn").prepend(i_download);

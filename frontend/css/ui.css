@@ -3,11 +3,11 @@
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	min-height: 3rem;
+	min-height: 2.8rem;
 	margin-bottom: 1rem;
 }
 
-.header-container .important-btn {width: 26%;}
+.header-container .important-btn {width: 27%;}
 [class*="back-btn"] svg {
 	margin-right: 0.3rem;
 	transform: scaleX(-1);
@@ -80,7 +80,7 @@
 
 .edition-icon-info-container {
 	flex-direction: row;
-	padding: 0.4rem 0.7rem;
+	padding: 0.5rem 0.7rem;
 	margin-left: calc(-1 * var(--input-border-width));
 	border: var(--input-border-width) solid var(--ui-color2);
 }
@@ -216,22 +216,23 @@
 
 /** Player Intros */
 .players-screen {
-	--play-order-tile-dimension: 2.5rem;
-	--player-padding: 0.75rem;
-	--player-height: calc(var(--play-order-tile-dimension) + 2 * var(--player-padding));
+	--play-order-tile-width: 2.2rem;
+	--play-order-tile-height: calc(var(--tile-ratio) * var(--play-order-tile-width));
+	--player-padding: 0.65rem;
+	--player-height: calc(var(--play-order-tile-height) + 2 * var(--player-padding));
+	--player-intro-tilebag-width: 8.5rem;
 }
 
 .player-intro-container {
 	position: relative;
 	width: 100%;
-	margin-bottom: auto;
 }
 
 .player-intro {
 	flex-direction: row;
 	align-items: center;
 	height: var(--player-height);
-	font-size: 1.2rem;
+	font-size: 1rem;
 	border: var(--input-border-width) solid var(--ui-color2);
 	transition: background var(--input-transition);
 	-webkit-transition: background var(--input-transition);
@@ -245,13 +246,14 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	border-right: var(--input-border-width) solid var(--ui-color2);
 }
 
-.player-intro-name-wrapper {padding-left: 1rem;}
+.player-intro-name-wrapper {
+	margin-left: calc(1.5 * var(--player-padding));
+	margin-right: 0.5em;
+}
 
 .player-intro-name-edit-container {
 	flex-direction: row;
 	align-items: center;
-	backface-visibility: hidden;
-	-webkit-backface-visibility: hidden;
 }
 
 .player-intro-name {
@@ -265,9 +267,9 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 
 .player-intro-edit-icon {
 	opacity: 1;
-	width: 0.75rem;
-	height: 0.75rem;
-	margin-left: 0.5rem;
+	width: 0.75em;
+	height: 0.75em;
+	margin-left: 0.5em;
 	transition: all var(--input-transition);
 	-webkit-transition: all var(--input-transition);
 	cursor: pointer;
@@ -295,10 +297,10 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 
 .player-intro-descriptor {
 	display: inline;
-	font-size: 0.5rem;
+	font-size: 0.5em;
 	font-style: italic;
 }
-.invalid-chars {color: red;}
+.invalid-chars {color: var(--dw-color);}
 
 .player-intro-goes-first {
 	flex-grow: 1;
@@ -306,12 +308,11 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-family: var(--font2);
 	font-weight: 100;
 	font-style: italic;
-	margin-left: 0.75rem;
 }
 
 .player-intro-tile-slot {
-	width: var(--play-order-tile-dimension);
-	height: var(--play-order-tile-dimension);
+	width: var(--play-order-tile-width);
+	height: var(--play-order-tile-height);
 	margin-right: var(--player-padding);
 }
 
@@ -327,17 +328,42 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	pointer-events: none;
 }
 
-.player-intro-tilebag {
+.player-intro-tilebag-container {
+	position: relative;
+	flex-grow: 1;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-end;
+	width: 100%;
+}
+
+.player-intro-info {
 	position: absolute;
-	left: 50%;
 	bottom: 0;
-	width: 9rem;
-	transform: translate(-50%, 25%);
+	right: 0;
+	display: inline;
+	text-align: right;
+	width: 7rem;
+	opacity: 0.4;
+	font-size: 0.5rem;
+	font-style: italic;
+	margin-right: 0.5rem;
+}
+.first-letter {font-weight: 700;}
+
+.player-intro-tilebag {
+	position: relative;
+	width: var(--player-intro-tilebag-width);
+	margin-bottom: -13%;
 	z-index: var(--z-tile-above);
 	cursor: pointer;
 	pointer-events: all;
 }
-.player-intro-tilebag path {transition: all var(--input-transition);}
+.player-intro-tilebag path {
+	transition: stroke-width var(--input-transition);
+	-webkit-transition: stroke-width var(--input-transition);
+	will-change: stroke-width;
+}
 .player-intro-tilebag:hover path {stroke-width: var(--indicator-border-width);}
 .player-intro-tilebag-text {
 	position: absolute;
@@ -379,15 +405,6 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	margin-bottom: 1rem;
 }
 
-.winner-indicator {
-	position: absolute;
-	top: 0;
-	width: 50%;
-	height: 100%;
-	background: var(--tile-rack-color);
-	z-index: var(--z-winner-bg);
-}
-
 .end-player {
 	width: 100%;
 	border: var(--input-border-width) solid var(--ui-color2);
@@ -413,11 +430,12 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 .player-end-name {
 	font-size: 1rem;
 	font-weight: 700;
+	line-height: 1;
 	margin-top: -0.1em;
-	margin-bottom: 0.2rem;
+	margin-bottom: 0.3rem;
 }
 .player-end-info .player-icon {
-	--dimension: 4rem;
+	--dimension: 3.75rem;
 	border: var(--input-border-width) solid var(--ui-color2);
 }
 
@@ -427,7 +445,8 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-family: var(--font2);
 	font-size: 3rem;
 	font-weight: 700;
-	padding: 0.1rem 0;
+	line-height: 1;
+	padding: 0.25rem 0;
 	border-bottom: var(--input-border-width) solid var(--ui-color2);
 }
 
@@ -438,7 +457,7 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	width: 100%;
 	font-size: 0.75rem;
 	font-style: italic;
-	padding: 0.5rem 1rem;
+	padding: 0.45rem 0.7rem;
 }
 .player-avg-score {
 	font-family: var(--font2);
@@ -447,15 +466,17 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-style: normal;
 }
 
-[data-winner="user"] .winner-indicator {left: 0;}
-[data-winner="user"] .user-end .player-ordinal {background: var(--tile-placed-color);}
-[data-winner="bot"] .winner-indicator {right: 0;}
-[data-winner="bot"] .bot-end .player-ordinal {background: var(--tile-placed-color);}
+.winner {
+	color: var(--ui-color3);
+	background: var(--dw-color);
+}
+.winner .player-icon {border-color: var(--ui-color3);}
+.winner path {fill: var(--ui-color3);}
 
 .end-btn-container {
 	flex-direction: row;
 	width: 100%;
-	height: 3rem;
+	height: 2.8rem;
 }
 
 .end-btn {

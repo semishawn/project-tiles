@@ -180,6 +180,7 @@ contBtnEdition.on("click", function() {
 	$(".player-intro-current-chars").html(Game.User.name.length);
 	$(".bot-intro .player-intro-name").html(Game.Bot.name);
 	$(".player-intro-tilebag").attr("data-clicked", false);
+	$(".first-letter").html(Game.alphabet[0]);
 	drawPlayOrderTiles();
 	generateUserIcon();
 	

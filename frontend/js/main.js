@@ -1,7 +1,6 @@
 //* Variables
 var currentScreen = null;
 var inputBorderWidth = parseFloat($(":root").css("--input-border-width"));
-var standardCellDimension = parseInt($("html").css("font-size"));
 var screenTransition = parseFloat($("main").css("transition-duration")) * 1000;
 var inputTransition = parseFloat($(":root").css("--input-transition")) * 1000;
 var bigTileDimension = $(".big-tile-sizer").outerWidth();
@@ -117,6 +116,11 @@ $(document).ready(function() {
 	$(".btn").each(function() {
 		$(this).btnify()
 	});
+
+	/* Game.new(7, 0);
+	generateUserIcon();
+	gameOverFE();
+	newScreen("end"); */
 
 	titleAnimStart();
 	newScreen("title");

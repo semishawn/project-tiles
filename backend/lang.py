@@ -85,7 +85,45 @@ def lang_to_js(file_path):
 
 
 lang_to_js('lang.json')
-langs = ["afr", "bul", "cat", "hrv", "cze", "dan", "dut", "est", "fin", "grc", "hun", "ind", "gle", "ita", "lat", "lav"]
+langs = []
+pangs = [
+	'afr',
+	'ara',
+	'bul',
+	'cat',
+	'hrv',
+	'cze',
+	'dan',
+	'dut',
+	'est',
+	'fao',
+	'fin',
+	'ger',
+	'grc',
+	'heb',
+	'hun',
+	'ice',
+	'ind',
+	'gle',
+	'ita',
+	'lat',
+	'lav',
+	'lit',
+	'mlg',
+	'may',
+	'nob',
+	'pol',
+	'por',
+	'rum',
+	'rus',
+	'gla',
+	'slo',
+	'slv',
+	'swe',
+	'tur',
+	'ukr',
+	'wel'
+]
 with alive_bar(len(langs)) as bar:
 	for iso in langs:
 		jsonl_to_js(iso)

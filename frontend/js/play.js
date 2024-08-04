@@ -49,7 +49,7 @@ function sortTileBagFE() {
 }
 
 function generateBoardFE() {
-	$(".board-letter-container").empty();
+	/* $(".board-letter-container").empty();
 	$(".board-number-container").empty();
 	for (let i = 0; i < Game.board.length; i++) {
 		let letter = Game.alphabet[i];
@@ -62,7 +62,7 @@ function generateBoardFE() {
 
 		$(".board-letter-container").append(`<div class="board-letter">${letter}</div>`);
 		$(".board-number-container").append(`<div class="board-number">${i + 1}</div>`);
-	}
+	} */
 
 	$(".cell").remove();
 	for (let r = 0; r < Game.board.length; r++) {
@@ -77,8 +77,11 @@ function generateBoardFE() {
 			if (id == 1) {
 				cellElement.append(i_star);
 			} else if (id > 1) {
-				abbr = Game.premiumCells.find(x => x.id === id).abbr;
-				cellElement.append(`<div class="cell-abbr">${abbr}</div>`);
+				let premium = Game.premiumCells.find(x => x.id === id);
+				cellElement.append(`
+					<div class="cell-text">${premium.text}</div>
+					<div class="cell-abbr">${premium.abbr}</div>
+				`);
 			}
 	
 			$(".board").append(cellElement);
@@ -259,10 +262,7 @@ function hideDialog() {
 
 //* Play functionality
 function newGameFE() {
-	$(":root").css({
-		"--board-dimension": Game.board.length,
-		"--cell-dimension": (standardCellDimension * 15) / Game.board.length + "px"
-	});
+	$(":root").css("--board-dimension", Game.board.length);
 	$(".play-screen").css("font-family", Game.langFont);
 	$(".user-score-box .player-name").html(Game.User.name);
 	$(".user-score-box .player-score").html(Game.User.score);
@@ -337,7 +337,8 @@ function gameOverFE() {
 	let userAvg = Math.round(Game.User.score / Game.User.plyCount);
 	let botAvg = Math.round(Game.Bot.score / Game.Bot.plyCount);
 
-	$(".end-screen").attr("data-winner", Game.ordinals[0].type);
+	$(".end-player").removeClass("winner");
+	$(`.${Game.ordinals[0].type}-end`).addClass("winner");
 
 	$(".user-end .player-end-name").html(Game.User.name);
 	$(".user-end .player-final-score").html(Game.User.score);
@@ -360,6 +361,7 @@ function gameOverFE() {
 
 //* Button functionality
 $(".ditch-btn").on("click", function() {
+	BotWorker.terminate();
 	newScreen("lang");
 });
 
@@ -368,6 +370,7 @@ $(".start-over-btn").on("click", function() {
 	showDialog("start-over");
 });
 $(".start-over-dialog .dialog-confirm-btn").on("click", function() {
+	BotWorker.terminate();
 	Game.new(langId, editionId);
 	newGameFE();
 	
@@ -385,6 +388,7 @@ $(".resign-btn").on("click", function() {
 	showDialog("resign");
 });
 $(".resign-dialog .dialog-confirm-btn").on("click", function() {
+	BotWorker.terminate();
 	hideDialog();
 	gameOverFE();
 });
