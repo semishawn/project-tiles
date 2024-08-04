@@ -195,7 +195,7 @@
 
 .edition-globe {
 	width: calc(0.85 * var(--box-width));
-	transform: rotate(-4deg);
+	transform: rotate(3deg);
 }
 .edition-title-border {
 	position: absolute;

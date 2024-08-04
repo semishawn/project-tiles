@@ -188,8 +188,8 @@ $(`.btn[class*="continue-btn"]`).append(i_arrowLong);
 $(".title-play-btn").append(i_arrowLong);
 
 // Edition screen
-$(".edition-icon-info-row").eq(0).prepend(i_box);
-$(".edition-icon-info-row").eq(1).prepend(i_verified);
+$(".edition-icon-info-row").eq(0).prepend(i_verified);
+$(".edition-icon-info-row").eq(1).prepend(i_box);
 $(".edition-icon-info-row").eq(2).prepend(i_globe);
 
 // Players screen
