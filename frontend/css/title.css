@@ -53,11 +53,11 @@
 	height: 100%;
 	background: black;
 }
-.logo-bars div:nth-child(1) {background: var(--dl-color);}
-.logo-bars div:nth-child(2) {background: var(--dw-color);}
+.logo-bars div:nth-child(1) {background: var(--dw-color);}
+.logo-bars div:nth-child(2) {background: var(--dl-color);}
 .logo-bars div:nth-child(3) {background: var(--tl-color);}
-.logo-bars div:nth-child(4) {background: var(--dw-color);}
-.logo-bars div:nth-child(5) {background: var(--dl-color);}
+.logo-bars div:nth-child(4) {background: var(--dl-color);}
+.logo-bars div:nth-child(5) {background: var(--dw-color);}
 
 .logo-text2 {
 	flex-direction: row;

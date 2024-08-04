@@ -37,11 +37,13 @@
 	--tile-ratio: 1.03;
 	--tile-width: var(--big-tile-width);
 
-	--z-tile-below:   1000;
-	--z-tile-placed:  1001;
-	--z-tile-between: 1002;
-	--z-tile-rack:    1003;
-	--z-tile-above:   1004;
+	--z-tile-below:        1000;
+	--z-tile-placed-board: 1001;
+	--z-tile-placed-rack:  1002;
+	--z-tile-between:      1003;
+	--z-tile-rack:         1004;
+	--z-tile-above:        1005;
+	--z-tile-above-above:  1006;
 
 	--input-transition: 0.1s;
 }

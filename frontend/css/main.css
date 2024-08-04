@@ -273,13 +273,13 @@ input:checked + .btn .btn-stalk
 .tile[data-state="placed-rack"] {
 	--tile-width: var(--small-tile-width);
 	position: absolute;
-	z-index: var(--z-tile-placed);
+	z-index: var(--z-tile-placed-rack);
 }
 .tile[data-state="placed-board"] {
 	--tile-width: var(--small-tile-width);
 	position: absolute;
 	border-color: var(--tile-color);
-	z-index: var(--z-tile-placed);
+	z-index: var(--z-tile-placed-board);
 }
 .tile[data-state="play-order"] {
 	--tile-width: var(--play-order-tile-width);
