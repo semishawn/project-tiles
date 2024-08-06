@@ -301,6 +301,12 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-style: italic;
 }
 .invalid-chars {color: var(--dw-color);}
+.bot-difficulty {
+	font-weight: 700;
+	text-transform: capitalize;
+	cursor: pointer;
+	pointer-events: all;
+}
 
 .player-intro-goes-first {
 	flex-grow: 1;

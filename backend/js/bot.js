@@ -25,7 +25,7 @@ onmessage = e => {
 	console.log(`${rackString} → Generated ${Game.Bot.botTilePerms.length.toLocaleString()} tile permutations...`);
 
 	Game.Bot.generateBotPlays();
-	var secondsElapsed = Game.Bot.msElapsed / 1000;
+	var secondsElapsed = Game.Bot.botMsElapsed / 1000;
 	console.log(`Tested ${Game.Bot.botPlaysTested.toLocaleString()} plays in ${secondsElapsed} seconds...`);
 	console.log(`Found ${Game.Bot.botValidPlays.length.toLocaleString()} valid plays...`);
 

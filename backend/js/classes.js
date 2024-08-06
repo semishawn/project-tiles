@@ -73,8 +73,8 @@ var Game = {
 		let isUserPassedOut = (this.User.consecutivePasses >= 2);
 		let isBotPassedOut = (this.Bot.consecutivePasses >= 2);
 		if (
-			isTileBagEmpty &&
-			(isUserPlayedOut || isBotPlayedOut || isUserPassedOut || isBotPassedOut)
+			(isTileBagEmpty && (isUserPlayedOut || isBotPlayedOut)) ||
+			(isUserPassedOut || isBotPassedOut)
 		) {
 			this.ordinals.sort((a, b) => a.score - b.score);
 			return true;
@@ -96,10 +96,15 @@ class Player {
 	botTilePerms = [];
 	botPlaysTested = 0;
 	botValidPlays = [];
-	response = null;
+	botMsElapsed = 0;
+	botDiffic = 1;
+	botDiffics = [
+		{name: "easy",   maxMs: 5 * 1000},
+		{name: "average", maxMs: 10 * 1000},
+		{name: "impossible",   maxMs: 15 * 1000}
+	];
 
-	msElapsed = 0;
-	maxMs = 15 * 1000;
+	response = null;
 
 	constructor(type, name) {
 		this.type = type;
@@ -400,6 +405,8 @@ class Player {
 	}
 
 	generateBotPlays() {
+		let startTime = performance.now();
+
 		let findOpenSquares = vector => {
 			let openSquares = [];
 			for (let i = 0, n = vector.length; i < n; i++) {
@@ -408,59 +415,81 @@ class Player {
 			return openSquares;
 		}
 
-		let generateVectorPlays = (paraVectors, direction, vectorIndex) => {
-			let isVectorPopulated = index => {
-				let isPopulated = false;
-				if (0 <= index && index < vectorBefore.length)
-					isPopulated = findOpenSquares(paraVectors[index]).length < vectorBefore.length
-				return isPopulated;
-			}
-
-			let vectorBefore = paraVectors[vectorIndex];
+		let generateVectorPlays = vector => {
+			let vectorBefore = vector.para[vector.index];
 			let openSquareIndexes = findOpenSquares(vectorBefore);
 
-			if (
-				isVectorPopulated(vectorIndex - 1) ||
-				isVectorPopulated(vectorIndex) ||
-				isVectorPopulated(vectorIndex + 1) ||
-				(Game.Bot.plyCount == 0 && vectorIndex == Math.floor(Game.tileMap.length / 2))
-			) {
-				for (let p = 0, pn = this.botTilePerms.length; p < pn; p++) {
-					let tilePerm = this.botTilePerms[p];
-					for (let s = 0, sn = openSquareIndexes.length - tilePerm.length; s <= sn; s++) {
-						this.msElapsed = performance.now() - startTime;
-						if (this.msElapsed < this.maxMs) {
-							let tilesPlayed = deepCopy(tilePerm);
-							for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
-								let tile = tilesPlayed[t];
-								let indexAlongVector = openSquareIndexes[s + t];
+			dance: for (let p = 0, pn = this.botTilePerms.length; p < pn; p++) {
+				let tilePerm = this.botTilePerms[p];
+				for (let s = 0, sn = openSquareIndexes.length - tilePerm.length; s <= sn; s++) {
+					let tilesPlayed = deepCopy(tilePerm);
+					for (let t = 0, tn = tilesPlayed.length; t < tn; t++) {
+						let tile = tilesPlayed[t];
+						let indexAlongVector = openSquareIndexes[s + t];
 
-								tile.state = "placed-rack";
-								tile.row = (direction == "row") ? vectorIndex : indexAlongVector;
-								tile.col = (direction == "row") ? indexAlongVector : vectorIndex;
-							}
-
-							this.testPlay(tilesPlayed);
-							this.botPlaysTested++;
-							if (this.currentPlay.valid) this.botValidPlays.push(this.currentPlay.data);	
-						}
+						tile.state = "placed-rack";
+						tile.row = (vector.direction == "row") ? vector.index : indexAlongVector;
+						tile.col = (vector.direction == "row") ? indexAlongVector : vector.index;
 					}
+
+					this.testPlay(tilesPlayed);
+					this.botPlaysTested++;
+					if (this.currentPlay.valid) this.botValidPlays.push(this.currentPlay.data);
+
+					// Difficulty throttle
+					this.botMsElapsed = performance.now() - startTime;
+					if (this.botMsElapsed >= this.botDiffics[this.botDiffic].maxMs) break dance;
 				}
 			}
 		}
 
 		let rows = Game.tileMap;
 		let cols = transpose(rows);
-		let startTime = performance.now();
+		let vectorOptions = [];
+		for (let r = 0, rn = rows.length; r < rn; r++) vectorOptions.push({para: rows, direction: "row", index: r});
+		for (let c = 0, cn = cols.length; c < cn; c++) vectorOptions.push({para: cols, direction: "col", index: c});
 
-		for (let v = 0, vn = rows.length; v < vn; v++) generateVectorPlays(rows, "row", v);
-		for (let v = 0, vn = cols.length; v < vn; v++) generateVectorPlays(cols, "col", v);
+		vectorOptions = vectorOptions.filter(function(vector) {
+			let isVectorPopulated = v => {
+				let isPopulated = false;
+				if (0 <= v && v < vectorBefore.length)
+					isPopulated = findOpenSquares(vector.para[v]).length < vectorBefore.length;
+				return isPopulated;
+			}
+
+			let vectorBefore = vector.para[vector.index];
+			return (
+				isVectorPopulated(vector.index - 1) ||
+				isVectorPopulated(vector.index) ||
+				isVectorPopulated(vector.index + 1) ||
+				(vector.index == Math.floor(Game.tileMap.length / 2))
+			);
+		});
+		vectorOptions.shuffle();
+
+		for (let v = 0, vn = vectorOptions.length; v < vn; v++) generateVectorPlays(vectorOptions[v]);
 	}
 
 	chooseBotPlay() {
-		this.botValidPlays.sort((a, b) => b.score - a.score);
-		let midPlayIndex = Math.floor(this.botValidPlays.length / 2);
-		return this.botValidPlays[midPlayIndex];
+		let chosenPlay = null;
+		switch (this.botDiffic) {
+			case 0:
+				this.botValidPlays.sort((a, b) => b.score - a.score);
+				let lowPlayIndex = Math.floor(this.botValidPlays.length / 2);
+				chosenPlay = this.botValidPlays[lowPlayIndex];
+				break;
+			case 1:
+				this.botValidPlays.sort((a, b) => b.score - a.score);
+				let midPlayIndex = Math.floor(this.botValidPlays.length / 2);
+				chosenPlay = this.botValidPlays[midPlayIndex];
+				break;
+			case 2:
+				this.botValidPlays.sort((a, b) => b.score - a.score);
+				chosenPlay = this.botValidPlays[0];
+				break;
+		}
+
+		return chosenPlay;
 	}
 
 	applyPlay(play) {

@@ -91,11 +91,8 @@ $(".play-screen").on("mousemove", function(e) {
 			.moveTo(correspondingSlot);
 		}
 
-		let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
-		Game.User.testPlay(tilesPlayed);
-		$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
-
 		console.log(Game.User.currentPlay);
+		testPlayFE();
 	}
 
 	TileDrag.reset();
@@ -131,11 +128,8 @@ $(".play-screen").on("click", ".blank-option", function() {
 	correspondingTile.find(".tile-letter").charCount(letter);
 	correspondingTile.changeLetterFE(letter);
 	hideDialog();
-
-	// Test play
-	let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
-	Game.User.testPlay(tilesPlayed);
-	$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
+	
+	testPlayFE();
 });
 
 // Exchange

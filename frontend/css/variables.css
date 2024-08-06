@@ -31,6 +31,7 @@
 
 	--input-border-width: 1px;
 	--indicator-border-width: calc(3 * var(--input-border-width));
+	--input-font-size: 0.43rem;
 
 	--small-tile-width: 1rem;
 	--big-tile-width: 1.3rem;

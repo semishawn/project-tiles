@@ -258,6 +258,7 @@ input:checked + .btn .btn-stalk
 	--tile-width: var(--big-tile-width);
 	position: absolute;
 	z-index: var(--z-tile-rack);
+	pointer-events: none;
 }
 .tile[data-state*="rack"]:hover {
 	transform: scale(1.1);
@@ -273,6 +274,7 @@ input:checked + .btn .btn-stalk
 .tile[data-state="placed-rack"] {
 	--tile-width: var(--small-tile-width);
 	position: absolute;
+	border-color: var(--ui-color3);
 	z-index: var(--z-tile-placed-rack);
 }
 .tile[data-state="placed-board"] {

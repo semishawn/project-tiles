@@ -171,6 +171,13 @@ function exchangeTilesFE(player) {
 	sortTileBagFE();
 }
 
+function testPlayFE() {
+	let tilesPlayed = Game.User.rackTiles.filter(tile => tile.state === "placed-rack");
+	Game.User.testPlay(tilesPlayed);
+	$(".play-btn").attr("disabled", !Game.User.currentPlay.valid);
+	if (Game.User.currentPlay.valid) $(".turn-points").html(`(${Game.User.currentPlay.data.score})`);
+}
+
 function applyPlayFE(player, play) {
 	if (player.type == "bot") {
 		for (let t = 0; t < play.tilesPlayed.length; t++) {
@@ -264,10 +271,11 @@ function hideDialog() {
 function newGameFE() {
 	$(":root").css("--board-dimension", Game.board.length);
 	$(".play-screen").css("font-family", Game.langFont);
+	$(".play-screen").attr("data-current-player", "");
 	$(".user-score-box .player-name").html(Game.User.name);
 	$(".user-score-box .player-score").html(Game.User.score);
 	$(".bot-score-box .player-name").html(Game.Bot.name);
-	$(".player-timer").css("--duration", (Game.Bot.maxMs / 1000 + 0.5) + "s");
+	$(".player-timer").css("--duration", (Game.Bot.botDiffics[Game.Bot.botDiffic].maxMs / 1000 + 1) + "s");
 	$(".bot-score-box .player-score").html(Game.Bot.score);
 	$(".play-history-textbox").attr("placeholder", `Chat with ${Game.Bot.name}...`);
 	$(".blank-option-container").css("--columns", Game.rackSize);
@@ -279,6 +287,29 @@ function newGameFE() {
 	generateBoardFE();
 	generateRacksFE();
 	generateBlankOptionsFE();
+
+	let url = "https://semishawn.github.io/project-tiles/";
+	// let url = "./";
+	BotWorker = new Worker(url + "backend/js/bot.js");
+	BotWorker.onmessage = e => {
+		let ply = e.data;
+		console.log(ply);
+	
+		Game.Bot.plyCount++;
+		switch(ply.type) {
+			case "play":
+				Game.Bot.consecutivePasses = 0;
+				onValidPlay(Game.Bot, ply.data);
+				break;
+			case "skip":
+				Game.Bot.consecutivePasses++;
+				addToHistory(Game.Bot, "skip");
+				break;
+		}
+	
+		if (Game.isGameOver()) gameOverFE();
+		else changePlayerTo(Game.User);
+	}
 }
 
 function initiateGame() {
@@ -288,7 +319,10 @@ function initiateGame() {
 	drawTilesFE(Game.User, Game.rackSize);
 	drawTilesFE(Game.Bot, Game.rackSize);
 
-	if (Game.firstPlayer.type == "bot") postBotPlay();
+	setTimeout(function() {
+		changePlayerTo(Game.firstPlayer);
+		if (Game.firstPlayer.type == "bot") postBotPlay();
+	}, Game.rackSize * TileFE.moveDelay + TileFE.moveDur);
 }
 
 function onValidPlay(player, play) {
@@ -305,32 +339,8 @@ function onValidPlay(player, play) {
 	$(`.${player.type}-score-box`).find(".player-score").html(player.score);
 }
 
-var url = "https://semishawn.github.io/project-tiles/";
-// var BotWorker = new Worker(url + "backend/js/bot.js");
-var BotWorker = new Worker("./backend/js/bot.js");
-
 function postBotPlay() {
 	BotWorker.postMessage(JSON.stringify(Game));
-}
-
-BotWorker.onmessage = e => {
-	let ply = e.data;
-	console.log(ply);
-
-	Game.Bot.plyCount++;
-	switch(ply.type) {
-		case "play":
-			Game.Bot.consecutivePasses = 0;
-			onValidPlay(Game.Bot, ply.data);
-			break;
-		case "skip":
-			Game.Bot.consecutivePasses++;
-			addToHistory(Game.Bot, "skip");
-			break;
-	}
-
-	if (Game.isGameOver()) gameOverFE();
-	else changePlayerTo(Game.User);
 }
 
 function gameOverFE() {
@@ -372,11 +382,9 @@ $(".start-over-btn").on("click", function() {
 $(".start-over-dialog .dialog-confirm-btn").on("click", function() {
 	BotWorker.terminate();
 	Game.new(langId, editionId);
-	newGameFE();
-	
-	changePlayerTo(Game.firstPlayer);
-	initiateGame();
 
+	newGameFE();
+	initiateGame();
 	hideDialog();
 });
 $(".start-over-dialog .dialog-deny-btn").on("click", function() {

@@ -179,6 +179,7 @@ contBtnEdition.on("click", function() {
 	$(".user-intro .player-intro-name").html(Game.User.name);
 	$(".player-intro-current-chars").html(Game.User.name.length);
 	$(".bot-intro .player-intro-name").html(Game.Bot.name);
+	$(".bot-difficulty").html(Game.Bot.botDiffics[Game.Bot.botDiffic].name);
 	$(".player-intro-tilebag").attr("data-clicked", false);
 	$(".first-letter").html(Game.alphabet[0]);
 	drawPlayOrderTiles();
@@ -207,10 +208,8 @@ backBtnPlayers.on("click", function() {
 
 contBtnPlayers.on("click", function() {
 	Game.User.name = $(".user-intro .player-intro-name").text();
-	changePlayerTo(Game.firstPlayer);
-	setTimeout(() => initiateGame(), screenTransition);
-
 	newGameFE();
+	setTimeout(() => initiateGame(), screenTransition);
 	newScreen("play");
 });
 
@@ -327,16 +326,20 @@ function drawPlayOrderTiles() {
 	Game.firstPlayer = (players[0].tile.bagIndex < players[1].tile.bagIndex) ? Game.User : Game.Bot;
 }
 
+$(".bot-difficulty").click(function() {
+	Game.Bot.botDiffic = (Game.Bot.botDiffic + 1) % 3;
+	let nextDifficulty = Game.Bot.botDiffics[Game.Bot.botDiffic].name;
+	$(this).html(nextDifficulty);
+});
+
 
 
 //* End screen
 $(".rematch-btn").on("click", function() {
 	Game.new(langId, editionId);
+	hideDialog();
 	newGameFE();
-	
-	changePlayerTo(Game.firstPlayer);
-	initiateGame();
-
+	setTimeout(() => initiateGame(), screenTransition);
 	newScreen("play");
 });
 
