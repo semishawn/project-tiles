@@ -189,8 +189,8 @@
 		
 					<div class="play-function-container">
 						<div class="done-btns-container">
-							<div class="btn done-btn ditch-btn">Ditch this game</div>
-							<div class="btn done-btn start-over-btn">Start over</div>
+							<div class="btn done-btn leave-btn">Leave game</div>
+							<div class="btn done-btn restart-btn">Restart game</div>
 							<div class="btn done-btn resign-btn">Resign</div>
 						</div>
 		
@@ -243,12 +243,33 @@
 					
 					<div class="board-column">
 						<div class="board">
-							<div class="dialog skip-dialog">
-								<div class="dialog-text">Skip your turn?</div>
+							<div class="dialog leave-dialog">
+								<div class="dialog-text">Ditch this game?</div>
 								<div class="dialog-btn-container">
 									<div class="btn dialog-confirm-btn">Confirm</div>
 									<div class="btn dialog-deny-btn">Cancel</div>
 								</div>
+							</div>
+
+							<div class="dialog restart-dialog">
+								<div class="dialog-text">Restart this game?</div>
+								<div class="dialog-btn-container">
+									<div class="btn dialog-confirm-btn">Confirm</div>
+									<div class="btn dialog-deny-btn">Cancel</div>
+								</div>
+							</div>
+	
+							<div class="dialog resign-dialog">
+								<div class="dialog-text">Resign this game?</div>
+								<div class="dialog-btn-container">
+									<div class="btn dialog-confirm-btn">Confirm</div>
+									<div class="btn dialog-deny-btn">Cancel</div>
+								</div>
+							</div>
+
+							<div class="dialog blank-dialog">
+								<div class="dialog-text">Choose a substitute:</div>
+								<div class="btn-grid blank-option-container"></div>
 							</div>
 	
 							<div class="dialog exchange-dialog">
@@ -259,22 +280,9 @@
 									<div class="btn dialog-deny-btn">Cancel</div>
 								</div>
 							</div>
-	
-							<div class="dialog blank-dialog">
-								<div class="dialog-text">Choose a substitute:</div>
-								<div class="btn-grid blank-option-container"></div>
-							</div>
-	
-							<div class="dialog start-over-dialog">
-								<div class="dialog-text">Start this game over?</div>
-								<div class="dialog-btn-container">
-									<div class="btn dialog-confirm-btn">Confirm</div>
-									<div class="btn dialog-deny-btn">Cancel</div>
-								</div>
-							</div>
-	
-							<div class="dialog resign-dialog">
-								<div class="dialog-text">Resign this game?</div>
+
+							<div class="dialog skip-dialog">
+								<div class="dialog-text">Skip your turn?</div>
 								<div class="dialog-btn-container">
 									<div class="btn dialog-confirm-btn">Confirm</div>
 									<div class="btn dialog-deny-btn">Cancel</div>
@@ -305,34 +313,64 @@
 		<div class="screen end-screen" data-winner="">
 			<div class="end-player-container">
 				<div class="end-player user-end">
-					<div class="player-ordinal"></div>
+					<div class="end-player-ordinal"></div>
 
-					<div class="player-end-info">
-						<span class="player-end-name"></span>
+					<div class="end-player-info">
+						<span class="end-player-name"></span>
 						<div class="player-icon"></div>
 					</div>
 
-					<div class="player-final-score"></div>
+					<div class="end-player-score-container">
+						<div class="end-player-score-wrapper">
+							<div class="end-player-score-info">Total Points</div>
+							<div class="end-player-score-info">Unplayed Tiles</div>
+							<div class="end-player-score-info">Opponent's Tiles</div>
+							<div class="end-player-score-info">Final Score</div>
+	
+							<div class="end-player-total-points"></div>
+							<div class="end-player-math">-</div>
+							<div class="end-player-unplayed-tiles"></div>
+							<div class="end-player-math">+</div>
+							<div class="end-player-opponent-tiles"></div>
+							<div class="end-player-math">=</div>
+							<div class="end-player-final-score"></div>
+						</div>
+					</div>
 
-					<div class="player-avg-score-container">
+					<div class="end-player-avg-container">
 						<span>Average per turn</span>
-						<div class="player-avg-score"></div>
+						<div class="end-player-avg-score"></div>
 					</div>
 				</div>
 
 				<div class="end-player bot-end">
-					<div class="player-ordinal"></div>
+					<div class="end-player-ordinal"></div>
 
-					<div class="player-end-info">
-						<span class="player-end-name"></span>
+					<div class="end-player-info">
+						<span class="end-player-name"></span>
 						<div class="player-icon"></div>
 					</div>
+					
+					<div class="end-player-score-container">
+						<div class="end-player-score-wrapper">
+							<div class="end-player-score-info">Total Points</div>
+							<div class="end-player-score-info">Unplayed Tiles</div>
+							<div class="end-player-score-info">Opponent's Tiles</div>
+							<div class="end-player-score-info">Final Score</div>
+	
+							<div class="end-player-total-points"></div>
+							<div class="end-player-math">-</div>
+							<div class="end-player-unplayed-tiles"></div>
+							<div class="end-player-math">+</div>
+							<div class="end-player-opponent-tiles"></div>
+							<div class="end-player-math">=</div>
+							<div class="end-player-final-score"></div>
+						</div>
+					</div>
 
-					<div class="player-final-score"></div>
-
-					<div class="player-avg-score-container">
+					<div class="end-player-avg-container">
 						<span>Average per turn</span>
-						<div class="player-avg-score"></div>
+						<div class="end-player-avg-score"></div>
 					</div>
 				</div>
 			</div>

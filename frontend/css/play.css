@@ -435,9 +435,9 @@
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(var(--board-dimension), auto);
-	padding: var(--indicator-border-width);
-	padding-top: calc(var(--indicator-border-width) + var(--input-border-width));
-	padding-left: calc(var(--indicator-border-width) + var(--input-border-width));
+	padding: calc(var(--indicator-border-width) - var(--input-border-width));
+	padding-top: var(--indicator-border-width);
+	padding-left: var(--indicator-border-width);
 	background: var(--ui-color2);
 }
 
@@ -528,26 +528,24 @@
 .dialog-btn-container {
 	flex-direction: row;
 	width: 7rem;
-	height: var(--big-tile-width);
+	height: calc(var(--tile-ratio) * var(--big-tile-width));
 }
 .dialog-btn-container .btn {
+	--inside-bg: var(--ui-color3);
 	width: 100%;
 	height: 100%;
 }
 .dialog-btn-container .btn-inside {font-size: var(--input-font-size);}
-.dialog-confirm-btn {--inside-bg: var(--ui-color3);}
 .dialog-deny-btn {margin-left: calc(-1 * var(--input-border-width));}
 
-/* Skip */
-.skip-dialog {z-index: var(--z-tile-above);}
+/* Resign */
+.leave-dialog {z-index: var(--z-tile-above);}
 
-/* Exchange */
-.show-dialog[data-dialog="exchange"] .user-rack-tiles,
-.show-dialog[data-dialog="exchange"] .tile[data-state="rack"]
-{pointer-events: all;}
+/* Start Over */
+.restart-dialog {z-index: var(--z-tile-above);}
 
-.exchange-dialog {z-index: var(--z-tile-between);}
-.exchange-dialog .rack-tiles {margin-bottom: 0.5rem;}
+/* Resign */
+.resign-dialog {z-index: var(--z-tile-above);}
 
 /* Blank */
 .blank-dialog {z-index: var(--z-tile-above);}
@@ -563,11 +561,15 @@
 }
 .blank-option[data-char-count="2"] .btn-inside {font-size: calc(0.55 * var(--big-tile-width));}
 
-/* Start Over */
-.start-over-dialog {z-index: var(--z-tile-above);}
+/* Exchange */
+.show-dialog[data-dialog="exchange"] .user-rack-tiles,
+.show-dialog[data-dialog="exchange"] .tile[data-state="rack"]
+{pointer-events: all;}
+.exchange-dialog {z-index: var(--z-tile-between);}
+.exchange-dialog .rack-tiles {margin-bottom: 0.5rem;}
 
-/* Resign */
-.resign-dialog {z-index: var(--z-tile-above);}
+/* Skip */
+.skip-dialog {z-index: var(--z-tile-above);}
 
 
 

@@ -68,17 +68,29 @@ var Game = {
 
 	isGameOver: function() {
 		let isTileBagEmpty = (this.tileBag.length == 0);
-		let isUserPlayedOut = (this.User.rackTiles.length == 0);
-		let isBotPlayedOut = (this.Bot.rackTiles.length == 0);
-		let isUserPassedOut = (this.User.consecutivePasses >= 2);
-		let isBotPassedOut = (this.Bot.consecutivePasses >= 2);
-		if (
-			(isTileBagEmpty && (isUserPlayedOut || isBotPlayedOut)) ||
-			(isUserPassedOut || isBotPassedOut)
-		) {
-			this.ordinals.sort((a, b) => a.score - b.score);
+		let playedOut = this.ordinals.filter((player) => player.rackTiles.length == 0);
+		let passedOut = this.ordinals.filter((player) => player.consecutivePasses >= 2);
+
+		if (isTileBagEmpty && playedOut.length > 0) {
+			let winner = playedOut[0];
+			let loser = playedOut[0].type == "user" ? Game.Bot : Game.User;
+
+			loser.tilePenalty();
+			winner.finalScore = winner.score + loser.rackReduction;
+			loser.finalScore = winner.score - loser.rackReduction;
+			this.ordinals.sort((a, b) => b.finalScore - a.finalScore);
 			return true;
 		}
+		else if (passedOut.length > 0) {
+			for (let p = 0; p < this.ordinals.length; p++) {
+				let player = this.ordinals[p];
+				player.tilePenalty();
+				player.finalScore = player.score - player.rackReduction;
+			}
+			this.ordinals.sort((a, b) => b.finalScore - a.finalScore);
+			return true;
+		}
+
 		return false;
 	}
 }
@@ -87,8 +99,11 @@ class Player {
 	type = "";
 	name = "";
 	rackTiles = [];
-	score = 0;
 	currentPlay = null;
+
+	score = 0;
+	rackReduction = 0;
+	finalScore = 0;
 
 	plyCount = 0;
 	consecutivePasses = 0;
@@ -508,6 +523,10 @@ class Player {
 
 		// Update score
 		this.score += play.score;
+	}
+
+	tilePenalty() {
+		this.rackReduction = this.rackTiles.reduce((sum, tile) => sum + tile.points, 0);
 	}
 }
 

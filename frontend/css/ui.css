@@ -418,7 +418,7 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 }
 .end-player + .end-player {margin-left: calc(-1 * var(--input-border-width));}
 
-.player-ordinal {
+.end-player-ordinal {
 	text-align: center;
 	width: 100%;
 	font-size: 2rem;
@@ -427,36 +427,69 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	border-bottom: var(--input-border-width) solid var(--ui-color2);
 }
 
-.player-end-info {
+.end-player-info {
 	flex-grow: 1;
 	justify-content: center;
 	align-items: center;
 	border-bottom: var(--input-border-width) solid var(--ui-color2);
 }
-.player-end-name {
+.end-player-name {
 	font-size: 1rem;
 	font-weight: 700;
 	line-height: 1;
 	margin-top: -0.1em;
 	margin-bottom: 0.3rem;
 }
-.player-end-info .player-icon {
+.end-player-info .player-icon {
 	--dimension: 3.75rem;
 	border: var(--input-border-width) solid var(--ui-color2);
 }
 
-.player-final-score {
-	text-align: center;
-	width: 100%;
-	font-family: var(--font2);
-	font-size: 3rem;
-	font-weight: 700;
-	line-height: 1;
-	padding: 0.25rem 0;
+.end-player-score-container {
+	justify-content: center;
+	align-items: center;
+	padding: 0.5rem;
+	padding-top: 0.75rem;
 	border-bottom: var(--input-border-width) solid var(--ui-color2);
 }
+.end-player-score-wrapper {
+	display: grid;
+	grid-template-columns: repeat(7, auto);
+	width: min-content;
+}
 
-.player-avg-score-container {
+.end-player-score-info {
+	text-align: center;
+	font-size: 0.3rem;
+	font-style: italic;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+.end-player-score-info:nth-child(1) {grid-column-start: 1;}
+.end-player-score-info:nth-child(2) {grid-column-start: 3;}
+.end-player-score-info:nth-child(3) {grid-column-start: 5;}
+.end-player-score-info:nth-child(4) {grid-column-start: 7;}
+
+.end-player-total-points,
+.end-player-unplayed-tiles,
+.end-player-opponent-tiles,
+.end-player-final-score,
+.end-player-math {
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-family: var(--font2);
+	font-size: 0.8rem;
+	font-weight: 100;
+	line-height: 1;
+}
+.end-player-math {margin: 0 0.2rem;}
+.end-player-final-score {
+	font-size: 2rem;
+	font-weight: 900;
+}
+
+.end-player-avg-container {
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
@@ -465,7 +498,7 @@ input:checked + .player-intro .player-intro-goes-first {opacity: 1;}
 	font-style: italic;
 	padding: 0.45rem 0.7rem;
 }
-.player-avg-score {
+.end-player-avg-score {
 	font-family: var(--font2);
 	font-size: 1rem;
 	font-weight: 100;

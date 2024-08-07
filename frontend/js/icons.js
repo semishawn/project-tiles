@@ -199,8 +199,8 @@ $(".bot-intro .player-icon").append(i_bot);
 
 // Play screen
 $(".bot-score-box .player-icon").append(i_bot);
-$(".ditch-btn").prepend(i_exit);
-$(".start-over-btn").prepend(i_arrowCircle);
+$(".leave-btn").prepend(i_exit);
+$(".restart-btn").prepend(i_arrowCircle);
 $(".resign-btn").prepend(i_flag);
 $(".shuffle-btn").prepend(i_shuffle);
 $(".recall-btn").prepend(i_cross);

@@ -288,8 +288,8 @@ function newGameFE() {
 	generateRacksFE();
 	generateBlankOptionsFE();
 
-	let url = "https://semishawn.github.io/project-tiles/";
-	// let url = "./";
+	// let url = "https://semishawn.github.io/project-tiles/";
+	let url = "./";
 	BotWorker = new Worker(url + "backend/js/bot.js");
 	BotWorker.onmessage = e => {
 		let ply = e.data;
@@ -344,42 +344,51 @@ function postBotPlay() {
 }
 
 function gameOverFE() {
-	let userAvg = Math.round(Game.User.score / Game.User.plyCount);
-	let botAvg = Math.round(Game.Bot.score / Game.Bot.plyCount);
-
 	$(".end-player").removeClass("winner");
 	$(`.${Game.ordinals[0].type}-end`).addClass("winner");
+	$(`.${Game.ordinals[0].type}-end .end-player-ordinal`).html("WINNER!");
+	$(`.${Game.ordinals[1].type}-end .end-player-ordinal`).html("2nd");
 
-	$(".user-end .player-end-name").html(Game.User.name);
-	$(".user-end .player-final-score").html(Game.User.score);
-	$(".user-end .player-avg-score").html(userAvg);
-	$(".bot-end .player-end-name").html(Game.Bot.name);
-	$(".bot-end .player-final-score").html(Game.Bot.score);
-	$(".bot-end .player-avg-score").html(botAvg);
+	for (let p = 0; p < Game.ordinals.length; p++) {
+		let player = Game.ordinals[p];
+		let avg = Math.round(player.finalScore / player.plyCount);
 
-	$(`.${Game.ordinals[0].type}-end .player-ordinal`).html("WINNER!");
-	$(`.${Game.ordinals[1].type}-end .player-ordinal`).html("2nd");
+		$(`.${player.type}-end .end-player-name`).html(player.name);
+		$(`.${player.type}-end .end-player-total-points`).html(player.score);
+		$(`.${player.type}-end .end-player-unplayed-tiles`).html(player.rackReduction);
+		$(`.${player.type}-end .end-player-opponent-tiles`).html("0");
+		$(`.${player.type}-end .end-player-final-score`).html(player.finalScore);
+		$(`.${player.type}-end .end-player-avg-score`).html(avg);
+	}
 
 	newScreen("end");
 }
 
-/* $(document).keydown(function(e) {
+$(document).keydown(function(e) {
 	if (e.code == "Tab") gameOverFE();
-}); */
+});
 
 
 
 //* Button functionality
-$(".ditch-btn").on("click", function() {
+// Ditch
+$(".leave-btn").on("click", function() {
+	showDialog("leave");
+});
+$(".leave-dialog .dialog-confirm-btn").on("click", function() {
 	BotWorker.terminate();
 	newScreen("lang");
+	hideDialog();
+});
+$(".leave-dialog .dialog-deny-btn").on("click", function() {
+	hideDialog();
 });
 
 // Start Over
-$(".start-over-btn").on("click", function() {
-	showDialog("start-over");
+$(".restart-btn").on("click", function() {
+	showDialog("restart");
 });
-$(".start-over-dialog .dialog-confirm-btn").on("click", function() {
+$(".restart-dialog .dialog-confirm-btn").on("click", function() {
 	BotWorker.terminate();
 	Game.new(langId, editionId);
 
@@ -387,7 +396,7 @@ $(".start-over-dialog .dialog-confirm-btn").on("click", function() {
 	initiateGame();
 	hideDialog();
 });
-$(".start-over-dialog .dialog-deny-btn").on("click", function() {
+$(".restart-dialog .dialog-deny-btn").on("click", function() {
 	hideDialog();
 });
 
@@ -469,25 +478,6 @@ $(".recall-btn").on("click", function() {
 	$(".play-btn").attr("disabled", true);
 });
 
-// Skip
-$(".skip-btn").on("click", function() {
-	showDialog("skip");
-});
-$(".skip-dialog .dialog-confirm-btn").on("click", function() {
-	Game.User.recallTiles();
-	recallTilesFE(Game.User);
-	Game.User.plyCount++;
-	Game.User.consecutivePasses++;
-
-	hideDialog();
-	addToHistory(Game.User, "skip");
-	changePlayerTo(Game.Bot);
-	postBotPlay();
-});
-$(".skip-dialog .dialog-deny-btn").on("click", function() {
-	hideDialog();
-});
-
 // Exchange
 $(".exchange-btn").on("click", function() {
 	// Game.User.recallTiles();
@@ -521,6 +511,28 @@ $(".exchange-dialog .dialog-deny-btn").on("click", function() {
 	hideDialog();
 });
 
+// Skip
+$(".skip-btn").on("click", function() {
+	showDialog("skip");
+});
+$(".skip-dialog .dialog-confirm-btn").on("click", function() {
+	Game.User.recallTiles();
+	recallTilesFE(Game.User);
+	Game.User.plyCount++;
+	Game.User.consecutivePasses++;
+
+	hideDialog();
+	addToHistory(Game.User, "skip");
+	if (Game.isGameOver()) gameOverFE();
+	else {
+		changePlayerTo(Game.Bot);
+		postBotPlay();
+	}
+});
+$(".skip-dialog .dialog-deny-btn").on("click", function() {
+	hideDialog();
+});
+
 // Play
 $(".play-btn").on("click", function() {
 	onValidPlay(Game.User, Game.User.currentPlay.data);
@@ -528,11 +540,10 @@ $(".play-btn").on("click", function() {
 	Game.User.plyCount++;
 	Game.User.consecutivePasses = 0;
 
+	$(".play-btn").attr("disabled", true);
 	if (Game.isGameOver()) gameOverFE();
 	else {
 		changePlayerTo(Game.Bot);
 		postBotPlay();
 	}
-
-	$(".play-btn").attr("disabled", true);
 });
