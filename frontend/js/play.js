@@ -288,8 +288,8 @@ function newGameFE() {
 	generateRacksFE();
 	generateBlankOptionsFE();
 
-	// let url = "https://semishawn.github.io/project-tiles/";
-	let url = "./";
+	let url = "https://semishawn.github.io/project-tiles/";
+	// let url = "./";
 	BotWorker = new Worker(url + "backend/js/bot.js");
 	BotWorker.onmessage = e => {
 		let ply = e.data;
@@ -364,9 +364,9 @@ function gameOverFE() {
 	newScreen("end");
 }
 
-$(document).keydown(function(e) {
+/* $(document).keydown(function(e) {
 	if (e.code == "Tab") gameOverFE();
-});
+}); */
 
 
 

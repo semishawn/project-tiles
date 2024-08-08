@@ -42,16 +42,17 @@ def jsonl_to_js(iso):
 	word_set = set()
 
 	for line in jsonl_file:
-		data = json.loads(line)
-		word = str(data['word']).upper()
+		entry = json.loads(line)
+		word = str(entry['word']).upper()
+		# word = ((entry['sounds'])[0])['ipa']
 		if (len(word) >= 2) and (len(word) < 15) and (not ' ' in word):
 			if not uses_valid_letters(alphabet, word): word = normalize(word)
 			if uses_valid_letters(alphabet, word): word_set.add(word)
 	jsonl_file.close()
 
-	js_file.write(f'wordLists.{iso} = [\n')
+	js_file.write(f'wordLists.{iso} = [')
 	for word in sorted(word_set):
-		js_file.write(f'\t"{word}",\n')
+		js_file.write(f'"{word}",')
 	js_file.write(']')
 	js_file.close()
 
@@ -85,44 +86,44 @@ def lang_to_js(file_path):
 
 
 lang_to_js('lang.json')
-langs = []
-pangs = [
-	'afr',
-	'ara',
-	'bul',
-	'cat',
-	'hrv',
-	'cze',
-	'dan',
-	'dut',
-	'est',
-	'fao',
-	'fin',
-	'ger',
-	'grc',
-	'heb',
-	'hun',
-	'ice',
-	'ind',
-	'gle',
-	'ita',
-	'lat',
-	'lav',
-	'lit',
-	'mlg',
-	'may',
-	'nob',
-	'pol',
-	'por',
-	'rum',
-	'rus',
-	'gla',
-	'slo',
-	'slv',
-	'swe',
-	'tur',
-	'ukr',
-	'wel'
+langs = [
+	"eng"
+	# 'afr',
+	# 'ara',
+	# 'bul',
+	# 'cat',
+	# 'hrv',
+	# 'cze',
+	# 'dan',
+	# 'dut',
+	# 'est',
+	# 'fao',
+	# 'fin',
+	# 'ger',
+	# 'grc',
+	# 'heb',
+	# 'hun',
+	# 'ice',
+	# 'ind',
+	# 'gle',
+	# 'ita',
+	# 'lat',
+	# 'lav',
+	# 'lit',
+	# 'mlg',
+	# 'may',
+	# 'nob',
+	# 'pol',
+	# 'por',
+	# 'rum',
+	# 'rus',
+	# 'gla',
+	# 'slo',
+	# 'slv',
+	# 'swe',
+	# 'tur',
+	# 'ukr',
+	# 'wel'
 ]
 with alive_bar(len(langs)) as bar:
 	for iso in langs:

@@ -237,6 +237,7 @@ input:checked + .btn .btn-stalk
 	/* background: pink; */
 }
 [data-char-count="2"] {font-size: calc(0.5 * var(--tile-width));}
+.tile [data-char-count="2"] {padding-bottom: calc(0.1 * var(--tile-width));}
 
 .tile-points {
 	font-size: calc(var(--tile-width) / 6);

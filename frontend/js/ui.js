@@ -61,14 +61,14 @@ $(".title-play-btn").on("click", function() {
 
 
 //* Lang screen
-languages.sort(function(a, b) {
-	return a.exonym.localeCompare(b.exonym);
-});
 languages = languages.filter(function(parent) {
 	if (!parent.editions || !Array.isArray(parent.editions)) return false;
 	for (var i = 0; i < parent.editions.length; i++)
 		if (parent.editions[i].hasOwnProperty("wordList")) return true;
 	return false;
+});
+languages.sort(function(a, b) {
+	return a.exonym.localeCompare(b.exonym);
 });
 
 for (let i = 0; i < languages.length; i++) {
@@ -114,6 +114,10 @@ contBtnLang.on("click", function() {
 
 	$(".edition-options-container").empty();
 	let editions = languages[langId].editions;
+	editions = editions.filter(function(edition) {
+		if (edition.hasOwnProperty("botResponse")) return true;
+		return false;
+	});
 	for (let i = 0, n = editions.length; i < n; i++) {
 		let editionTitle = editions[i].title;
 		let editionExonym = editions[i].langExonym;
